@@ -1,6 +1,7 @@
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
 import { Home, LearnIcon, ProfileIcon, QuizIcon } from "./Icons";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const routes = [
   {
@@ -30,6 +31,8 @@ const routes = [
 ];
 
 export const BottomNavbar = () => {
+  const router = useRouter();
+
   return (
     <HStack
       height="90px"
@@ -44,41 +47,41 @@ export const BottomNavbar = () => {
       position="relative"
     >
       {routes.map((route) => {
+        const isActive = router.pathname === route.href;
+
         return (
-          <NavLink to={route.href}>
-            {({ isActive }) => (
-              <VStack key={route.id}>
-                {route.icon(isActive)}
+          <Link href={route.href}>
+            <VStack key={route.id}>
+              {route.icon(isActive)}
 
-                {isActive ? (
-                  <>
-                    <Text
-                      bgGradient="var(--chakra-colors-primaryLinear)"
-                      fontWeight="600"
-                      bgClip="text"
-                    >
-                      {route.title}
-                    </Text>
-
-                    <Box
-                      position="absolute"
-                      bottom="10px"
-                      boxShadow="0px 4px 10px var(--chakra-colors-cyan)"
-                      width="24px"
-                      h="3px"
-                      bgGradient="var(--chakra-colors-primaryRadial)"
-                      borderTopRadius="4px"
-                      borderBottomRadius="1px"
-                    />
-                  </>
-                ) : (
-                  <Text color="gray.40" fontSize="sm" fontWeight="600">
+              {isActive ? (
+                <>
+                  <Text
+                    bgGradient="var(--chakra-colors-primaryLinear)"
+                    fontWeight="600"
+                    bgClip="text"
+                  >
                     {route.title}
                   </Text>
-                )}
-              </VStack>
-            )}
-          </NavLink>
+
+                  <Box
+                    position="absolute"
+                    bottom="10px"
+                    boxShadow="0px 4px 10px var(--chakra-colors-cyan)"
+                    width="24px"
+                    h="3px"
+                    bgGradient="var(--chakra-colors-primaryRadial)"
+                    borderTopRadius="4px"
+                    borderBottomRadius="1px"
+                  />
+                </>
+              ) : (
+                <Text color="gray.40" fontSize="sm" fontWeight="600">
+                  {route.title}
+                </Text>
+              )}
+            </VStack>
+          </Link>
         );
       })}
     </HStack>
