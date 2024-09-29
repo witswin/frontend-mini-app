@@ -1,0 +1,102 @@
+import { ColorFullText } from "@/components/ColorFullText";
+import { baseTheme } from "@/theme";
+import { INFO_CARD_STATE } from "@/types";
+import { Button, Text, VStack } from "@chakra-ui/react";
+import { forwardRef, memo, useMemo, useState } from "react";
+import { TbArrowBadgeRightFilled } from "react-icons/tb";
+
+const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
+  const [cardState] = useState(state);
+
+  const selectedCard: {
+    [key in INFO_CARD_STATE]: {
+      id: number;
+      largeTitle: string;
+      subHeadline: string;
+      btnObject?: {
+        btnText: string;
+        btnIcon?: React.ReactNode;
+        btnOnClick: () => void;
+      };
+    };
+  } = useMemo(
+    () => ({
+      [INFO_CARD_STATE.welcome]: {
+        id: 3,
+        largeTitle: "Welcome to Wits!",
+        subHeadline: "Ready to challenge your brain\n and earn rewards?",
+        btnObject: {
+          btnText: "Get Started",
+          btnIcon: <TbArrowBadgeRightFilled size={24} color="gray.0" />,
+          btnOnClick: () => {},
+        },
+      },
+      [INFO_CARD_STATE.join]: {
+        id: 3,
+        largeTitle: "Quiz time!",
+        subHeadline: "Game begins in 8 sec... Ready yourself!",
+      },
+      [INFO_CARD_STATE.lobby]: {
+        id: 2,
+        largeTitle: "Ready to Win?",
+        subHeadline: "Ready to show what you know?",
+      },
+      [INFO_CARD_STATE.resource]: {
+        id: 1,
+        largeTitle: "You're in the game",
+        subHeadline: "Study up and get ready to win!",
+      },
+      [INFO_CARD_STATE.watch]: {
+        id: 4,
+        largeTitle: "You're Late!",
+        subHeadline: "But don’t worry,\nenjoy watching and learning!",
+      },
+    }),
+    []
+  );
+
+  return (
+    <VStack
+      width="full"
+      height="full"
+      bg="glassBackground"
+      borderRadius="16px"
+      gap="32px"
+      justifyContent="center"
+    >
+      <VStack maxW="90%" gap="0">
+        <ColorFullText
+          fontSize="6xl"
+          textContent={selectedCard[cardState].largeTitle}
+        />
+
+        <Text
+          whiteSpace={"pre-line"}
+          maxW="100%"
+          color="gray.10"
+          fontSize="lg"
+          fontWeight="700"
+          lineHeight="34px"
+          textAlign="center"
+        >
+          {selectedCard[cardState].subHeadline}
+        </Text>
+      </VStack>
+
+      {selectedCard[cardState].btnObject && (
+        <Button
+          bgGradient={baseTheme.colors.glassBackground}
+          variant="outline"
+          gap="8px"
+          onClick={selectedCard[cardState].btnObject?.btnOnClick}
+        >
+          {selectedCard[cardState].btnObject?.btnText}
+          {selectedCard[cardState].btnObject?.btnIcon}
+        </Button>
+      )}
+    </VStack>
+  );
+});
+
+const MemoizedHomeInfoCard = memo(HomeCard);
+export { MemoizedHomeInfoCard as HomeCard };
