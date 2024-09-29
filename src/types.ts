@@ -1,0 +1,24 @@
+export enum CARD_STATE {
+  "resource" = "resource",
+  "lobby" = "lobby",
+  "join" = "join",
+  "watch" = "watch",
+  "enroll" = "enroll",
+}
+
+export type quizCardInfo = {
+  prize: number;
+  prizeText: string;
+  values: {
+    id: number;
+    text: string;
+  }[];
+  capacity: number;
+  enrolledNumber: number;
+  unitPrize: string;
+  isEnrolled: boolean;
+};
+export type QuizCardProps = Partial<{
+  quizCardInfo: Partial<quizCardInfo>;
+  colored: boolean;
+}> & { state: CARD_STATE };
