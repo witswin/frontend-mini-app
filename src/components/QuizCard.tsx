@@ -1,6 +1,5 @@
 import { Card } from "@/components/Card";
 import { CountDown } from "@/components/CountDown";
-import { EnrolledCard } from "@/modules/quiz/components/EnrolledCard";
 import { CARD_STATE, QuizCardProps } from "@/types";
 import {
   Badge,
@@ -11,7 +10,6 @@ import {
   Img,
   Tag,
   Text,
-  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import {
@@ -25,13 +23,38 @@ import {
 import { TbArrowBadgeRightFilled } from "react-icons/tb";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+interface QuizPrizeProps {
+  prize: number;
+  unitPrize: string;
+}
+export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
+  return (
+    <HStack>
+      <Text
+        fontWeight="700"
+        as="span"
+        display="flex"
+        columnGap="2px"
+        background="primaryRadial"
+        backgroundClip="text"
+        sx={{ WebkitTextFillColor: "transparent" }}
+        alignItems="center"
+      >
+        <Text lineHeight="36px" fontFamily="Kanit" fontSize="5xl">
+          {prize.toFixed(2)}
+        </Text>
+        <Text fontSize="xs">{unitPrize.toUpperCase()}</Text>
+      </Text>
+    </HStack>
+  );
+};
+
 const ChakraSwiper = chakra(Swiper);
 const QuizCard = forwardRef(
   (
-    { state, quizCardInfo, colored }: QuizCardProps,
+    { state, quizCardInfo, colored, onOpen }: QuizCardProps,
     ref: LegacyRef<HTMLDivElement>
   ) => {
-    const { isOpen, onOpen, onClose } = useDisclosure();
     const [cardState] = useState(state);
 
     const selectedCTA: {
@@ -92,25 +115,10 @@ const QuizCard = forwardRef(
             quizCardInfo?.unitPrize &&
             quizCardInfo?.prizeText && (
               <VStack mb="8px" rowGap="0">
-                <HStack>
-                  <Text
-                    fontWeight="700"
-                    as="span"
-                    display="flex"
-                    columnGap="2px"
-                    background="primaryRadial"
-                    backgroundClip="text"
-                    sx={{ WebkitTextFillColor: "transparent" }}
-                    alignItems="center"
-                  >
-                    <Text lineHeight="36px" fontFamily="Kanit" fontSize="5xl">
-                      {quizCardInfo.prize.toFixed(2)}
-                    </Text>
-                    <Text fontSize="xs">
-                      {quizCardInfo.unitPrize.toUpperCase()}
-                    </Text>
-                  </Text>
-                </HStack>
+                <QuizPrize
+                  prize={quizCardInfo.prize}
+                  unitPrize={quizCardInfo.unitPrize}
+                />
                 <Text color="gray.60" fontWeight="600" fontSize="sm">
                   {quizCardInfo.prizeText}
                 </Text>
@@ -200,7 +208,6 @@ const QuizCard = forwardRef(
             </Text>
           )}
         </Card>
-        <EnrolledCard isOpen={isOpen} onClose={onClose} />
       </VStack>
     );
   }
