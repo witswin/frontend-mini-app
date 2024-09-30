@@ -4,13 +4,13 @@ export const Button = {
   },
   sizes: {
     sm: {
-      fontSize: "15px",
+      fontSize: "sm",
       fontWeight: "600",
-      lineHeight: "22px",
-      borderRadius: "22px",
-      height: "28px",
+      lineHeight: "20px",
+      borderRadius: "8px",
+      height: "36px",
       _before: {
-        borderRadius: "22px",
+        borderRadius: "8px",
       },
     },
     md: {
