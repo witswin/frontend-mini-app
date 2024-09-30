@@ -3,6 +3,7 @@ import { QuizCard } from "@/components/QuizCard";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { CARD_STATE } from "@/types";
 import { VStack } from "@chakra-ui/react";
+import { useEnrolledModalProps } from "../hooks";
 
 const SwiperItem = () => {
   const { ref, isIntersecting } = useIntersectionObserver(false, {
@@ -10,10 +11,12 @@ const SwiperItem = () => {
     threshold: 1,
     rootMargin: "100% 0px 100% 0px",
   });
+  const { onOpen } = useEnrolledModalProps();
 
   return (
     <VStack width="full">
       <QuizCard
+        onOpen={onOpen}
         ref={ref}
         state={CARD_STATE.enroll}
         colored={isIntersecting}
