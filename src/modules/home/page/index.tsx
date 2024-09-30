@@ -7,9 +7,7 @@ export const Home = () => {
   return (
     <VStack>
       <HomeCard state={INFO_CARD_STATE.resource} />
-      <Button variant="outline" size="lg">
-        sakdjas
-      </Button>
+
       <QuizCard state={CARD_STATE.join} colored />
     </VStack>
   );

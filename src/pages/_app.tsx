@@ -9,6 +9,7 @@ import "swiper/css/scrollbar";
 import "swiper/css/effect-coverflow";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { Layout } from "@/components/Layout";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -33,9 +34,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Wits</title>
       </Head>
       <ChakraProvider theme={baseTheme}>
-        <Container minH="100vh" py="8px" maxWidth="412px" px="16px">
+        <Container minH="100vh" pb="8px" maxWidth="412px" px="16px">
           <QueryClientProvider client={queryClient}>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </QueryClientProvider>
         </Container>
       </ChakraProvider>

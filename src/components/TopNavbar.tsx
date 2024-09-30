@@ -1,7 +1,8 @@
-import { Badge, Box, HStack, Image, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { TbHeart, TbWallet } from "react-icons/tb";
-import BgImage from "src/assets/BgImage.svg";
-import Logo from "src/assets/Logo.svg";
+import BgImage from "@/assets/BgImage.svg";
+import Logo from "@/assets/Logo.svg";
+import Image from "next/image";
 
 const WalletStatus = (isConnected: boolean = false) => (
   <Box
@@ -26,13 +27,15 @@ export const TopNavbar = () => {
       alignItems="center"
       position="relative"
     >
-      <Image
+      <Box
         position="absolute"
-        src={BgImage}
-        alt="navbar background image"
         zIndex="base"
-        objectFit="fill"
-      />
+        width="100%"
+        height="100%"
+        pt="10px"
+      >
+        <Image src={BgImage} alt="navbar background image" layout="fill" />
+      </Box>
 
       <HStack zIndex="docked" w="full" justifyContent="space-between" px="12px">
         <VStack>

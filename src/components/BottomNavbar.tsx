@@ -12,7 +12,7 @@ const routes = [
   },
   {
     id: 1,
-    href: "/quizzes",
+    href: "/quiz",
     title: "Quiz",
     icon: (isActive: boolean) => <QuizIcon isActive={isActive} />,
   },
