@@ -5,10 +5,9 @@ import Logo from "@/assets/Logo.svg";
 import Image from "next/image";
 
 const WalletStatus = (isConnected: boolean = false) => (
-  <Box
-    bg={isConnected ? "greenRadial" : "redRadial"}
-    borderRadius="50px"
-    boxSize="7px"
+  <Badge
+    variant={isConnected ? "green" : "red"}
+    size="xs"
     position="absolute"
     left="0"
     bottom="0"
@@ -42,7 +41,7 @@ export const TopNavbar = () => {
           <HStack gap="2px">
             <TbHeart size={24} />
 
-            <Badge size="sm" variant={health > 1 ? "green" : "red"}>
+            <Badge size="sm" variant="ghost">
               {"x "}
               {health}
             </Badge>

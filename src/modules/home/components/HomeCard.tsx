@@ -2,6 +2,7 @@ import { ColorFullText } from "@/components/ColorFullText";
 import { baseTheme } from "@/theme";
 import { INFO_CARD_STATE } from "@/types";
 import { Button, Text, VStack } from "@chakra-ui/react";
+import Link from "next/link";
 import { forwardRef, memo, useMemo, useState } from "react";
 import { TbArrowBadgeRightFilled } from "react-icons/tb";
 
@@ -16,7 +17,7 @@ const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
       btnObject?: {
         btnText: string;
         btnIcon?: React.ReactNode;
-        btnOnClick: () => void;
+        href: string;
       };
     };
   } = useMemo(
@@ -28,7 +29,7 @@ const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
         btnObject: {
           btnText: "Get Started",
           btnIcon: <TbArrowBadgeRightFilled size={24} color="gray.0" />,
-          btnOnClick: () => {},
+          href: "/quiz",
         },
       },
       [INFO_CARD_STATE.join]: {
@@ -88,7 +89,8 @@ const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
           bgGradient={baseTheme.colors.glassBackground}
           variant="outline"
           gap="8px"
-          onClick={selectedCard[cardState].btnObject?.btnOnClick}
+          as={Link}
+          href={selectedCard[cardState].btnObject?.href}
         >
           {selectedCard[cardState].btnObject?.btnText}
           {selectedCard[cardState].btnObject?.btnIcon}
