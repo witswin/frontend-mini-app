@@ -79,8 +79,14 @@ const TimerBox = ({
 
 interface CountDownProps {
   date: Date | number;
+  dateTimeStyle?: BoxProps;
+  timerStyle?: BoxProps;
 }
-export const CountDown = ({ date }: CountDownProps) => {
+export const CountDown = ({
+  date,
+  dateTimeStyle,
+  timerStyle,
+}: CountDownProps) => {
   const renderer = ({
     days,
     hours,
@@ -106,6 +112,7 @@ export const CountDown = ({ date }: CountDownProps) => {
           bottomText={dateString[1]}
           bottomIcon={Clock}
           flex="1"
+          {...dateTimeStyle}
         />
         <HStack
           flex="1"
@@ -125,6 +132,7 @@ export const CountDown = ({ date }: CountDownProps) => {
             background="cardBackground"
             px="6px"
             py="4px"
+            {...timerStyle}
           />
           <TimerBox
             isDisabled={completed}
@@ -134,6 +142,7 @@ export const CountDown = ({ date }: CountDownProps) => {
             background="cardBackground"
             px="6px"
             py="4px"
+            {...timerStyle}
           />
           <TimerBox
             isDisabled={completed}
@@ -143,6 +152,7 @@ export const CountDown = ({ date }: CountDownProps) => {
             background="cardBackground"
             px="6px"
             py="4px"
+            {...timerStyle}
           />
           <TimerBox
             isDisabled={completed}
@@ -152,6 +162,7 @@ export const CountDown = ({ date }: CountDownProps) => {
             background="cardBackground"
             px="6px"
             py="4px"
+            {...timerStyle}
           />
         </HStack>
       </HStack>
@@ -163,8 +174,6 @@ export const CountDown = ({ date }: CountDownProps) => {
     root: null,
   });
   const countDownRef = useRef<Countdown | null>(null);
-
-  console.log(countDownRef.current);
 
   useEffect(() => {
     if (isIntersecting) {

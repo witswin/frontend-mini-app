@@ -3,12 +3,17 @@ import { chakra, Text, VStack } from "@chakra-ui/react";
 import { EffectCoverflow } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MemoizedSwiperItem } from "../components/QuizItem";
+import { AnimatePresence } from "framer-motion";
+import { EnrolledCard } from "../components/EnrolledCard";
+import { useEnrolledModalProps } from "../hooks";
 
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
+  const { isOpen } = useEnrolledModalProps();
+
   return (
-    <VStack justifyContent="center" width="full">
+    <VStack overflow="hidden" position="relative" justifyContent="center" width="full">
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Text
         fontWeight="600"
@@ -45,6 +50,7 @@ export const QuizPLP = () => {
           </SwiperSlide>
         ))}
       </ChakraSwiper>
+      <AnimatePresence>{isOpen && <EnrolledCard />}</AnimatePresence>
     </VStack>
   );
 };

@@ -1,7 +1,12 @@
+import { EnrolledModalProvider } from "@/modules/quiz/context";
 import { QuizPLP } from "@/modules/quiz/page";
 
 const Index = () => {
-  return <QuizPLP />;
+  return (
+    <EnrolledModalProvider>
+      <QuizPLP />
+    </EnrolledModalProvider>
+  );
 };
 
 export default Index;
