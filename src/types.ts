@@ -21,4 +21,5 @@ export type quizCardInfo = {
 export type QuizCardProps = Partial<{
   quizCardInfo: Partial<quizCardInfo>;
   colored: boolean;
+  onOpen?: () => void;
 }> & { state: CARD_STATE };
