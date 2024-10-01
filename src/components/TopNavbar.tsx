@@ -30,12 +30,18 @@ export const TopNavbar = () => {
         <Image src={BgImage} alt="navbar background image" layout="fit" />
       </Box>
 
-      <HStack zIndex="docked" w="full" justifyContent="space-between" px="12px" pt='4px'>
+      <HStack
+        zIndex="docked"
+        w="full"
+        justifyContent="space-between"
+        px="12px"
+        pt="4px"
+      >
         <VStack>
           <HStack gap="2px">
             <TbHeart size={24} />
 
-            <Badge size="sm" variant="ghost">
+            <Badge size="sm" variant="glass">
               {"x "}
               {health}
             </Badge>
