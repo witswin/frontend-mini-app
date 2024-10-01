@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   return (
-    <VStack h="calc(100% - 106px)" w="full">
+    <VStack h="full" w="full">
       {children}
 
       <BottomNavbar />

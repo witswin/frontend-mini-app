@@ -101,5 +101,6 @@ const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
   );
 });
 
+HomeCard.displayName = "HomeCard";
 const MemoizedHomeInfoCard = memo(HomeCard);
 export { MemoizedHomeInfoCard as HomeCard };

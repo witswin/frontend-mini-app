@@ -30,14 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Wits</title>
       </Head>
       <ChakraProvider theme={baseTheme}>
-        <Container
-          minH="100vh"
-          h="100vh"
-          pb="8px"
-          pt="0"
-          maxWidth="412px"
-          px="16px"
-        >
+        <Container minH="100vh" pb="8px" maxWidth="412px" px="16px">
           <QueryClientProvider client={queryClient}>
             <Layout>
               <Component {...pageProps} />

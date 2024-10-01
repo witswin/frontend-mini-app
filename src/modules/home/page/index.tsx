@@ -6,7 +6,7 @@ import { TopNavbar } from "@/components/TopNavbar";
 import { useMemo, useState } from "react";
 
 export const Home = () => {
-  const [homeState, setHomeState] = useState(INFO_CARD_STATE.watch);
+  const [homeState, setHomeState] = useState(INFO_CARD_STATE.join);
 
   const infoCard = useMemo(() => {
     return {
