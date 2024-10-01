@@ -64,6 +64,7 @@ const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
       borderRadius="16px"
       gap="32px"
       justifyContent="center"
+      p="16px"
     >
       <VStack maxW="90%" gap="0">
         <ColorFullText

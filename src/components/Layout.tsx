@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 import { BottomNavbar } from "./BottomNavbar";
 import { ReactNode } from "react";
 
@@ -8,12 +8,10 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   return (
-    <>
-      <Box w="full" my="16px">
-        {children}
-      </Box>
+    <VStack h="calc(100% - 106px)" w="full">
+      {children}
 
       <BottomNavbar />
-    </>
+    </VStack>
   );
 };

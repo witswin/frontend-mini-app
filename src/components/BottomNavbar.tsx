@@ -44,7 +44,9 @@ export const BottomNavbar = () => {
       justifyContent="space-around"
       alignItems="center"
       bg="glassBackground"
-      position="relative"
+      position="fixed"
+      bottom="12px"
+      zIndex="sticky"
     >
       {routes.map((route) => {
         const isActive = router.pathname === route.href;

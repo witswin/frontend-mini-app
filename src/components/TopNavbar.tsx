@@ -26,17 +26,11 @@ export const TopNavbar = () => {
       alignItems="center"
       position="relative"
     >
-      <Box
-        position="absolute"
-        zIndex="base"
-        width="100%"
-        height="100%"
-        pt="10px"
-      >
-        <Image src={BgImage} alt="navbar background image" layout="fill" />
+      <Box position="absolute" zIndex="base" width="100%" height="100%">
+        <Image src={BgImage} alt="navbar background image" layout="fit" />
       </Box>
 
-      <HStack zIndex="docked" w="full" justifyContent="space-between" px="12px">
+      <HStack zIndex="docked" w="full" justifyContent="space-between" px="12px" pt='4px'>
         <VStack>
           <HStack gap="2px">
             <TbHeart size={24} />

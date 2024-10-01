@@ -6,12 +6,11 @@ import { TopNavbar } from "@/components/TopNavbar";
 
 export const Home = () => {
   return (
-    <VStack>
+    <VStack h="full" w="full" gap="16px">
       <TopNavbar />
-
       <HomeCard state={INFO_CARD_STATE.welcome} />
 
-      <QuizCard state={CARD_STATE.join} colored />
+      {/* <QuizCard state={CARD_STATE.join} colored /> */}
     </VStack>
   );
 };
