@@ -54,4 +54,6 @@ export const colors = {
     "radial-gradient(100% 100% at 50% 0%, rgba(239, 239, 238, 0.04) 0%, rgba(239, 239, 238, 0.1) 100%)",
   cardBackground: "rgba(32,32,51,0.6)",
   cardBg: "rgba(32,32,51,0.6)",
+  blackGradient:
+    "linear-gradient(2.73deg, #111125 23.73%, rgba(17, 17, 37, 0.4) 60.91%, rgba(17, 17, 37, 0) 97.72%)",
 };
