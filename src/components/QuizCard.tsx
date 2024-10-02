@@ -151,7 +151,7 @@ const QuizCard = forwardRef(
                 textTransform="capitalize"
                 px="6px"
                 variant="green"
-                size="md"
+                size="sm"
               >
                 Enrolled
               </Badge>
@@ -194,7 +194,10 @@ const QuizCard = forwardRef(
             width="100%"
             size="lg"
             variant={selectedCTA[cardState].variant}
-            onClick={selectedCTA[cardState].onClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              selectedCTA[cardState].onClick();
+            }}
             {...("icon" in selectedCTA[cardState] && {
               rightIcon: selectedCTA[cardState].icon,
             })}
