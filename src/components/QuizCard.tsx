@@ -151,7 +151,7 @@ const QuizCard = forwardRef(
                 textTransform="capitalize"
                 px="6px"
                 variant="green"
-                size="md"
+                size="sm"
               >
                 Enrolled
               </Badge>

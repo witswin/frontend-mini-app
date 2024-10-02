@@ -58,7 +58,7 @@ export const ArticleCard = ({
               }}
               rightIcon={<ArrowBadgeRight />}
               variant="ghost"
-              size="sm"
+              size="mini"
             >
               {header.CTAText}
             </Button>
