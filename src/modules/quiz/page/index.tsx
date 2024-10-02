@@ -13,7 +13,12 @@ export const QuizPLP = () => {
   const { isOpen } = useEnrolledModalProps();
 
   return (
-    <VStack overflow="hidden" position="relative" justifyContent="center" width="full">
+    <VStack
+      overflow="hidden"
+      position="relative"
+      justifyContent="center"
+      width="full"
+    >
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Text
         fontWeight="600"
@@ -46,7 +51,7 @@ export const QuizPLP = () => {
       >
         {[0, 1, 2, 3, 4].map((quiz) => (
           <SwiperSlide key={quiz} style={{ width: "fit-content" }}>
-            <MemoizedSwiperItem />
+            <MemoizedSwiperItem id={quiz} />
           </SwiperSlide>
         ))}
       </ChakraSwiper>
