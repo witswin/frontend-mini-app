@@ -4,17 +4,21 @@ import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 import { CARD_STATE } from "@/types";
 import { VStack } from "@chakra-ui/react";
 import { useEnrolledModalProps } from "../hooks";
+import { useRouter } from "next/router";
 
-const SwiperItem = () => {
+interface SwiperItemProps {
+  id: number;
+}
+const SwiperItem = ({ id }: SwiperItemProps) => {
   const { ref, isIntersecting } = useIntersectionObserver(false, {
     root: null,
     threshold: 1,
     rootMargin: "100% 0px 100% 0px",
   });
   const { onOpen } = useEnrolledModalProps();
-
+  const router = useRouter();
   return (
-    <VStack width="full">
+    <VStack onClick={() => router.push(`/quiz/${id}`)} width="full">
       <QuizCard
         onOpen={onOpen}
         ref={ref}
