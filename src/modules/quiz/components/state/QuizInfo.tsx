@@ -4,6 +4,7 @@ import { STATUS_ENROLL_VALUE } from "../../types";
 import { HintUnit, HourGlass, Question } from "@/components/Icons";
 import { useMemo } from "react";
 import { motion } from "framer-motion";
+import { useSelectedQuiz } from "../../hooks";
 
 interface ValueCardProps {
   title: string | number;
@@ -65,6 +66,9 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
 };
 
 export const QuizInfo = () => {
+  const selectedQuiz = useSelectedQuiz();
+  console.log(selectedQuiz);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -84,13 +88,16 @@ export const QuizInfo = () => {
         bg="var(--chakra-colors-glassBackground)"
         width="full"
       >
-        <QuizPrize prize={12546} unitPrize="usdt" />
+        <QuizPrize
+          prize={selectedQuiz?.prizeAmount}
+          unitPrize={selectedQuiz?.token}
+        />
       </Center>
       <Flex width="full" columnGap="12px">
         <ValueCard
           status={STATUS_ENROLL_VALUE.QUESTION}
           subTitle="Questions"
-          title="10"
+          title={selectedQuiz?.questions?.length}
         />
         <ValueCard
           status={STATUS_ENROLL_VALUE.TIME}
@@ -99,8 +106,8 @@ export const QuizInfo = () => {
         />
         <ValueCard
           status={STATUS_ENROLL_VALUE.HINT}
-          subTitle="50:50 Hint"
-          title="2"
+          subTitle={`${selectedQuiz?.hintCount} Hint`}
+          title={selectedQuiz?.hintCount}
         />
       </Flex>
     </motion.div>

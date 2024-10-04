@@ -1,26 +1,37 @@
-import { QuizPDPGlobalProvider } from "@/modules/quiz/pdp/context";
 import { Index } from "@/modules/quiz/pdp/page";
-import { QUIZ_STATE, quizPDP } from "@/modules/quiz/pdp/types";
+import { prefetchSSRData } from "@/utils";
+import {
+  dehydrate,
+  DehydratedState,
+  HydrationBoundary,
+} from "@tanstack/react-query";
+import { GetServerSidePropsContext } from "next";
 
-const QuizPDP = ({ data }: { data: quizPDP }) => {
+interface QuizPDPProps {
+  dehydratedState: DehydratedState;
+}
+const QuizPDP = ({ dehydratedState }: QuizPDPProps) => {
   return (
-    <QuizPDPGlobalProvider data={data}>
+    <HydrationBoundary state={dehydratedState}>
       <Index />
-    </QuizPDPGlobalProvider>
+    </HydrationBoundary>
   );
 };
 
 export default QuizPDP;
 
-export const getServerSideProps = () => {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { query } = ctx;
+  const quizId = query?.id as string;
+
+  const queryClient = await prefetchSSRData(
+    ["quiz", quizId],
+    `quiz/competitions/${quizId}/`
+  );
+
   return {
     props: {
-      data: {
-        isEnrolled: true,
-        quizState: QUIZ_STATE.started,
-        quizStartedDate: new Date().getTime() + 100000,
-        heart: 2,
-      },
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };

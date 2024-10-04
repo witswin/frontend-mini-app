@@ -6,11 +6,20 @@ import { MemoizedSwiperItem } from "../components/QuizItem";
 import { AnimatePresence } from "framer-motion";
 import { EnrolledCard } from "../components/EnrolledCard";
 import { useEnrolledModalProps } from "../hooks";
+import { axiosClient } from "@/configs/axios";
+import { useQuery } from "@tanstack/react-query";
+import { quizType } from "@/globalTypes";
 
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
   const { isOpen } = useEnrolledModalProps();
+
+  const { data } = useQuery({
+    queryKey: ["quizzes"],
+    queryFn: async () =>
+      await axiosClient.get("quiz/competitions/").then((res) => res.data),
+  });
 
   return (
     <VStack
@@ -49,9 +58,9 @@ export const QuizPLP = () => {
           slideShadows: false,
         }}
       >
-        {[0, 1, 2, 3, 4].map((quiz) => (
-          <SwiperSlide key={quiz} style={{ width: "fit-content" }}>
-            <MemoizedSwiperItem id={quiz} />
+        {data?.results?.map((quiz: quizType) => (
+          <SwiperSlide key={quiz?.id} style={{ width: "fit-content" }}>
+            <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}
       </ChakraSwiper>
