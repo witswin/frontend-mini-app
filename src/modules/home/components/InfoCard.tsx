@@ -3,10 +3,10 @@ import { baseTheme } from "@/theme";
 import { INFO_CARD_STATE } from "@/types";
 import { Button, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { forwardRef, memo, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { TbArrowBadgeRightFilled } from "react-icons/tb";
 
-const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
+const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
   const [cardState] = useState(state);
 
   const selectedCard: {
@@ -99,8 +99,7 @@ const HomeCard = forwardRef(({ state }: { state: INFO_CARD_STATE }) => {
       )}
     </VStack>
   );
-});
+};
 
-HomeCard.displayName = "HomeCard";
-const MemoizedHomeInfoCard = memo(HomeCard);
-export { MemoizedHomeInfoCard as HomeCard };
+const MemoizedInfoCard = memo(InfoCard);
+export { MemoizedInfoCard as InfoCard };
