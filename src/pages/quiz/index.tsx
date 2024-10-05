@@ -1,7 +1,4 @@
-import {
-  EnrolledModalProvider,
-  SelectedQuizProvider,
-} from "@/modules/quiz/context";
+import { EnrolledModalProvider } from "@/modules/quiz/context";
 import { QuizPLP } from "@/modules/quiz/page";
 import { prefetchSSRData } from "@/utils";
 import { Container } from "@chakra-ui/react";
@@ -24,11 +21,9 @@ const Index = ({ dehydratedState }: IndexProps) => {
         maxWidth="538px"
         px="16px"
       >
-        <SelectedQuizProvider>
-          <EnrolledModalProvider>
-            <QuizPLP />
-          </EnrolledModalProvider>
-        </SelectedQuizProvider>
+        <EnrolledModalProvider>
+          <QuizPLP />
+        </EnrolledModalProvider>
       </Container>
     </HydrationBoundary>
   );

@@ -10,6 +10,7 @@ import "swiper/css/effect-coverflow";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { CircularPattern } from "@/components/CircularPattern";
+import { SelectedQuizProvider } from "@/modules/quiz/context";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -32,7 +33,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={baseTheme}>
         <CircularPattern />
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <SelectedQuizProvider>
+            <Component {...pageProps} />
+          </SelectedQuizProvider>
         </QueryClientProvider>
       </ChakraProvider>
     </>

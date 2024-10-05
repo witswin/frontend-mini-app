@@ -1,5 +1,4 @@
 import { Card } from "@/components/Card";
-import { CountDown } from "@/components/CountDown";
 import { useSelectedQuizDispatch } from "@/modules/quiz/hooks";
 import { CARD_STATE, QuizCardProps } from "@/types";
 import {
@@ -13,6 +12,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 import {
   forwardRef,
   LegacyRef,
@@ -24,6 +24,10 @@ import {
 import { TbArrowBadgeRightFilled } from "react-icons/tb";
 // import { Swiper, SwiperSlide } from "swiper/react";
 
+const CountDown = dynamic(
+  () => import("@/components/CountDown").then((modules) => modules.CountDown),
+  { ssr: false }
+);
 interface QuizPrizeProps {
   prize: number;
   unitPrize: string;
@@ -170,7 +174,11 @@ const QuizCard = forwardRef(
               {quiz?.details}
             </Text>
           </VStack>
-          <CountDown date={new Date(quiz?.startAt).getTime()} />
+          <CountDown
+            date={
+              new Date(quiz?.startAt).getTime() || new Date().getTime() + 10000
+            }
+          />
           {/* {quiz?.values && (
             <ChakraSwiper
               slidesPerView="auto"

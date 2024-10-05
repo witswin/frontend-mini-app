@@ -1,7 +1,11 @@
-import { CountDown } from "@/components/CountDown";
 import { motion } from "framer-motion";
 import { useSelectedQuiz } from "../../hooks";
+import dynamic from "next/dynamic";
 
+const CountDown = dynamic(
+  () => import("@/components/CountDown").then((modules) => modules.CountDown),
+  { ssr: false }
+);
 export const QuizEnrolled = () => {
   const selectedQuiz = useSelectedQuiz();
 
