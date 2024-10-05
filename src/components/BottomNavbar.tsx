@@ -37,7 +37,6 @@ export const BottomNavbar = () => {
     <HStack
       height="90px"
       width="full"
-      maxWidth="380px"
       gap="8px"
       padding="8px"
       borderRadius="16px"

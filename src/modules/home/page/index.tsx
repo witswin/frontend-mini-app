@@ -44,7 +44,6 @@ export const Home = () => {
       <Box
         flex={1}
         w="full"
-        maxWidth="380px"
         h="full"
         display="flex"
         flexDir="column"

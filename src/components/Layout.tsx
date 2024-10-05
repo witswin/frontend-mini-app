@@ -21,7 +21,7 @@ export const Layout = ({ children }: LayoutProps) => {
       alignItems="center"
       gap="16px"
     >
-      <VStack flex={1} w="full" maxWidth="380px" h="full">
+      <VStack flex={1} w="full" h="full">
         {children}
       </VStack>
       <BottomNavbar />

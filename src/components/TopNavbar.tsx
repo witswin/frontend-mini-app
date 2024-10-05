@@ -22,13 +22,19 @@ export const TopNavbar = () => {
     <HStack
       h="90px"
       w="full"
-      maxWidth="380px"
       justifyContent="center"
       alignItems="center"
       position="relative"
+      // bg="rgba(4, 4, 26, 0.7)"
     >
       <Box position="absolute" zIndex="base" width="100%" height="100%">
-        <Image src={BgImage} alt="navbar background image" layout="fit" />
+        <Image
+          src={BgImage}
+          alt="navbar background image"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+        />
       </Box>
 
       <HStack

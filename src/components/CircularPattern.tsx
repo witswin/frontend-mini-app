@@ -32,7 +32,7 @@ export const CircularPattern = () => {
       <CircleShadow bottom="0" right='calc(50vw - 206px)' />
       <CircleShadow top="60vh" right='calc(50vw + 206px)' />
       <CircleShadow top="40vh" right='calc(50vw - 103px)' />
-      <CircleShadow top="120px" right='calc(50vw + 103px)' />
+      {/* <CircleShadow top="120px" right='calc(50vw + 103px)' /> */}
     </Box>
   );
 };
