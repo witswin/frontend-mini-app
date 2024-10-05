@@ -65,6 +65,7 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
       gap="32px"
       justifyContent="center"
       p="16px"
+      flex={1}
     >
       <VStack maxW="90%" gap="0">
         <ColorFullText

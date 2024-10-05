@@ -44,8 +44,7 @@ export const BottomNavbar = () => {
       justifyContent="space-around"
       alignItems="center"
       bg="glassBackground"
-      position="fixed"
-      bottom="12px"
+      position="relative"
       zIndex="sticky"
     >
       {routes.map((route) => {

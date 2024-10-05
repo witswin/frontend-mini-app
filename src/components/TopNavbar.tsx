@@ -22,6 +22,7 @@ export const TopNavbar = () => {
     <HStack
       h="90px"
       w="full"
+      maxWidth="380px"
       justifyContent="center"
       alignItems="center"
       position="relative"

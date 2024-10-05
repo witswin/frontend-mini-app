@@ -1,6 +1,6 @@
 import { QuizCard } from "@/components/QuizCard";
 import { CARD_STATE, INFO_CARD_STATE } from "@/types";
-import { VStack } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
 import { TopNavbar } from "@/components/TopNavbar";
 import { useMemo, useState } from "react";
 import { InfoCard } from "../components/InfoCard";
@@ -39,9 +39,23 @@ export const Home = () => {
   }, []);
 
   return (
-    <VStack h="full" w="full" gap="16px">
+    <VStack flex={1} h="full" w="full" gap="16px">
       <TopNavbar />
-      {infoCard[homeState]}
+      <Box
+        flex={1}
+        w="full"
+        maxWidth="380px"
+        h="full"
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        gap="16px"
+        position="relative"
+        zIndex={1}
+      >
+        {infoCard[homeState]}
+      </Box>
     </VStack>
   );
 };
