@@ -1,5 +1,5 @@
 import { Box, Button, HStack, Img, Text, VStack } from "@chakra-ui/react";
-import { useEnrolledModalProps } from "../hooks";
+import { useEnrolledModalProps, useSelectedQuiz } from "../hooks";
 import { CloseIcon } from "@chakra-ui/icons";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,6 +10,7 @@ import { QuizEnrolled } from "./state/QuizEnrolled";
 
 export const EnrolledCard = () => {
   const { onClose } = useEnrolledModalProps();
+  const selectedQuiz = useSelectedQuiz();
 
   const [enrollCardState, setEnrollCardState] = useState(
     ENROLL_STATUS.quizInfo
@@ -102,7 +103,7 @@ export const EnrolledCard = () => {
             color="gray.0"
             lineHeight="28px"
             maxWidth="199px"
-            mx='auto'
+            mx="auto"
           >
             {stateTitle[enrollCardState]}
           </Text>
@@ -115,7 +116,13 @@ export const EnrolledCard = () => {
             top="23px"
           />
         </HStack>
-        <Img mt="8px" rounded="full" src="" alt="" boxSize="106px" />
+        <Img
+          mt="8px"
+          rounded="full"
+          src={selectedQuiz?.image}
+          boxSize="106px"
+          alt={selectedQuiz?.title}
+        />
         <VStack width="full">
           <Text
             color="gray.0"
@@ -125,10 +132,10 @@ export const EnrolledCard = () => {
             width="full"
             textAlign="center"
           >
-            Optimism Quiz Tap
+            {selectedQuiz?.title}
           </Text>
           <Text color="gray.60" fontSize="md" width="full" textAlign="center">
-            Get ready for a fun ride into the future
+            {selectedQuiz?.details}
           </Text>
         </VStack>
         <AnimatePresence>{stateComponents[enrollCardState]}</AnimatePresence>

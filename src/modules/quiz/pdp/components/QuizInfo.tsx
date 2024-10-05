@@ -13,11 +13,14 @@ import {
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ArticleCard } from "../../components/ArticleCard";
-import { useQuizPDPGlobalInfo } from "../hooks";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { QUIZ_STATE } from "../types";
 import { TbArrowBadgeRightFilled, TbLogout } from "react-icons/tb";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { axiosClient } from "@/configs/axios";
+import { quizType } from "@/globalTypes";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -25,8 +28,19 @@ const CountDown = dynamic(
 );
 const ChakraSwiper = chakra(Swiper);
 export const QuizInfo = () => {
-  const { quizStartedDate, quizState, isEnrolled, heart } =
-    useQuizPDPGlobalInfo();
+  const isEnrolled = true;
+  const heart = 3;
+
+  const { query } = useRouter();
+  const { data } = useQuery<quizType>({
+    queryKey: ["quiz", query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get(`quiz/competitions/${query?.id}/`)
+        .then((res) => res.data),
+  });
+
+  console.log({ data });
 
   const CTAButton = useMemo(
     () => ({
@@ -103,8 +117,8 @@ export const QuizInfo = () => {
               <Box position="relative">
                 <Image
                   style={{ borderRadius: "50%" }}
-                  src=""
-                  alt="Quiz"
+                  src={data?.image}
+                  alt={data?.title}
                   width={80}
                   height={80}
                 />
@@ -123,7 +137,7 @@ export const QuizInfo = () => {
                 )}
               </Box>
               <VStack alignItems="flex-end" rowGap="0">
-                <QuizPrize prize={123549} unitPrize="usdt" />
+                <QuizPrize prize={data?.prizeAmount} unitPrize={data?.token} />
                 <Text
                   fontSize="sm"
                   lineHeight="20px"
@@ -142,10 +156,10 @@ export const QuizInfo = () => {
                 fontFamily="kanit"
                 lineHeight="28px"
               >
-                Optimism Quiz Tap
+                {data?.title}
               </Text>
               <Text fontSize="md" lineHeight="22px" color="gray.60">
-                Get ready for a fun ride into the future
+                {data?.details}
               </Text>
               <Text
                 fontSize="xs"
@@ -153,10 +167,10 @@ export const QuizInfo = () => {
                 lineHeight="16px"
                 color="gray.100"
               >
-                1,398 / 1,400 people enrolled
+                {data?.participantsCount} / 1,400 people enrolled
               </Text>
             </VStack>
-            <CountDown date={quizStartedDate} />
+            <CountDown date={new Date(data?.startAt).getTime()} />
             {isEnrolled ? (
               <Box width="full" position="relative" zIndex={0}>
                 <Button variant="gray" width="full" leftIcon={<TbLogout />}>
@@ -209,7 +223,7 @@ export const QuizInfo = () => {
         width="full"
         maxW="538px"
       >
-        {CTAButton[quizState]}
+        {CTAButton["lobby"]}
       </Box>
     </>
   );
