@@ -3,7 +3,7 @@ export const Button = {
     fontFamily: "Montserrat",
   },
   sizes: {
-    sm: {
+    mini: {
       fontSize: "sm",
       fontWeight: "600",
       lineHeight: "20px",
@@ -13,18 +13,28 @@ export const Button = {
         borderRadius: "8px",
       },
     },
-    md: {
-      fontSize: "15px",
+    sm: {
+      fontSize: "md",
       fontWeight: "600",
       lineHeight: "22px",
-      borderRadius: "12px",
+      borderRadius: "50%",
       _before: {
-        borderRadius: "12px",
+        borderRadius: "50%",
+      },
+      height: "38px",
+    },
+    md: {
+      fontSize: "md",
+      fontWeight: "600",
+      lineHeight: "22px",
+      borderRadius: "10px",
+      _before: {
+        borderRadius: "10px",
       },
       height: "42px",
     },
     lg: {
-      fontSize: "17px",
+      fontSize: "xl",
       fontWeight: "600",
       lineHeight: "26px",
       borderRadius: "12px",
@@ -51,6 +61,43 @@ export const Button = {
         background: "var(--chakra-colors-primaryRadial)",
         zIndex: -1,
       },
+      _focus: {
+        bg: "glassBackground",
+        border: "1px solid",
+        borderColor: "blue",
+        boxShadow:
+          "0px 1px 0px 0px var(--chakra-colors-cyan), 0px 0px 0px 0px #6E81EE52",
+        _before: {
+          display: "none",
+        },
+      },
+      _disabled: {
+        boxShadow: "0px 2px 0px 0px var(--chakra-colors-cyan)",
+        backgroundImage: "glassBackground",
+        opacity: 0.4,
+        _before: {
+          content: "''",
+          position: "absolute",
+          top: "-1px",
+          left: "-1px",
+          right: "-1px",
+          height: "calc(100% + 3px)",
+          width: "calc(100% + 2px)",
+          background: "var(--chakra-colors-primaryRadial)",
+          opacity: 0.4,
+          zIndex: -1,
+        },
+      },
+      _hover: {
+        bg: "glassBackground",
+        border: "1px solid",
+        borderColor: "blue",
+        boxShadow:
+          "0px 1px 0px 0px var(--chakra-colors-cyan), 0px 0px 0px 0px #6E81EE52",
+        _before: {
+          display: "none",
+        },
+      },
     },
     solid: {
       bg: "var(--chakra-colors-primaryRadial)",
@@ -66,28 +113,69 @@ export const Button = {
         background: "var(--chakra-colors-cyan)",
         zIndex: -1,
       },
+      _hover: {
+        backgroundColor: "blue",
+      },
+      _focus: {
+        backgroundColor: "blue",
+      },
+      _disabled: {
+        boxShadow: "0px 2px 0px 0px var(--chakra-colors-cyan)",
+        opacity: "0.4",
+        position: "relative",
+        bg: "var(--chakra-colors-primaryRadial)",
+
+        _before: {
+          content: "''",
+          position: "absolute",
+          top: "-0px",
+          left: "-1px",
+          right: "-1px",
+          height: "calc(100% + 2px)",
+          width: "calc(100% + 2px)",
+          background: "var(--chakra-colors-primaryRadial)",
+          zIndex: -1,
+          opacity: 0.4,
+        },
+      },
     },
     gray: {
       backgroundColor: "gray.500",
       color: "gray.20",
-      position: "relative",
-      border: "none",
-      _before: {
-        content: "''",
-        position: "absolute",
-        top: "-1px",
-        left: "-1px",
-        right: "-1px",
-        height: "calc(100% + 3px)",
-        width: "calc(100% + 2px)",
-        background: "gray.400",
-        zIndex: -1,
+      borderStyle: "solid",
+      borderTopWidth: "1px",
+      borderRightWidth: "1px",
+      borderLeftWidth: "1px",
+      borderBottomWidth: "2px",
+      borderColor: "gray.400",
+      _hover: {
+        bg: "gray.400",
+      },
+      _focus: {
+        bg: "gray.400",
+      },
+      _disabled: {
+        backgroundColor: "gray.700",
+        boxShadow: "0px 2px 0px 0px var(--chakra-colors-gray-400)",
       },
     },
     ghost: {
       background: "transparent",
       backgroundImage: "var(--chakra-colors-primaryLinear)",
       backgroundClip: "text",
+      _hover: {
+        color: "blue",
+        background: "transparent",
+      },
+      _focus: {
+        color: "blue",
+        background: "transparent",
+      },
+      _disabled: {
+        background: "transparent",
+        backgroundImage: "var(--chakra-colors-primaryLinear)",
+        backgroundClip: "text",
+      },
     },
   },
 };

@@ -1,17 +1,18 @@
 import { Card } from "@/components/Card";
-import { CountDown } from "@/components/CountDown";
+import { useSelectedQuizDispatch } from "@/modules/quiz/hooks";
 import { CARD_STATE, QuizCardProps } from "@/types";
 import {
-  Badge,
+  // Badge,
   Box,
   Button,
-  chakra,
+  // chakra,
   HStack,
   Img,
-  Tag,
+  // Tag,
   Text,
   VStack,
 } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 import {
   forwardRef,
   LegacyRef,
@@ -21,8 +22,12 @@ import {
   useState,
 } from "react";
 import { TbArrowBadgeRightFilled } from "react-icons/tb";
-import { Swiper, SwiperSlide } from "swiper/react";
+// import { Swiper, SwiperSlide } from "swiper/react";
 
+const CountDown = dynamic(
+  () => import("@/components/CountDown").then((modules) => modules.CountDown),
+  { ssr: false }
+);
 interface QuizPrizeProps {
   prize: number;
   unitPrize: string;
@@ -41,20 +46,21 @@ export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
         alignItems="center"
       >
         <Text lineHeight="36px" fontFamily="Kanit" fontSize="5xl">
-          {prize.toFixed(2)}
+          {prize?.toFixed(2)}
         </Text>
-        <Text fontSize="xs">{unitPrize.toUpperCase()}</Text>
+        <Text fontSize="xs">{unitPrize?.toUpperCase()}</Text>
       </Text>
     </HStack>
   );
 };
 
-const ChakraSwiper = chakra(Swiper);
+// const ChakraSwiper = chakra(Swiper);
 const QuizCard = forwardRef(
   (
-    { state, quizCardInfo, colored, onOpen }: QuizCardProps,
+    { state, quiz, colored, onOpen }: QuizCardProps,
     ref: LegacyRef<HTMLDivElement>
   ) => {
+    const selectedQuizDispatch = useSelectedQuizDispatch();
     const [cardState] = useState(state);
 
     const selectedCTA: {
@@ -102,6 +108,7 @@ const QuizCard = forwardRef(
           variant: "solid",
           text: "Enroll",
           onClick: () => {
+            selectedQuizDispatch(quiz);
             onOpen();
           },
         },
@@ -111,19 +118,19 @@ const QuizCard = forwardRef(
     return (
       <VStack ref={ref} width="full" maxW="320px">
         <Card colored={colored}>
-          {quizCardInfo?.prize &&
-            quizCardInfo?.unitPrize &&
-            quizCardInfo?.prizeText && (
-              <VStack mb="8px" rowGap="0">
-                <QuizPrize
-                  prize={quizCardInfo.prize}
-                  unitPrize={quizCardInfo.unitPrize}
-                />
-                <Text color="gray.60" fontWeight="600" fontSize="sm">
-                  {quizCardInfo.prizeText}
-                </Text>
-              </VStack>
-            )}
+          {quiz?.prizeAmount && quiz?.token && quiz?.details && (
+            <VStack mb="8px" rowGap="0">
+              <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
+              <Text
+                textAlign="center"
+                color="gray.60"
+                fontWeight="600"
+                fontSize="sm"
+              >
+                {quiz.details}
+              </Text>
+            </VStack>
+          )}
           <Box
             _before={{
               content: "''",
@@ -133,16 +140,11 @@ const QuizCard = forwardRef(
               bg: "glassBackground",
             }}
             rounded="full"
-            boxSize={quizCardInfo ? "124px" : "80px"}
+            boxSize={quiz ? "124px" : "80px"}
             position="relative"
           >
-            <Img
-              rounded="full"
-              width="full"
-              height="full"
-              src="/common/default-avatar.png"
-            />
-            {quizCardInfo?.isEnrolled && (
+            <Img rounded="full" width="full" height="full" src={quiz?.image} />
+            {/* {quiz?.isEnrolled && (
               <Badge
                 position="absolute"
                 bottom="12px"
@@ -151,11 +153,11 @@ const QuizCard = forwardRef(
                 textTransform="capitalize"
                 px="6px"
                 variant="green"
-                size="md"
+                size="sm"
               >
                 Enrolled
               </Badge>
-            )}
+            )} */}
           </Box>
           <VStack rowGap="4px" width="full">
             <Text
@@ -166,14 +168,18 @@ const QuizCard = forwardRef(
               mx="auto"
               textAlign="center"
             >
-              Optimism Quiz Tap
+              {quiz?.title}
             </Text>
             <Text fontSize="md" color="gray.60" mx="auto" textAlign="center">
-              Get ready for a fun ride into the future
+              {quiz?.details}
             </Text>
           </VStack>
-          <CountDown date={new Date().getTime() + 1000000} />
-          {quizCardInfo?.values && (
+          <CountDown
+            date={
+              new Date(quiz?.startAt).getTime() || new Date().getTime() + 10000
+            }
+          />
+          {/* {quiz?.values && (
             <ChakraSwiper
               slidesPerView="auto"
               spaceBetween={8}
@@ -181,7 +187,7 @@ const QuizCard = forwardRef(
               px="2px"
               width="full"
             >
-              {quizCardInfo?.values.map((value) => (
+              {quiz?.values.map((value) => (
                 <SwiperSlide style={{ width: "fit-content" }} key={value.id}>
                   <Tag size="sm" variant="colored">
                     {value.text}
@@ -189,22 +195,24 @@ const QuizCard = forwardRef(
                 </SwiperSlide>
               ))}
             </ChakraSwiper>
-          )}
+          )} */}
           <Button
             width="100%"
             size="lg"
             variant={selectedCTA[cardState].variant}
-            onClick={selectedCTA[cardState].onClick}
+            onClick={(e) => {
+              e.stopPropagation();
+              selectedCTA[cardState].onClick();
+            }}
             {...("icon" in selectedCTA[cardState] && {
               rightIcon: selectedCTA[cardState].icon,
             })}
           >
             {selectedCTA[cardState].text}
           </Button>
-          {quizCardInfo?.capacity && quizCardInfo?.enrolledNumber && (
+          {quiz?.participantsCount && quiz?.userProfile && (
             <Text fontSize="xs" fontWeight="600" color="gray.100">
-              {quizCardInfo?.enrolledNumber} / {quizCardInfo?.capacity} people
-              enrolled
+              {quiz?.userProfile} / {quiz?.participantsCount} people enrolled
             </Text>
           )}
         </Card>

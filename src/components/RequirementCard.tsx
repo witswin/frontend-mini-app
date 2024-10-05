@@ -33,7 +33,7 @@ export const RequirementCard = ({
           <TbCheck />
         </Badge>
       ) : (
-        <Button onClick={onClick} size="sm" variant="outline">
+        <Button onClick={onClick} size="mini" variant="outline">
           Check
         </Button>
       )}
