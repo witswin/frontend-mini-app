@@ -1,6 +1,13 @@
-import { Badge, Box, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  HStack,
+  Text,
+  useMediaQuery,
+  VStack,
+} from "@chakra-ui/react";
 import { TbHeart, TbWallet } from "react-icons/tb";
-import BgImage from "@/assets/BgImage.svg";
+import HeaderBg from "@/assets/HeaderBgImage.svg";
 import Logo from "@/assets/Logo.svg";
 import Image from "next/image";
 
@@ -15,25 +22,25 @@ const WalletStatus = (isConnected: boolean = false) => (
 );
 
 export const TopNavbar = () => {
+  const [isLargerThan500] = useMediaQuery("(min-width: 500px)");
   const health = 3;
   const isConnected = true;
 
   return (
     <HStack
-      h="90px"
+      h={isLargerThan500 ? "120px" : "90px"}
       w="full"
       justifyContent="center"
       alignItems="center"
       position="relative"
-      // bg="rgba(4, 4, 26, 0.7)"
+      mt="-10px"
+      px={isLargerThan500 ? "16px" : "0"}
     >
       <Box position="absolute" zIndex="base" width="100%" height="100%">
         <Image
-          src={BgImage}
+          src={HeaderBg}
           alt="navbar background image"
-          layout="fill"
-          objectFit="cover"
-          objectPosition="center"
+          layout="responsive"
         />
       </Box>
 
