@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   chakra,
-  Container,
   HStack,
   Tag,
   Text,
@@ -98,120 +97,113 @@ export const QuizInfo = () => {
 
   return (
     <>
-      <Container
-        overflow="hidden"
-        minH="100vh"
-        py="8px"
-        maxWidth="538px"
-        px="16px"
-      >
-        <VStack position="relative" rowGap="16px" width="full">
-          <VStack
-            bg="glassBackground"
-            borderRadius="16px"
-            p="16px"
-            rowGap="16px"
-            width="full"
-          >
-            <HStack justifyContent="space-between" width="full">
-              <Box position="relative">
-                <Image
-                  style={{ borderRadius: "50%" }}
-                  src={data?.image}
-                  alt={data?.title}
-                  width={80}
-                  height={80}
-                />
-                {isEnrolled && (
-                  <Badge
-                    left="50%"
-                    transform="translateX(-50%)"
-                    variant="green"
-                    position="absolute"
-                    bottom="0"
-                    size="sm"
-                    textTransform="capitalize"
-                  >
-                    Enrolled
-                  </Badge>
-                )}
-              </Box>
-              <VStack alignItems="flex-end" rowGap="0">
-                <QuizPrize prize={data?.prizeAmount} unitPrize={data?.token} />
-                <Text
-                  fontSize="sm"
-                  lineHeight="20px"
-                  fontWeight="600"
-                  color="gray.60"
+      <VStack position="relative" rowGap="16px" width="full">
+        <VStack
+          bg="glassBackground"
+          borderRadius="16px"
+          p="16px"
+          rowGap="16px"
+          width="full"
+        >
+          <HStack justifyContent="space-between" width="full">
+            <Box position="relative">
+              <Image
+                style={{ borderRadius: "50%" }}
+                src={data?.image}
+                alt={data?.title}
+                width={80}
+                height={80}
+              />
+              {isEnrolled && (
+                <Badge
+                  left="50%"
+                  transform="translateX(-50%)"
+                  variant="green"
+                  position="absolute"
+                  bottom="0"
+                  size="sm"
+                  textTransform="capitalize"
                 >
-                  Yours to Win!
-                </Text>
-              </VStack>
-            </HStack>
-            <VStack width="full" alignItems="flex-start" rowGap="4px">
+                  Enrolled
+                </Badge>
+              )}
+            </Box>
+            <VStack alignItems="flex-end" rowGap="0">
+              <QuizPrize prize={data?.prizeAmount} unitPrize={data?.token} />
               <Text
-                color="gray.0"
-                fontSize="2xl"
+                fontSize="sm"
+                lineHeight="20px"
                 fontWeight="600"
-                fontFamily="kanit"
-                lineHeight="28px"
+                color="gray.60"
               >
-                {data?.title}
-              </Text>
-              <Text fontSize="md" lineHeight="22px" color="gray.60">
-                {data?.details}
-              </Text>
-              <Text
-                fontSize="xs"
-                fontWeight="600"
-                lineHeight="16px"
-                color="gray.100"
-              >
-                {data?.participantsCount} / 1,400 people enrolled
+                Yours to Win!
               </Text>
             </VStack>
-            <CountDown date={new Date(data?.startAt).getTime()} />
-            {isEnrolled ? (
-              <Box width="full" position="relative" zIndex={0}>
-                <Button variant="gray" width="full" leftIcon={<TbLogout />}>
-                  Cancel Enrollment
-                </Button>
-              </Box>
-            ) : (
-              <ChakraSwiper
-                slidesPerView="auto"
-                spaceBetween={8}
-                py="2px"
-                px="2px"
-                width="full"
-              >
-                {[
-                  "Aura Authentication",
-                  "Unitap Pass Owner",
-                  "sadfkhasoidhasoiudg",
-                  "dhasuuid uw",
-                  "asjdhasu",
-                ].map((value) => (
-                  <SwiperSlide style={{ width: "fit-content" }} key={value}>
-                    <Tag size="sm" variant="gray">
-                      {value}
-                    </Tag>
-                  </SwiperSlide>
-                ))}
-              </ChakraSwiper>
-            )}
+          </HStack>
+          <VStack width="full" alignItems="flex-start" rowGap="4px">
+            <Text
+              color="gray.0"
+              fontSize="2xl"
+              fontWeight="600"
+              fontFamily="kanit"
+              lineHeight="28px"
+            >
+              {data?.title}
+            </Text>
+            <Text fontSize="md" lineHeight="22px" color="gray.60">
+              {data?.details}
+            </Text>
+            <Text
+              fontSize="xs"
+              fontWeight="600"
+              lineHeight="16px"
+              color="gray.100"
+            >
+              {data?.participantsCount} / 1,400 people enrolled
+            </Text>
           </VStack>
-          <ArticleCard
-            articleTitle="salam"
-            content={`asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash
+          <CountDown date={new Date(data?.startAt).getTime()} />
+          {isEnrolled ? (
+            <Box width="full" position="relative" zIndex={0}>
+              <Button variant="gray" width="full" leftIcon={<TbLogout />}>
+                Cancel Enrollment
+              </Button>
+            </Box>
+          ) : (
+            <ChakraSwiper
+              slidesPerView="auto"
+              spaceBetween={8}
+              py="2px"
+              px="2px"
+              width="full"
+            >
+              {[
+                "Aura Authentication",
+                "Unitap Pass Owner",
+                "sadfkhasoidhasoiudg",
+                "dhasuuid uw",
+                "asjdhasu",
+              ].map((value) => (
+                <SwiperSlide style={{ width: "fit-content" }} key={value}>
+                  <Tag size="sm" variant="gray">
+                    {value}
+                  </Tag>
+                </SwiperSlide>
+              ))}
+            </ChakraSwiper>
+          )}
+        </VStack>
+        <ArticleCard
+          articleTitle="salam"
+          content={`asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash
           dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh
           asidhiasofhcjxzcvb`}
-            banner=""
-            link="www.google.com"
-            linkText="google"
-          />
-        </VStack>
-      </Container>
+          banner=""
+          link="www.google.com"
+          linkText="google"
+        />
+      </VStack>
+
       <Box
         px="16px"
         py="10px"
