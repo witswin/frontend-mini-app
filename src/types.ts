@@ -12,6 +12,7 @@ export enum CARD_STATE {
   "lobby" = "lobby",
   "join" = "join",
   "watch" = "watch",
+  "enroll" = "enroll",
 }
 
 // export type quizCardInfo = {

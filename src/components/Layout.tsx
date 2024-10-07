@@ -1,4 +1,4 @@
-import { Box, Container, VStack } from "@chakra-ui/react";
+import { Container, VStack } from "@chakra-ui/react";
 import { BottomNavbar } from "./BottomNavbar";
 import { ReactNode } from "react";
 

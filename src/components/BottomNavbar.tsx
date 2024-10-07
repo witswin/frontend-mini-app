@@ -50,8 +50,8 @@ export const BottomNavbar = () => {
         const isActive = router.pathname === route.href;
 
         return (
-          <Link href={route.href}>
-            <VStack key={route.id}>
+          <Link key={route.id} href={route.href}>
+            <VStack>
               {route.icon(isActive)}
 
               {isActive ? (
