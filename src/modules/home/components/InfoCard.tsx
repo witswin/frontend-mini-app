@@ -11,7 +11,6 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
 
   const selectedCard: {
     [key in INFO_CARD_STATE]: {
-      id: number;
       largeTitle: string;
       subHeadline: string;
       btnObject?: {
@@ -23,7 +22,6 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
   } = useMemo(
     () => ({
       [INFO_CARD_STATE.welcome]: {
-        id: 3,
         largeTitle: "Welcome to Wits!",
         subHeadline: "Ready to challenge your brain\n and earn rewards?",
         btnObject: {
@@ -33,22 +31,18 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
         },
       },
       [INFO_CARD_STATE.join]: {
-        id: 3,
         largeTitle: "Quiz time!",
         subHeadline: "Game begins in 8 sec... Ready yourself!",
       },
       [INFO_CARD_STATE.lobby]: {
-        id: 2,
         largeTitle: "Ready to Win?",
         subHeadline: "Ready to show what you know?",
       },
       [INFO_CARD_STATE.resource]: {
-        id: 1,
         largeTitle: "You're in the game",
         subHeadline: "Study up and get ready to win!",
       },
       [INFO_CARD_STATE.watch]: {
-        id: 4,
         largeTitle: "You're Late!",
         subHeadline: "But don’t worry,\nenjoy watching and learning!",
       },

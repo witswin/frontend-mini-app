@@ -8,7 +8,7 @@ import { InfoCard } from "../components/InfoCard";
 export const Home = () => {
   const [
     homeState,
-    // setHomeState
+    //setHomeState
   ] = useState(INFO_CARD_STATE.join);
 
   const infoCard = useMemo(() => {

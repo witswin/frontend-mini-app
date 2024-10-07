@@ -22,24 +22,24 @@ const WalletStatus = (isConnected: boolean = false) => (
 );
 
 export const TopNavbar = () => {
-  const [isLargerThan500] = useMediaQuery("(min-width: 500px)");
+  const [isLarge] = useMediaQuery("(min-width: 500px)");
   const health = 3;
   const isConnected = true;
 
   return (
     <HStack
-      h={isLargerThan500 ? "120px" : "90px"}
+      h={isLarge ? "120px" : "90px"}
       w="full"
       justifyContent="center"
       alignItems="center"
       position="relative"
       mt="-10px"
-      px={isLargerThan500 ? "16px" : "0"}
+      px={isLarge ? "16px" : "0"}
     >
       <Box position="absolute" zIndex="base" width="100%" height="100%">
         <Image
           src={HeaderBg}
-          alt="navbar background image"
+          alt="navbar background illustration."
           layout="responsive"
         />
       </Box>
@@ -66,7 +66,7 @@ export const TopNavbar = () => {
         </VStack>
 
         <VStack>
-          <Image src={Logo} alt="logo" />
+          <Image src={Logo} alt="wits" />
         </VStack>
 
         <VStack mr="4px">
