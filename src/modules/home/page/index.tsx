@@ -55,6 +55,7 @@ export const Home = () => {
         gap="16px"
         position="relative"
         zIndex={1}
+        mb='16px'
       >
         {infoCard[homeState]}
       </Box>

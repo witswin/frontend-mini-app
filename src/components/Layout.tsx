@@ -19,7 +19,7 @@ export const Layout = ({ children }: LayoutProps) => {
       display="flex"
       flexDir="column"
       alignItems="center"
-      gap="16px"
+      // gap="16px"
     >
       <VStack flex={1} w="full" h="full">
         {children}

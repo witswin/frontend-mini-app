@@ -1,42 +1,26 @@
 import { ColorFullText } from "@/components/ColorFullText";
 import { ArticleCard } from "@/modules/quiz/components/ArticleCard";
-import { Container, Stack, Text, VStack } from "@chakra-ui/react";
-
-// header?: {
-//     img: string;
-//     title: string;
-//     CTAText: string;
-//     CTAAction: () => void;
-//   };
-//   banner: string;
-//   link: string;
-//   linkText: string;
-//   articleTitle: string;
-//   content: string;
-// }
+import { Text, VStack } from "@chakra-ui/react";
 
 export const Learn = () => {
   const Articles = [
     {
       articleTitle: "salam",
-      content:
-        "asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh asidhiasofhcjxzcvb",
+      content: "asdjkhasjdhas dasidh",
       banner: "",
       link: "www.google.com",
       linkText: "google",
     },
     {
       articleTitle: "salam",
-      content:
-        "asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh asidhiasofhcjxzcvb",
+      content: "asdjkhasjdhas dasidh ioasdh ioasdh ",
       banner: "",
       link: "www.google.com",
       linkText: "google",
     },
     {
       articleTitle: "salam",
-      content:
-        "asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh asidhiasofhcjxzcvb",
+      content: "asdj",
       banner: "",
       link: "www.google.com",
       linkText: "google",
@@ -46,26 +30,30 @@ export const Learn = () => {
     <VStack
       overflow="hidden"
       position="relative"
-      justifyContent="center"
+      justifyContent="start"
       width="full"
+      h="calc(100vh - 106px)"
+      pb="0"
+      display="flex"
+      flexDir="column"
     >
-      <ColorFullText textContent="Learn Space" fontSize="5xl" />
-      <Text
-        fontWeight="600"
-        color="gray.60"
-        fontSize="md"
-        textAlign="center"
-        mx="auto"
-        mt="4px"
-        mb="24px"
-      >
-        Reading the resources increases your chances of winning
-      </Text>
+      <VStack w="full" h="132px" justify="center">
+        <ColorFullText textContent="Learn Space" fontSize="5xl" />
+        <Text
+          fontWeight="600"
+          color="gray.60"
+          fontSize="md"
+          textAlign="center"
+          mx="auto"
+          mt="4px"
+          mb="24px"
+        >
+          Reading the resources increases your chances of winning
+        </Text>
+      </VStack>
 
       <VStack
         w="full"
-        // bg="green"
-        h="600px"
         overflowX="hidden"
         css={{
           "&::-webkit-scrollbar": {
@@ -76,27 +64,17 @@ export const Learn = () => {
         }}
         gap="16px"
         p="2px"
-        position="relative"
         zIndex={1}
       >
         {Articles.map((article) => (
           <ArticleCard
             articleTitle={article.articleTitle}
             banner={article.banner}
-            content={article.banner}
+            content={article.content}
             link={article.link}
             linkText={article.linkText}
           />
         ))}
-        <ArticleCard
-          articleTitle="salam"
-          content={`asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash
-          dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh
-          asidhiasofhcjxzcvb`}
-          banner=""
-          link="www.google.com"
-          linkText="google"
-        />
       </VStack>
     </VStack>
   );
