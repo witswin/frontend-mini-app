@@ -116,8 +116,8 @@ const QuizCard = forwardRef(
       []
     );
     return (
-      <VStack ref={ref} width="full" maxW="320px">
-        <Card colored={colored}>
+      <VStack height="full" alignItems="stretch" ref={ref} width="full">
+        <Card maxH="336px" alignItems="stretch" height="full" colored={colored}>
           {quiz?.prizeAmount && quiz?.token && quiz?.details && (
             <VStack mb="8px" rowGap="0">
               <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />

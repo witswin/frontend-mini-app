@@ -1,4 +1,4 @@
-import { Container, VStack } from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 import { BottomNavbar } from "./BottomNavbar";
 import { ReactNode } from "react";
 
@@ -9,21 +9,20 @@ interface LayoutProps {
 export const Layout = ({ children }: LayoutProps) => {
   return (
     <Container
-      overflow="hidden"
-      minH="100vh"
       py="8px"
       maxWidth="538px"
-      px="16px"
       zIndex={1}
-      position={"relative"}
-      display="flex"
-      flexDir="column"
-      alignItems="center"
       gap="16px"
+      display="flex"
+      height="full"
+      px="0"
+      minH="calc(100vh - 122px)"
+      justifyContent="stretch"
+      alignItems="stretch"
     >
-      <VStack flex={1} w="full" h="full">
+      <Box px="16px" width="full">
         {children}
-      </VStack>
+      </Box>
       <BottomNavbar />
     </Container>
   );
