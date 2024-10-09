@@ -11,36 +11,45 @@ export const Learn = () => {
       banner: "",
       link: "www.google.com",
       linkText: "google",
+      header: {
+        title: "Optimism Quiz Tap",
+        img: "",
+        CTAText: "Enter Quiz",
+        CTAAction: () => {},
+      },
     },
     {
       id: 1,
       articleTitle: "salam",
-      content: "asdjkhasjdhas dasidh ioasdh ioasdh ",
+      content: "asdjkhasjdhas dasidh",
       banner: "",
       link: "www.google.com",
       linkText: "google",
+      header: {
+        title: "Optimism Quiz Tap",
+        img: "",
+        CTAText: "Enter Quiz",
+        CTAAction: () => {},
+      },
     },
     {
       id: 2,
       articleTitle: "salam",
-      content: "asdj",
+      content: "asdjkhasjdhas dasidh",
       banner: "",
       link: "www.google.com",
       linkText: "google",
+      header: {
+        title: "Optimism Quiz Tap",
+        img: "",
+        CTAText: "Enter Quiz",
+        CTAAction: () => {},
+      },
     },
   ];
   return (
-    <VStack
-      overflow="hidden"
-      position="relative"
-      justifyContent="start"
-      width="full"
-      h="calc(100vh - 106px)"
-      pb="0"
-      display="flex"
-      flexDir="column"
-    >
-      <VStack w="full" h="132px" justify="center">
+    <VStack width="full" mb="8px">
+      <VStack w="full" justify="center">
         <ColorFullText textContent="Learn Space" fontSize="5xl" />
         <Text
           fontWeight="600"
@@ -55,20 +64,7 @@ export const Learn = () => {
         </Text>
       </VStack>
 
-      <VStack
-        w="full"
-        overflowX="hidden"
-        css={{
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-          "-ms-overflow-style": "none",
-          "scrollbar-width": "none",
-        }}
-        gap="16px"
-        p="2px"
-        zIndex={1}
-      >
+      <VStack w="full" gap="16px" p="2px">
         {Articles.map((article) => (
           <ArticleCard
             key={article.id}
@@ -77,6 +73,7 @@ export const Learn = () => {
             content={article.content}
             link={article.link}
             linkText={article.linkText}
+            header={article?.header}
           />
         ))}
       </VStack>
