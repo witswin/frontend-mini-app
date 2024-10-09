@@ -5,6 +5,7 @@ import { Text, VStack } from "@chakra-ui/react";
 export const Learn = () => {
   const Articles = [
     {
+      id: 0,
       articleTitle: "salam",
       content: "asdjkhasjdhas dasidh",
       banner: "",
@@ -12,6 +13,7 @@ export const Learn = () => {
       linkText: "google",
     },
     {
+      id: 1,
       articleTitle: "salam",
       content: "asdjkhasjdhas dasidh ioasdh ioasdh ",
       banner: "",
@@ -19,6 +21,7 @@ export const Learn = () => {
       linkText: "google",
     },
     {
+      id: 2,
       articleTitle: "salam",
       content: "asdj",
       banner: "",
@@ -68,6 +71,7 @@ export const Learn = () => {
       >
         {Articles.map((article) => (
           <ArticleCard
+            key={article.id}
             articleTitle={article.articleTitle}
             banner={article.banner}
             content={article.content}
