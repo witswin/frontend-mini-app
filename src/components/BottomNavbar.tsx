@@ -39,8 +39,8 @@ export const BottomNavbar = () => {
       zIndex="sticky"
       bottom="0"
       maxWidth="538px"
-      left="0"
-      right='0'
+      left="50%"
+      transform='translateX(-50%)'
       background="linear-gradient(2.73deg, #111125 23.73%, rgba(17, 17, 37, 0.4) 60.91%, rgba(17, 17, 37, 0) 97.72%)"
       width="full"
       py="16px"
