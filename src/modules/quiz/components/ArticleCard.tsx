@@ -84,6 +84,7 @@ export const ArticleCard = ({
             fontSize="md"
             lineHeight="22px"
             fontWeight="500"
+            width="full"
           >
             {content}
           </Text>
