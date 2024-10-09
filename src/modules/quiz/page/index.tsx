@@ -21,12 +21,16 @@ export const QuizPLP = () => {
       await axiosClient.get("quiz/competitions/").then((res) => res.data),
   });
 
+  console.log({data});
+  
+
   return (
     <VStack
       overflow="hidden"
       position="relative"
       justifyContent="center"
       width="full"
+      height="full"
     >
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Text
@@ -46,7 +50,7 @@ export const QuizPLP = () => {
         slidesPerView="auto"
         effect="coverflow"
         modules={[EffectCoverflow]}
-        spaceBetween={16}
+        spaceBetween={0}
         centeredSlides
         initialSlide={1}
         grabCursor
@@ -57,8 +61,14 @@ export const QuizPLP = () => {
           modifier: 1,
           slideShadows: false,
         }}
+        sx={{
+          ".swiper-slide": {
+            mr: "0 !important",
+            px: "4px",
+          },
+        }}
       >
-        {data?.results?.map((quiz: quizType) => (
+        {[...data?.results,...data?.results]?.map((quiz: quizType) => (
           <SwiperSlide key={quiz?.id} style={{ width: "fit-content" }}>
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>

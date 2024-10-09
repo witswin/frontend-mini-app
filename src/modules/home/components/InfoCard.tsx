@@ -53,17 +53,17 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
   return (
     <VStack
       width="full"
-      height="full"
       bg="glassBackground"
       borderRadius="16px"
       gap="32px"
       justifyContent="center"
       p="16px"
-      flex={1}
+      height="full"
     >
       <VStack maxW="90%" gap="0">
         <ColorFullText
           fontSize="6xl"
+          textAlign="center"
           textContent={selectedCard[cardState].largeTitle}
         />
 

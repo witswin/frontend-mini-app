@@ -33,6 +33,7 @@ export const Card = ({ colored, children, ...rest }: CardProps & BoxProps) => {
         background="gray.700"
         borderRadius="inherit"
         zIndex={2}
+        height="full"
       >
         {children}
       </VStack>

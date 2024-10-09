@@ -16,11 +16,16 @@ export const baseTheme = extendTheme({
   styles: {
     global: {
       body: {
-        height: "100vh",
+        minH: "100vh",
         width: "100%",
         background: "gray.800",
         color: "gray.0",
         fontFamily: "Montserrat",
+        position: "relative",
+        pb: "106px",
+      },
+      html: {
+        height: "100%",
       },
     },
   },
