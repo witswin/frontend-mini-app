@@ -13,9 +13,8 @@ export const PercentageButton: React.FC<PercentageButtonProps> = ({
 }: PercentageButtonProps) => {
   return (
     <Button
-      height="54px"
       variant="glassBackground"
-      w="full"
+      size="testBox"
       position="relative"
       onClick={handleClick}
     >
