@@ -52,6 +52,7 @@ export const Button = {
         borderRadius: "12px",
       },
       height: "54px",
+      width: 'full'
     },
   },
   variants: {
