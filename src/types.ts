@@ -1,6 +1,6 @@
 import { quizType } from "./globalTypes";
 export enum INFO_CARD_STATE {
-  "welcome" = 'welcome',
+  "welcome" = "welcome",
   "resource" = "resource",
   "lobby" = "lobby",
   "join" = "join",
@@ -13,6 +13,12 @@ export enum CARD_STATE {
   "join" = "join",
   "watch" = "watch",
   "enroll" = "enroll",
+}
+
+export enum PROGRESS_TIME {
+  "default" = "default",
+  "alert" = "alert",
+  "freeze" = "freeze",
 }
 
 // export type quizCardInfo = {
