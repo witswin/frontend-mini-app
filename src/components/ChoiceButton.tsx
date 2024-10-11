@@ -1,5 +1,6 @@
 import { CHOICE_BUTTON_STATE } from "@/types";
-import { Box, Button, keyframes, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import React, { useMemo, useState } from "react";
 
 interface ChoiceButtonProps {
@@ -13,11 +14,13 @@ export const ChoiceButton = ({
   btnText,
   percentage,
 }: ChoiceButtonProps) => {
-  const changeColor = keyframes`
-  0% { background-color: rgba(256, 256, 256, 0.2); }
-  50% { background-color: rgba(256, 256, 256, 0.4); }
-  100% { background-color: rgba(256, 256, 256, 0.2); }
-`;
+  const changeColor = {
+    backgroundColor: [
+      "rgba(256, 256, 256, 0.2)",
+      "rgba(256, 256, 256, 0.4)",
+      "rgba(256, 256, 256, 0.2)",
+    ],
+  };
 
   const [isPressed, setIsPressed] = useState(false);
 
@@ -56,12 +59,13 @@ export const ChoiceButton = ({
       height="54px"
       width="full"
       onClick={handleClick}
-      animation={
-        state === CHOICE_BUTTON_STATE.freeze && isPressed
-          ? `${changeColor} 0.5s infinite`
-          : ""
-      }
       isDisabled={false}
+      as={motion.button}
+      animate={
+        state === CHOICE_BUTTON_STATE.freeze && isPressed
+          ? { ...changeColor, transition: { duration: 0.5, repeat: Infinity } }
+          : {}
+      }
     >
       {btnText}
 
