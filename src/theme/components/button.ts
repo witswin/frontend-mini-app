@@ -177,7 +177,7 @@ export const Button = {
         backgroundClip: "text",
       },
     },
-    greenOutlined: {
+    rightAnswer: {
       backgroundColor: "rgb(93,210,122, 0.2)",
       color: "gray.0",
       borderStyle: "solid",
@@ -187,7 +187,7 @@ export const Button = {
       borderBottomWidth: "2px",
       borderColor: "green.400", 
     },
-    redOutlined: {
+    wrongAnswer: {
       backgroundColor: "rgb(255, 98, 89, 0.2)",
       color: "gray.0",
       borderStyle: "solid",
@@ -197,7 +197,7 @@ export const Button = {
       borderBottomWidth: "2px",
       borderColor: "red.400", 
     },
-    glassBackground: {
+    default: {
       bg: "var(--chakra-colors-glassBackground)",
       color: "gray.0",
       borderStyle: "solid",
@@ -206,6 +206,10 @@ export const Button = {
       borderLeftWidth: "1px",
       borderBottomWidth: "2px",
       borderColor: "gray.400",
+      sx: {cursor: 'default'},
+      _disabled: {
+        opacity: '0.50'
+      },
     },
     glassBackgroundDisabled: {
       bg: "var(--chakra-colors-glassBackground)",
@@ -218,7 +222,7 @@ export const Button = {
       borderColor: "gray.400",
       opacity: '0.50'
     },
-    gray20: {
+    pressed: {
       backgroundColor: "rgba(256, 256, 256, 0.2)",
       color: "gray.0",
       borderStyle: "solid",
