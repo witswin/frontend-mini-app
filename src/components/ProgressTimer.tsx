@@ -1,0 +1,111 @@
+import { PROGRESS_TIME } from "@/types";
+import { HStack, StackProps, Text } from "@chakra-ui/react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
+import { TimerClock } from "./Icons";
+import { Progress } from "./Progress";
+import { AnimatePresence, motion } from "framer-motion";
+
+interface TimeCounterProps extends CSSProperties {
+  count: number;
+}
+const TimerCounter = ({ count, ...cssProps }: TimeCounterProps) => {
+  return (
+    <HStack height="full" overflow="hidden" width="50px" position="relative">
+      <AnimatePresence>
+        <motion.p
+          key={count}
+          initial={{ y: 30 }}
+          animate={{ y: 0 }}
+          exit={{ y: -30, opacity: 0 }}
+          style={{
+            position: "absolute",
+            top: "3px",
+            left: "0",
+            zIndex: "0",
+            ...cssProps,
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontSize: 17,
+            fontWeight: "700",
+          }}
+          transition={{ duration: 1 }}
+        >
+          {count.toLocaleString("default", { minimumIntegerDigits: 2 })}
+        </motion.p>
+        <Text
+          ml="24px"
+          background={cssProps.background as string}
+          backgroundClip="text"
+          fontSize="md"
+          fontWeight="700"
+          sx={{ WebkitTextFillColor: "transparent" }}
+        >
+          s
+        </Text>
+      </AnimatePresence>
+    </HStack>
+  );
+};
+
+interface ProgressTimerProps extends StackProps {
+  hasIcon?: boolean;
+  hasCounter?: boolean;
+  state: PROGRESS_TIME;
+}
+export const ProgressTimer = ({
+  hasCounter,
+  hasIcon,
+  state,
+  ...otherProps
+}: ProgressTimerProps) => {
+  const [countState, setCountState] = useState(10);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountState((prev) => {
+        if (prev - 1 > 0) {
+          return prev - 1;
+        }
+        return 0;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const progressBg = useMemo(
+    () => ({
+      [PROGRESS_TIME.default]: "progressDefaultLinear",
+      [PROGRESS_TIME.alert]: "progressAlertLinear",
+      [PROGRESS_TIME.freeze]: "gray-100",
+    }),
+    []
+  );
+
+  return (
+    <HStack
+      height="30px"
+      position="relative"
+      columnGap="8px"
+      width="full"
+      {...otherProps}
+    >
+      {hasIcon && <TimerClock state={state} />}
+      <Progress
+        value={(countState * 100) / 10}
+        filledTrack={{
+          bg: `var(--chakra-colors-${progressBg[state]})`,
+        }}
+        track={{
+          bg: `var(--chakra-colors-${progressBg[state]})`,
+        }}
+      />
+      {hasCounter && (
+        <TimerCounter
+          background={`var(--chakra-colors-${progressBg[state]})`}
+          count={countState}
+        />
+      )}
+    </HStack>
+  );
+};
