@@ -43,17 +43,6 @@ export const Button = {
       },
       height: "50px",
     },
-    testBox: {
-      fontSize: "md",
-      fontWeight: "600",
-      lineHeight: "22px",
-      borderRadius: "12px",
-      _before: {
-        borderRadius: "12px",
-      },
-      height: "54px",
-      width: 'full'
-    },
   },
   variants: {
     outline: {
@@ -231,16 +220,6 @@ export const Button = {
     },
     gray20: {
       backgroundColor: "rgba(256, 256, 256, 0.2)",
-      color: "gray.0",
-      borderStyle: "solid",
-      borderTopWidth: "1px",
-      borderRightWidth: "1px",
-      borderLeftWidth: "1px",
-      borderBottomWidth: "2px",
-      borderColor: "gray.0",
-    },
-    gray40: {
-      backgroundColor: "rgba(256, 256, 256, 0.4)",
       color: "gray.0",
       borderStyle: "solid",
       borderTopWidth: "1px",
