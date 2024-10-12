@@ -1,59 +1,43 @@
 import { CHOICE_BUTTON_STATE } from "@/types";
-import { Box, Button, Text } from "@chakra-ui/react";
+import { Box, Button, ButtonProps, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import React, { useMemo, useState } from "react";
 
-interface ChoiceButtonProps {
+interface ChoiceButtonProps extends ButtonProps {
   state: CHOICE_BUTTON_STATE;
   percentage?: number;
-  btnText: string;
+  buttonInfo: {
+    content: string;
+  };
 }
 
 export const ChoiceButton = ({
   state,
-  btnText,
+  buttonInfo,
   percentage,
+  ...buttonProps
 }: ChoiceButtonProps) => {
-  const changeColor = {
-    backgroundColor: [
-      "rgba(256, 256, 256, 0.2)",
-      "rgba(256, 256, 256, 0.4)",
-      "rgba(256, 256, 256, 0.2)",
-    ],
-  };
-
-  const [isPressed, setIsPressed] = useState(false);
+  const [isSelected, setSelected] = useState(true);
 
   const handleClick = () => {
-    if (state === CHOICE_BUTTON_STATE.default) setIsPressed(true);
+    if (state === CHOICE_BUTTON_STATE.default) setSelected(true);
   };
 
-  const buttonStyles: {
-    [key in CHOICE_BUTTON_STATE]: {
-      variant: string;
-      animation?: string;
-    };
-  } = useMemo(
+  const variant = useMemo(
     () => ({
-      [CHOICE_BUTTON_STATE.default]: {
-        variant: isPressed ? "pressed" : "default",
-      },
-      [CHOICE_BUTTON_STATE.freeze]: {
-        variant: isPressed ? "pressed" : "default",
-      },
-      [CHOICE_BUTTON_STATE.rightAnswer]: {
-        variant: "rightAnswer",
-      },
-      [CHOICE_BUTTON_STATE.wrongAnswer]: {
-        variant: "wrongAnswer",
-      },
+      [CHOICE_BUTTON_STATE.default]: isSelected ? "pressed" : "default",
+      [CHOICE_BUTTON_STATE.freeze]: isSelected ? "pressed" : "default",
+
+      [CHOICE_BUTTON_STATE.rightAnswer]: "rightAnswer",
+
+      [CHOICE_BUTTON_STATE.wrongAnswer]: "wrongAnswer",
     }),
-    [isPressed]
+    [isSelected]
   );
 
   return (
     <Button
-      {...buttonStyles[state]}
+      variant={variant[state]}
       color="gray.0"
       size="md"
       height="54px"
@@ -61,13 +45,21 @@ export const ChoiceButton = ({
       onClick={handleClick}
       isDisabled={false}
       as={motion.button}
-      animate={
-        state === CHOICE_BUTTON_STATE.freeze && isPressed
-          ? { ...changeColor, transition: { duration: 0.5, repeat: Infinity } }
-          : {}
-      }
+      {...(state === CHOICE_BUTTON_STATE.default &&
+        isSelected && {
+          animate: {
+            backgroundColor: [
+              "rgba(256, 256, 256, 0.2)",
+              "rgba(256, 256, 256, 0.4)",
+              "rgba(256, 256, 256, 0.2)",
+            ],
+            boxShadow: "0px 1px 0px 0px #FFFFFF, 0px 0px 0px 0px #FFFFFF66",
+            transition: { duration: 0.2, repeat: Infinity, delay: 0.1 },
+          },
+        })}
+      {...buttonProps}
     >
-      {btnText}
+      {buttonInfo.content}
 
       {!!percentage && state === CHOICE_BUTTON_STATE.default && (
         <>
@@ -81,7 +73,7 @@ export const ChoiceButton = ({
             w={`${percentage}%`}
             bg="rgba(256, 256, 256, 0.2)"
           />
-          <Text size="md" color="gray.0" position="absolute" right="12px">
+          <Text fontSize="md" color="gray.0" position="absolute" right="12px">
             {percentage}%
           </Text>
         </>
