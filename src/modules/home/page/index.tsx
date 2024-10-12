@@ -44,7 +44,7 @@ export const Home = () => {
   return (
     <VStack height="full" w="full" rowGap="16px">
       <TopNavbar />
-      <VStack mt='12px' w="full" height="full">
+      <VStack mt="12px" w="full" height="full">
         {infoCard[homeState]}
       </VStack>
     </VStack>

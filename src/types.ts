@@ -1,4 +1,12 @@
 import { quizType } from "./globalTypes";
+
+export enum CHOICE_BUTTON_STATE {
+  'default' = 'default',
+  'freeze' = 'freeze',
+  'rightAnswer' = 'rightAnswer',
+  'wrongAnswer' = 'wrongAnswer',
+}
+
 export enum INFO_CARD_STATE {
   "welcome" = "welcome",
   "resource" = "resource",
