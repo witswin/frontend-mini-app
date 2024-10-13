@@ -1,9 +1,10 @@
-import { PROGRESS_TIME } from "@/types";
+import { QUESTION_STATE } from "@/types";
 import { HStack, StackProps, Text } from "@chakra-ui/react";
-import { CSSProperties, useEffect, useMemo, useState } from "react";
+import { CSSProperties, useMemo } from "react";
 import { TimerClock } from "./Icons";
 import { Progress } from "./Progress";
 import { AnimatePresence, motion } from "framer-motion";
+import { useQuestionData } from "@/modules/question/hooks";
 
 interface TimeCounterProps extends CSSProperties {
   count: number;
@@ -51,33 +52,20 @@ const TimerCounter = ({ count, ...cssProps }: TimeCounterProps) => {
 interface ProgressTimerProps extends StackProps {
   hasIcon?: boolean;
   hasCounter?: boolean;
-  state: PROGRESS_TIME;
 }
 export const ProgressTimer = ({
   hasCounter,
   hasIcon,
-  state,
   ...otherProps
 }: ProgressTimerProps) => {
-  const [countState, setCountState] = useState(10);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountState((prev) => {
-        if (prev - 1 > 0) {
-          return prev - 1;
-        }
-        return 0;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const { state, timer } = useQuestionData();
 
   const progressBg = useMemo(
     () => ({
-      [PROGRESS_TIME.default]: "progressDefaultLinear",
-      [PROGRESS_TIME.alert]: "progressAlertLinear",
-      [PROGRESS_TIME.freeze]: "gray-100",
+      [QUESTION_STATE.default]: "progressDefaultLinear",
+      [QUESTION_STATE.answered]: "gray-100",
+      [QUESTION_STATE.alert]: "progressAlertLinear",
+      [QUESTION_STATE.freeze]: "gray-100",
     }),
     []
   );
@@ -92,7 +80,7 @@ export const ProgressTimer = ({
     >
       {hasIcon && <TimerClock state={state} />}
       <Progress
-        value={(countState * 100) / 10}
+        value={(timer * 100) / 10}
         filledTrack={{
           bg: `var(--chakra-colors-${progressBg[state]})`,
         }}
@@ -103,7 +91,7 @@ export const ProgressTimer = ({
       {hasCounter && (
         <TimerCounter
           background={`var(--chakra-colors-${progressBg[state]})`}
-          count={countState}
+          count={timer}
         />
       )}
     </HStack>

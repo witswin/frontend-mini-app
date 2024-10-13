@@ -1,38 +1,64 @@
-import { CHOICE_BUTTON_STATE } from "@/types";
+import { useQuestionData } from "@/modules/question/hooks";
+import { QUESTION_STATE } from "@/types";
 import { Box, Button, ButtonProps, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { useMemo, useState } from "react";
+import React, { Dispatch, SetStateAction, useMemo } from "react";
 
 interface ChoiceButtonProps extends ButtonProps {
-  state: CHOICE_BUTTON_STATE;
   percentage?: number;
   buttonInfo: {
-    content: string;
+    title: string;
+    id: string;
   };
+  selectedChoice: string;
+  setSelectedChoice: Dispatch<SetStateAction<string>>;
 }
 
+const animate = {
+  background: [
+    "rgba(256, 256, 256, 0.2)",
+    "rgba(256, 256, 256, 0.4)",
+    "rgba(256, 256, 256, 0.2)",
+  ],
+  boxShadow: "0px 1px 0px 0px #FFFFFF, 0px 0px 0px 0px #FFFFFF66",
+  transition: { duration: 0.5, repeat: Infinity, delay: 0.1 },
+};
+
 export const ChoiceButton = ({
-  state,
   buttonInfo,
   percentage,
+  selectedChoice,
+  setSelectedChoice,
   ...buttonProps
 }: ChoiceButtonProps) => {
-  const [isSelected, setSelected] = useState(true);
+  const {
+    state,
+    question: { correct },
+  } = useQuestionData();
 
   const handleClick = () => {
-    if (state === CHOICE_BUTTON_STATE.default) setSelected(true);
+    if (state === QUESTION_STATE.default || state === QUESTION_STATE.alert) {
+      setSelectedChoice(buttonInfo.id);
+    }
   };
 
   const variant = useMemo(
     () => ({
-      [CHOICE_BUTTON_STATE.default]: isSelected ? "pressed" : "default",
-      [CHOICE_BUTTON_STATE.freeze]: isSelected ? "pressed" : "default",
-
-      [CHOICE_BUTTON_STATE.rightAnswer]: "rightAnswer",
-
-      [CHOICE_BUTTON_STATE.wrongAnswer]: "wrongAnswer",
+      [QUESTION_STATE.default]:
+        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+      [QUESTION_STATE.freeze]: "default",
+      [QUESTION_STATE.answered]:
+        +selectedChoice === +buttonInfo.id && +selectedChoice === correct
+          ? "rightAnswer"
+          : +selectedChoice === +buttonInfo.id && +selectedChoice !== correct
+            ? "wrongAnswer"
+            : +correct === +buttonInfo.id
+              ? "rightAnswer"
+              : "default",
+      [QUESTION_STATE.alert]:
+        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
     }),
-    [isSelected]
+    [correct, selectedChoice]
   );
 
   return (
@@ -45,23 +71,20 @@ export const ChoiceButton = ({
       onClick={handleClick}
       isDisabled={false}
       as={motion.button}
-      {...(state === CHOICE_BUTTON_STATE.default &&
-        isSelected && {
-          animate: {
-            backgroundColor: [
-              "rgba(256, 256, 256, 0.2)",
-              "rgba(256, 256, 256, 0.4)",
-              "rgba(256, 256, 256, 0.2)",
-            ],
-            boxShadow: "0px 1px 0px 0px #FFFFFF, 0px 0px 0px 0px #FFFFFF66",
-            transition: { duration: 0.2, repeat: Infinity, delay: 0.1 },
-          },
-        })}
+      key={state}
       {...buttonProps}
+      {...(!selectedChoice
+        ? state === QUESTION_STATE.freeze && {
+            animate,
+          }
+        : +selectedChoice === +buttonInfo.id &&
+          state === QUESTION_STATE.freeze && {
+            animate,
+          })}
     >
-      {buttonInfo.content}
+      {buttonInfo.title}
 
-      {!!percentage && state === CHOICE_BUTTON_STATE.default && (
+      {!!percentage && state === QUESTION_STATE.default && (
         <>
           <Box
             position="absolute"

@@ -19,7 +19,6 @@ export const QuizPDPGlobalProvider = ({
   data,
 }: QuizPDPGlobalProviderProps) => {
   const [state, setState] = useState<quizPDP>(data);
-  console.log(data);
 
   return (
     <QuizPDPGlobalState.Provider value={state}>
