@@ -1,9 +1,13 @@
 import { QuizCard } from "@/components/QuizCard";
-import { CARD_STATE, INFO_CARD_STATE } from "@/types";
+import { CARD_STATE, HINT_BUTTONS, HINT_Cards, INFO_CARD_STATE } from "@/types";
 import { VStack } from "@chakra-ui/react";
 import { TopNavbar } from "@/components/TopNavbar";
 import { useMemo, useState } from "react";
 import { InfoCard } from "../components/InfoCard";
+import { ExtraTime, FiftyFiftyHint, Stats } from "@/components/ForUseHints";
+import { ClockPlus } from "@/components/Icons";
+import { HintButton } from "@/components/HintButtons";
+import { HintCard } from "@/components/PreviewHints";
 
 export const Home = () => {
   const [
@@ -44,9 +48,17 @@ export const Home = () => {
   return (
     <VStack height="full" w="full" rowGap="16px">
       <TopNavbar />
-      <VStack mt="12px" w="full" height="full">
+      {/* <VStack mt='12px' w="full" height="full">
         {infoCard[homeState]}
-      </VStack>
+      </VStack> */}
+
+      <HintButton hintType={HINT_BUTTONS.fiftyFifty} isDisabled />
+      <HintButton hintType={HINT_BUTTONS.extraTime} isDisabled />
+      <HintButton hintType={HINT_BUTTONS.stats} isDisabled />
+      <HintCard hintType={HINT_Cards.empty} />
+      <HintCard hintType={HINT_Cards.extraTime} />
+      <HintCard hintType={HINT_Cards.fiftyFifty} />
+      <HintCard hintType={HINT_Cards.stats} />
     </VStack>
   );
 };

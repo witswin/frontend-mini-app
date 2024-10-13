@@ -632,7 +632,7 @@ export const ClockPlus = ({
 };
 
 export const UsersGroup = ({
-  isDisabled = true,
+  isDisabled = false,
   height = 26,
   width = 26,
 }: {
