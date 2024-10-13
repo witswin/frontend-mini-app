@@ -67,7 +67,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
 
 export const QuizInfo = () => {
   const selectedQuiz = useSelectedQuiz();
-  console.log(selectedQuiz);
 
   return (
     <motion.div

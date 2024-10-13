@@ -39,7 +39,6 @@ export const QuizInfo = () => {
         .then((res) => res.data),
   });
 
-  console.log({ data });
 
   const CTAButton = useMemo(
     () => ({
