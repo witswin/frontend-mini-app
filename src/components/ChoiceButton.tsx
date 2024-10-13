@@ -1,0 +1,106 @@
+import { useQuestionData } from "@/modules/question/hooks";
+import { QUESTION_STATE } from "@/types";
+import { Box, Button, ButtonProps, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+import React, { Dispatch, SetStateAction, useMemo } from "react";
+
+interface ChoiceButtonProps extends ButtonProps {
+  percentage?: number;
+  buttonInfo: {
+    title: string;
+    id: string;
+  };
+  selectedChoice: string;
+  setSelectedChoice: Dispatch<SetStateAction<string>>;
+}
+
+const animate = {
+  background: [
+    "rgba(256, 256, 256, 0.2)",
+    "rgba(256, 256, 256, 0.4)",
+    "rgba(256, 256, 256, 0.2)",
+  ],
+  boxShadow: "0px 1px 0px 0px #FFFFFF, 0px 0px 0px 0px #FFFFFF66",
+  transition: { duration: 0.5, repeat: Infinity, delay: 0.1 },
+};
+
+export const ChoiceButton = ({
+  buttonInfo,
+  percentage,
+  selectedChoice,
+  setSelectedChoice,
+  ...buttonProps
+}: ChoiceButtonProps) => {
+  const {
+    state,
+    question: { correct },
+  } = useQuestionData();
+
+  const handleClick = () => {
+    if (state === QUESTION_STATE.default || state === QUESTION_STATE.alert) {
+      setSelectedChoice(buttonInfo.id);
+    }
+  };
+
+  const variant = useMemo(
+    () => ({
+      [QUESTION_STATE.default]:
+        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+      [QUESTION_STATE.freeze]: "default",
+      [QUESTION_STATE.answered]:
+        +selectedChoice === +buttonInfo.id && +selectedChoice === correct
+          ? "rightAnswer"
+          : +selectedChoice === +buttonInfo.id && +selectedChoice !== correct
+            ? "wrongAnswer"
+            : +correct === +buttonInfo.id
+              ? "rightAnswer"
+              : "default",
+      [QUESTION_STATE.alert]:
+        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+    }),
+    [correct, selectedChoice]
+  );
+
+  return (
+    <Button
+      variant={variant[state]}
+      color="gray.0"
+      size="md"
+      height="54px"
+      width="full"
+      onClick={handleClick}
+      isDisabled={false}
+      as={motion.button}
+      key={state}
+      {...buttonProps}
+      {...(!selectedChoice
+        ? state === QUESTION_STATE.freeze && {
+            animate,
+          }
+        : +selectedChoice === +buttonInfo.id &&
+          state === QUESTION_STATE.freeze && {
+            animate,
+          })}
+    >
+      {buttonInfo.title}
+
+      {!!percentage && state === QUESTION_STATE.default && (
+        <>
+          <Box
+            position="absolute"
+            left="0"
+            borderLeftRadius="8px"
+            borderRightRadius={percentage === 100 ? "8px" : "0"}
+            zIndex={-1}
+            h="full"
+            w={`${percentage}%`}
+            bg="rgba(256, 256, 256, 0.2)"
+          />
+          <Text fontSize="md" color="gray.0" position="absolute" right="12px">
+            {percentage}%
+          </Text>
+        </>
+      )}
+    </Button>
+  );
+};

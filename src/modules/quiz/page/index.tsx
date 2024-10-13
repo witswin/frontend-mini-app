@@ -21,7 +21,6 @@ export const QuizPLP = () => {
       await axiosClient.get("quiz/competitions/").then((res) => res.data),
   });
 
-  console.log({data});
   
 
   return (
