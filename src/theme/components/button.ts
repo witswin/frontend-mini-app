@@ -178,27 +178,27 @@ export const Button = {
       },
     },
     rightAnswer: {
-      backgroundColor: "rgb(93,210,122, 0.2)",
+      background: "rgba(93,210,122, 0.2)",
       color: "gray.0",
       borderStyle: "solid",
       borderTopWidth: "1px",
       borderRightWidth: "1px",
       borderLeftWidth: "1px",
       borderBottomWidth: "2px",
-      borderColor: "green.400", 
+      borderColor: "green.400",
     },
     wrongAnswer: {
-      backgroundColor: "rgb(255, 98, 89, 0.2)",
+      background: "rgba(255, 98, 89, 0.2)",
       color: "gray.0",
       borderStyle: "solid",
       borderTopWidth: "1px",
       borderRightWidth: "1px",
       borderLeftWidth: "1px",
       borderBottomWidth: "2px",
-      borderColor: "red.400", 
+      borderColor: "red.400",
     },
     default: {
-      bg: "var(--chakra-colors-glassBackground)",
+      background: "var(--chakra-colors-glassBackground)",
       color: "gray.0",
       borderStyle: "solid",
       borderTopWidth: "1px",
@@ -206,9 +206,9 @@ export const Button = {
       borderLeftWidth: "1px",
       borderBottomWidth: "2px",
       borderColor: "gray.400",
-      sx: {cursor: 'default'},
+      sx: { cursor: "default" },
       _disabled: {
-        opacity: '0.50'
+        opacity: "0.50",
       },
     },
     glassBackgroundDisabled: {
@@ -220,7 +220,7 @@ export const Button = {
       borderLeftWidth: "1px",
       borderBottomWidth: "2px",
       borderColor: "gray.400",
-      opacity: '0.50'
+      opacity: "0.50",
     },
     pressed: {
       backgroundColor: "rgba(256, 256, 256, 0.2)",
@@ -232,6 +232,5 @@ export const Button = {
       borderBottomWidth: "2px",
       borderColor: "gray.0",
     },
-
   },
 };

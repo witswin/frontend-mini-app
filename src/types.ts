@@ -1,11 +1,18 @@
 import { quizType } from "./globalTypes";
 
-export enum CHOICE_BUTTON_STATE {
-  'default' = 'default',
-  'freeze' = 'freeze',
-  'rightAnswer' = 'rightAnswer',
-  'wrongAnswer' = 'wrongAnswer',
+export enum QUESTION_STATE {
+  "default" = "default",
+  "freeze" = "freeze",
+  "answered" = "answered",
+  "alert" = "alert",
 }
+
+// export enum CHOICE_BUTTON_STATE {
+//   "default" = "default",
+//   "freeze" = "freeze",
+//   "rightAnswer" = "rightAnswer",
+//   "wrongAnswer" = "wrongAnswer",
+// }
 
 export enum INFO_CARD_STATE {
   "welcome" = "welcome",
@@ -21,12 +28,6 @@ export enum CARD_STATE {
   "join" = "join",
   "watch" = "watch",
   "enroll" = "enroll",
-}
-
-export enum PROGRESS_TIME {
-  "default" = "default",
-  "alert" = "alert",
-  "freeze" = "freeze",
 }
 
 // export type quizCardInfo = {
