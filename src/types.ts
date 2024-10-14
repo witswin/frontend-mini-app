@@ -30,6 +30,20 @@ export enum CARD_STATE {
   "enroll" = "enroll",
 }
 
+export enum PROGRESS_TIME {
+  "default" = "default",
+  "alert" = "alert",
+  "freeze" = "freeze",
+}
+
+export enum HINTS {
+  "fiftyFifty" = "fiftyFifty",
+  "stats" = "stats",
+  "extraTime" = "extraTime"
+}
+
+
+
 // export type quizCardInfo = {
 //   prize: number;
 //   prizeText: string;
