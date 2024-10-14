@@ -1,11 +1,21 @@
 import { Box, Card, Text, VStack } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { TbX } from "react-icons/tb";
 import { ClockPlus, FiftyFifty, Plus, UsersGroup } from "./Icons";
 import { HINTS } from "@/types";
 
-export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
-  const isHintCardEmpty = hintType === undefined;
+interface HINTS_OBJECT {
+  hintObject: {
+    hint: HINTS;
+    hints: HINTS[];
+    setHints: Dispatch<SetStateAction<HINTS[] | undefined[]>>;
+  };
+}
+
+export const HintCard = ({ hintObject }: HINTS_OBJECT) => {
+  const { hint, hints, setHints } = hintObject;
+
+  const isHintCardEmpty = hint === undefined;
 
   const selectedHint = useMemo(
     () => ({
@@ -30,7 +40,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
 
   return (
     <Card
-      bg="rgba(110, 129, 238, 0.08)"
+      bg="glassBackground"
       p="8px"
       borderRadius="8px"
       justifyContent="center"
@@ -39,7 +49,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
       gap="8px"
       h="102px"
       w="full"
-      onClick={isHintCardEmpty && (() => {})}
+      {...(isHintCardEmpty && { onClick: () => {} })}
       cursor={isHintCardEmpty ? "pointer" : "default"}
     >
       {isHintCardEmpty ? (
@@ -51,20 +61,23 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
             top="9px"
             right="9px"
             color="gray.60"
-            onClick={() => {}}
+            onClick={(e) => {
+              e.stopPropagation();
+              setHints(hints.filter((h) => h !== hint));
+            }}
             cursor="pointer"
           >
             <TbX color="gray.60" />
           </Box>
 
-          {selectedHint[hintType].icon}
+          {selectedHint[hint].icon}
 
           <VStack gap="2px" w="full">
             <Text fontSize="lg" color="gray.0">
-              {selectedHint[hintType]?.headline}
+              {selectedHint[hint]?.headline}
             </Text>
             <Text fontSize="sm" color="gray.60">
-              {selectedHint[hintType]?.subHeadline}
+              {selectedHint[hint]?.subHeadline}
             </Text>
           </VStack>
         </>

@@ -21,8 +21,6 @@ export const QuizPLP = () => {
       await axiosClient.get("quiz/competitions/").then((res) => res.data),
   });
 
-  
-
   return (
     <VStack
       overflow="hidden"
@@ -67,7 +65,7 @@ export const QuizPLP = () => {
           },
         }}
       >
-        {[...data?.results,...data?.results]?.map((quiz: quizType) => (
+        {[...data?.results, ...data?.results]?.map((quiz: quizType) => (
           <SwiperSlide key={quiz?.id} style={{ width: "fit-content" }}>
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>

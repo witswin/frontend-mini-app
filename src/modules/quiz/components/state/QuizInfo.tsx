@@ -1,10 +1,13 @@
 import { QuizPrize } from "@/components/QuizCard";
-import { Center, Flex, Text, VStack } from "@chakra-ui/react";
+import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
-import { HintUnit, HourGlass, Question } from "@/components/Icons";
-import { useMemo } from "react";
+import { HintUnit } from "@/components/Icons";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useSelectedQuiz } from "../../hooks";
+import { TbBulbFilled } from "react-icons/tb";
+import { HintCard } from "@/components/HintCards";
+import { HINTS } from "@/types";
 
 interface ValueCardProps {
   title: string | number;
@@ -15,7 +18,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
   const statusComponents = useMemo(() => {
     return {
       [STATUS_ENROLL_VALUE.QUESTION]: {
-        icon: <Question />,
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
             {title}
@@ -23,7 +25,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
         ),
       },
       [STATUS_ENROLL_VALUE.TIME]: {
-        icon: <HourGlass />,
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
             {title}
@@ -48,7 +49,7 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
       borderColor="gray.400"
       bg="glassBackground"
       flex={1}
-      py="8px"
+      py="12px"
     >
       {statusComponents[status].title}
       <Text
@@ -60,13 +61,16 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
       >
         {subTitle}
       </Text>
-      {statusComponents[status].icon}
     </VStack>
   );
 };
 
 export const QuizInfo = () => {
   const selectedQuiz = useSelectedQuiz();
+  const [userHint, setUserHint] = useState<HINTS[] | undefined[]>([
+    HINTS.extraTime,
+    HINTS.fiftyFifty,
+  ]);
 
   return (
     <motion.div
@@ -103,12 +107,39 @@ export const QuizInfo = () => {
           subTitle="Each Question"
           title="10 sec"
         />
-        <ValueCard
-          status={STATUS_ENROLL_VALUE.HINT}
-          subTitle={`${selectedQuiz?.hintCount} Hint`}
-          title={selectedQuiz?.hintCount}
-        />
       </Flex>
+
+      <VStack
+        borderRadius="8px"
+        border="1px solid"
+        borderColor="gray.400"
+        bg="glassBackground"
+        p="12px"
+        width="full"
+      >
+        <HStack gap="4px" alignItems="start">
+          <TbBulbFilled size={25} />
+          <Text fontSize="3xl" fontWeight="700">
+            Hints
+          </Text>
+        </HStack>
+        <Flex width="full" columnGap="12px">
+          <HintCard
+            hintObject={{
+              hint: userHint[0],
+              hints: userHint,
+              setHints: setUserHint,
+            }}
+          />
+          <HintCard
+            hintObject={{
+              hint: userHint[1],
+              hints: userHint,
+              setHints: setUserHint,
+            }}
+          />
+        </Flex>
+      </VStack>
     </motion.div>
   );
 };
