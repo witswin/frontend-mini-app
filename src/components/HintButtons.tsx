@@ -1,31 +1,31 @@
 import { Button, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { ClockPlus, FiftyFifty, UsersGroup } from "./Icons";
-import { HINT_BUTTONS } from "@/types";
+import { HINTS } from "@/types";
 
 export const HintButton = ({
   hintType,
   isDisabled,
 }: {
-  hintType: HINT_BUTTONS;
+  hintType: HINTS;
   isDisabled?: boolean;
 }) => {
   const selectedHint: {
-    [key in HINT_BUTTONS]: {
+    [key in HINTS]: {
       headline: string;
       icon: React.ReactNode;
     };
   } = useMemo(
     () => ({
-      [HINT_BUTTONS.fiftyFifty]: {
+      [HINTS.fiftyFifty]: {
         headline: "50/50",
         icon: <FiftyFifty isDisabled={isDisabled} width={22} height={22} />,
       },
-      [HINT_BUTTONS.extraTime]: {
+      [HINTS.extraTime]: {
         headline: "Extra Time",
         icon: <ClockPlus isDisabled={isDisabled} width={22} height={22} />,
       },
-      [HINT_BUTTONS.stats]: {
+      [HINTS.stats]: {
         headline: "Audience Poll",
         icon: <UsersGroup isDisabled={isDisabled} width={22} height={22} />,
       },
@@ -35,15 +35,16 @@ export const HintButton = ({
 
   return (
     <VStack
-      bg={"primaryRadial"}
       p="1px"
       borderRadius="10px"
       as={Button}
       variant="ghost"
       isDisabled={isDisabled}
       _disabled={{ bg: "gray.400", opacity: "1" }}
+      _hover={{ bg: "primaryRadial" }}
+      bg={"primaryRadial"}
       h="52px"
-      w="171px"
+      w="full"
     >
       <HStack
         bg="gray.700"

@@ -36,17 +36,12 @@ export enum PROGRESS_TIME {
   "freeze" = "freeze",
 }
 
-export enum HINT_BUTTONS {
+export enum HINTS {
   "fiftyFifty" = "fiftyFifty",
   "stats" = "stats",
   "extraTime" = "extraTime"
 }
-export enum HINT_Cards {
-  "fiftyFifty" = "fiftyFifty",
-  "stats" = "stats",
-  "extraTime" = "extraTime",
-  "empty" = "empty"
-}
+
 
 
 // export type quizCardInfo = {
