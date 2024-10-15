@@ -31,10 +31,10 @@ export const ChoiceButton = ({
   setSelectedChoice,
   ...buttonProps
 }: ChoiceButtonProps) => {
-  const {
-    state,
-    question: { correct },
-  } = useQuestionData();
+  const { questions, activeQuestionId } = useQuestionData();
+  const { state, correct } = questions.find(
+    (item) => item.id === activeQuestionId
+  );
 
   const handleClick = () => {
     if (state === QUESTION_STATE.default || state === QUESTION_STATE.alert) {
@@ -69,18 +69,16 @@ export const ChoiceButton = ({
       height="54px"
       width="full"
       onClick={handleClick}
-      isDisabled={false}
+      isDisabled={
+        state === QUESTION_STATE.freeze && +selectedChoice !== +buttonInfo.id
+      }
       as={motion.button}
       key={state}
       {...buttonProps}
-      {...(!selectedChoice
-        ? state === QUESTION_STATE.freeze && {
-            animate,
-          }
-        : +selectedChoice === +buttonInfo.id &&
-          state === QUESTION_STATE.freeze && {
-            animate,
-          })}
+      {...(+selectedChoice === +buttonInfo.id &&
+        state === QUESTION_STATE.freeze && {
+          animate,
+        })}
     >
       {buttonInfo.title}
 
