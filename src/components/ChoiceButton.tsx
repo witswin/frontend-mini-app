@@ -61,6 +61,7 @@ export const ChoiceButton = ({
     [correct, selectedChoice]
   );
 
+
   return (
     <Button
       variant={variant[state]}
@@ -70,7 +71,10 @@ export const ChoiceButton = ({
       width="full"
       onClick={handleClick}
       isDisabled={
-        state === QUESTION_STATE.freeze && +selectedChoice !== +buttonInfo.id
+        (state === QUESTION_STATE.freeze &&
+          +selectedChoice !== +buttonInfo.id) ||
+        (state === QUESTION_STATE.answered &&
+          (+buttonInfo.id !== correct && +selectedChoice !== +buttonInfo.id))
       }
       as={motion.button}
       key={state}

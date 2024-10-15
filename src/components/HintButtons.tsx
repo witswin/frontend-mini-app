@@ -42,6 +42,7 @@ export const HintButton = ({
       isDisabled={isDisabled}
       _disabled={{ bg: "gray.400", opacity: "1" }}
       _hover={{ bg: "primaryRadial" }}
+      _focus={{ bg: "primaryRadial" }}
       bg={"primaryRadial"}
       h="52px"
       w="full"
