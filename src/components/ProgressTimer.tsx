@@ -4,7 +4,6 @@ import { CSSProperties, useMemo } from "react";
 import { TimerClock } from "./Icons";
 import { Progress } from "./Progress";
 import { AnimatePresence, motion } from "framer-motion";
-import { useQuestionData } from "@/modules/question/hooks";
 
 interface TimeCounterProps extends CSSProperties {
   count: number;
@@ -52,14 +51,16 @@ const TimerCounter = ({ count, ...cssProps }: TimeCounterProps) => {
 interface ProgressTimerProps extends StackProps {
   hasIcon?: boolean;
   hasCounter?: boolean;
+  timer: number;
+  state: QUESTION_STATE;
 }
 export const ProgressTimer = ({
   hasCounter,
   hasIcon,
+  state,
+  timer,
   ...otherProps
 }: ProgressTimerProps) => {
-  const { state, timer } = useQuestionData();
-
   const progressBg = useMemo(
     () => ({
       [QUESTION_STATE.default]: "progressDefaultLinear",
