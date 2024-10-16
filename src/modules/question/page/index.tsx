@@ -89,36 +89,36 @@ export const Question = () => {
         </motion.div>
       </AnimatePresence>
       <AnimatePresence>
-        {/* {activeQuestion.state !== QUESTION_STATE.freeze &&
-          activeQuestion.state !== QUESTION_STATE.answered && ( */}
-        <motion.div
-          initial={{
-            y: 200,
-            opacity: 0,
-          }}
-          animate={{
-            y: 0,
-            opacity: 1,
-          }}
-          exit={{
-            y: 200,
-            opacity: 0,
-          }}
-          style={{
-            position: "sticky",
-            bottom: "0",
-            left: "0",
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            columnGap: "8px",
-          }}
-        >
-          {selectedHints.map((item) => (
-            <HintContent hint={item} key={item} />
-          ))}
-        </motion.div>
-        {/* )} */}
+        {activeQuestion.state !== QUESTION_STATE.freeze &&
+          activeQuestion.state !== QUESTION_STATE.answered && (
+            <motion.div
+              initial={{
+                y: 200,
+                opacity: 0,
+              }}
+              animate={{
+                y: 0,
+                opacity: 1,
+              }}
+              exit={{
+                y: 200,
+                opacity: 0,
+              }}
+              style={{
+                position: "sticky",
+                bottom: "0",
+                left: "0",
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                columnGap: "8px",
+              }}
+            >
+              {selectedHints.map((item) => (
+                <HintContent hint={item} key={item} />
+              ))}
+            </motion.div>
+          )}
       </AnimatePresence>
     </VStack>
   );
