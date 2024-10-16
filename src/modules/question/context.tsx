@@ -1,4 +1,4 @@
-import { QUESTION_STATE } from "@/types";
+import { HINTS, QUESTION_STATE } from "@/types";
 import {
   createContext,
   Dispatch,
@@ -7,7 +7,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { questionData } from "./types";
+import { hint, questionData } from "./types";
+import { useCounter, useCounterDispatch } from "./hooks";
 
 export const QuestionData = createContext<questionData>(undefined);
 export const QuestionDataDispatch =
@@ -20,8 +21,8 @@ export const QuestionDataProvider = ({
   children,
   timer = 10,
 }: QuestionDataProviderProps) => {
-  const [counter, setCounter] = useState(timer);
-
+  const counter = useCounter();
+  const counterDispatch = useCounterDispatch();
   const [state, setState] = useState<questionData>({
     activeQuestionId: 0,
     questions: [
@@ -32,10 +33,10 @@ export const QuestionDataProvider = ({
         id: 0,
         correct: 1,
         choices: [
-          { id: "0", title: "choice1" },
-          { id: "1", title: "choice2" },
-          { id: "2", title: "choice3" },
-          { id: "3", title: "choice4" },
+          { id: "0", title: "choice1", stats: "25" },
+          { id: "1", title: "choice2", stats: "25" },
+          { id: "2", title: "choice3", stats: "25" },
+          { id: "3", title: "choice4", stats: "25" },
         ],
       },
       {
@@ -46,10 +47,10 @@ export const QuestionDataProvider = ({
         id: 1,
         correct: 3,
         choices: [
-          { id: "0", title: "choice1" },
-          { id: "1", title: "choice2" },
-          { id: "2", title: "choice3" },
-          { id: "3", title: "choice4" },
+          { id: "0", title: "choice1", stats: "25" },
+          { id: "1", title: "choice2", stats: "25" },
+          { id: "2", title: "choice3", stats: "25" },
+          { id: "3", title: "choice4", stats: "25" },
         ],
       },
       {
@@ -60,10 +61,10 @@ export const QuestionDataProvider = ({
         id: 2,
         correct: 2,
         choices: [
-          { id: "0", title: "choice1" },
-          { id: "1", title: "choice2" },
-          { id: "2", title: "choice3" },
-          { id: "3", title: "choice4" },
+          { id: "0", title: "choice1", stats: "25" },
+          { id: "1", title: "choice2", stats: "25" },
+          { id: "2", title: "choice3", stats: "25" },
+          { id: "3", title: "choice4", stats: "25" },
         ],
       },
     ],
@@ -71,7 +72,7 @@ export const QuestionDataProvider = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCounter((prev) => {
+      counterDispatch((prev) => {
         if (prev - 1 > 0) {
           return prev - 1;
         }
@@ -129,7 +130,7 @@ export const QuestionDataProvider = ({
   }, [counter, state.activeQuestionId, state.questions]);
 
   useEffect(() => {
-    setCounter(timer);
+    counterDispatch(timer);
   }, [state.activeQuestionId]);
 
   useEffect(() => {
@@ -186,5 +187,40 @@ export const QuestionDataProvider = ({
         {children}
       </QuestionDataDispatch.Provider>
     </QuestionData.Provider>
+  );
+};
+
+export const Hint = createContext<hint>(undefined);
+export const HintDispatch =
+  createContext<Dispatch<SetStateAction<hint>>>(undefined);
+
+interface HintProviderProps extends PropsWithChildren {}
+
+export const HintProvider = ({ children }: HintProviderProps) => {
+  const [state, setState] = useState<hint>({
+    usedHints: [],
+    selectedHints: [HINTS.extraTime, HINTS.stats],
+  });
+
+  return (
+    <Hint.Provider value={state}>
+      <HintDispatch.Provider value={setState}>{children}</HintDispatch.Provider>
+    </Hint.Provider>
+  );
+};
+
+export const Counter = createContext(10);
+export const CounterDispatch =
+  createContext<Dispatch<SetStateAction<number>>>(undefined);
+
+interface CounterProviderProps extends PropsWithChildren {}
+export const CounterProvider = ({ children }: CounterProviderProps) => {
+  const [state, setState] = useState(10);
+  return (
+    <Counter.Provider value={state}>
+      <CounterDispatch.Provider value={setState}>
+        {children}
+      </CounterDispatch.Provider>
+    </Counter.Provider>
   );
 };

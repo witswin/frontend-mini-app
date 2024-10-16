@@ -1,22 +1,34 @@
-import { Box, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Text, VStack } from "@chakra-ui/react";
 import { QuestionCard } from "../components/QuestionCard";
 import { Card } from "@/components/Card";
 import { AnimatePresence, motion } from "framer-motion";
-import { useQuestionData } from "../hooks";
+import { useHints, useQuestionData } from "../hooks";
 import { QuestionBanner } from "../components/QuestionBanner";
 import { HINTS, QUESTION_STATE } from "@/types";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
 
+interface HintContentProps {
+  hint: HINTS;
+}
+const HintContent = ({ hint }: HintContentProps) => {
+  const isDisabled = useHints().usedHints.find(
+    (item) => item.hintType === hint
+  );
+  console.log(isDisabled);
+
+  return <HintButton hintType={hint} isDisabled={!!isDisabled} />;
+};
+
 export const Question = () => {
   const { questions, activeQuestionId } = useQuestionData();
   const activeQuestion = questions.find((item) => item.id === activeQuestionId);
 
-  const selectedHints = [HINTS.fiftyFifty, HINTS.extraTime];
+  const selectedHints = useHints().selectedHints;
 
   return (
-    <VStack  height="full" position="relative" width="full">
+    <VStack height="full" position="relative" width="full">
       {questions.map((item, index, array) => (
         <Box
           zIndex={-1}
@@ -57,7 +69,7 @@ export const Question = () => {
           style={{
             paddingTop: `${questions.length * 8}px`,
             width: "100%",
-            paddingBottom:"36px"
+            paddingBottom: "36px",
           }}
           initial={{
             opacity: 0,
@@ -76,11 +88,38 @@ export const Question = () => {
           <QuestionCard />
         </motion.div>
       </AnimatePresence>
-      <HStack position="sticky" bottom="0px" left={0} width="full">
-        {selectedHints.map((item) => (
-          <HintButton key={item} hintType={item} />
-        ))}
-      </HStack>
+      <AnimatePresence>
+        {/* {activeQuestion.state !== QUESTION_STATE.freeze &&
+          activeQuestion.state !== QUESTION_STATE.answered && ( */}
+        <motion.div
+          initial={{
+            y: 200,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+          }}
+          exit={{
+            y: 200,
+            opacity: 0,
+          }}
+          style={{
+            position: "sticky",
+            bottom: "0",
+            left: "0",
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            columnGap: "8px",
+          }}
+        >
+          {selectedHints.map((item) => (
+            <HintContent hint={item} key={item} />
+          ))}
+        </motion.div>
+        {/* )} */}
+      </AnimatePresence>
     </VStack>
   );
 };

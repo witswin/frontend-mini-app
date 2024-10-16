@@ -1,13 +1,21 @@
-import { QuestionDataProvider } from "@/modules/question/context";
+import {
+  CounterProvider,
+  HintProvider,
+  QuestionDataProvider,
+} from "@/modules/question/context";
 import { Question } from "@/modules/question/page";
 import { Box, Container } from "@chakra-ui/react";
 import { ReactElement } from "react";
 
 const Index = () => {
   return (
-    <QuestionDataProvider timer={4}>
-      <Question />
-    </QuestionDataProvider>
+    <CounterProvider>
+      <HintProvider>
+        <QuestionDataProvider timer={10}>
+          <Question />
+        </QuestionDataProvider>
+      </HintProvider>
+    </CounterProvider>
   );
 };
 

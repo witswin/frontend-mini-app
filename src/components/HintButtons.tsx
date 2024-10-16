@@ -1,7 +1,13 @@
 import { Button, HStack, Text, VStack } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ClockPlus, FiftyFifty, UsersGroup } from "./Icons";
 import { HINTS } from "@/types";
+import {
+  useCounterDispatch,
+  useHintsDispatch,
+  useQuestionData,
+} from "@/modules/question/hooks";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const HintButton = ({
   hintType,
@@ -10,6 +16,10 @@ export const HintButton = ({
   hintType: HINTS;
   isDisabled?: boolean;
 }) => {
+  const hintDispatch = useHintsDispatch();
+  const counterDispatch = useCounterDispatch();
+  const { activeQuestionId } = useQuestionData();
+
   const selectedHint: {
     [key in HINTS]: {
       headline: string;
@@ -32,41 +42,98 @@ export const HintButton = ({
     }),
     [isDisabled]
   );
+  const [showExtraTime, setShowExtraTime] = useState(false);
+
+  useEffect(() => {
+    if (showExtraTime) {
+      setTimeout(() => {
+        setShowExtraTime(false);
+      }, 2000);
+    }
+  }, [showExtraTime]);
 
   return (
-    <VStack
-      p="1px"
-      borderRadius="10px"
-      as={Button}
-      variant="ghost"
-      isDisabled={isDisabled}
-      _disabled={{ bg: "gray.400", opacity: "1" }}
-      _hover={{ bg: "primaryRadial" }}
-      _focus={{ bg: "primaryRadial" }}
-      bg={"primaryRadial"}
-      h="52px"
-      w="full"
-    >
-      <HStack
-        bg="gray.700"
-        p="8px"
+    <>
+      <VStack
+        p="1px"
         borderRadius="10px"
-        justifyContent="center"
-        alignItems="center"
-        gap="8px"
+        as={Button}
+        variant="ghost"
+        isDisabled={isDisabled}
+        _disabled={{
+          "&>div": {
+            bg: "glassBackground",
+          },
+        }}
+        _hover={{ bg: "primaryRadial" }}
+        _focus={{ bg: "primaryRadial" }}
+        bg={"primaryRadial"}
+        h="52px"
         w="full"
-        h="full"
+        onClick={() => {
+          if (hintType === HINTS.extraTime) {
+            setShowExtraTime(true);
+            counterDispatch((prev) => prev + 3);
+          }
+          hintDispatch((prev) => ({
+            ...prev,
+            usedHints: [
+              ...prev.usedHints,
+              { hintType, questionId: activeQuestionId },
+            ],
+          }));
+        }}
       >
-        {selectedHint[hintType].icon}
-
-        <Text
-          fontSize="sm"
-          fontWeight="700"
-          color={isDisabled ? "gray.400" : "gray.0"}
+        <HStack
+          bg="gray.700"
+          p="8px"
+          borderRadius="10px"
+          justifyContent="center"
+          alignItems="center"
+          gap="8px"
+          w="full"
+          h="full"
         >
-          {selectedHint[hintType].headline}
-        </Text>
-      </HStack>
-    </VStack>
+          {selectedHint[hintType].icon}
+
+          <Text
+            fontSize="sm"
+            fontWeight="700"
+            color={isDisabled ? "gray.400" : "gray.0"}
+          >
+            {selectedHint[hintType].headline}
+          </Text>
+        </HStack>
+      </VStack>
+      <AnimatePresence>
+        {hintType === HINTS.extraTime && showExtraTime && (
+          <motion.div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+              width: 42,
+              height: 42,
+              borderRadius: "50%",
+              backgroundImage: "var(--chakra-colors-primaryRadial)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            initial={{ opacity: 0 }}
+            animate={{
+              y: [0, -100, -200],
+              x: [0, -20, 0],
+              opacity: [1, 1, 0],
+            }}
+            transition={{ duration: 2, ease: "linear" }}
+          >
+            <Text fontWeight="600" color="gray.0" fontSize="md">
+              +3 s
+            </Text>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
