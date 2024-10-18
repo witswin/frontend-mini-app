@@ -3,7 +3,7 @@ import HeaderBg from "@/assets/QuestionHeaderBg.svg";
 import Image from "next/image";
 import { useState } from "react";
 import { ColorFullText } from "@/components/ColorFullText";
-import Prize from "@/assets/Prize.png";
+import { Gift } from "@/components/Icons";
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
@@ -45,7 +45,7 @@ export const TopNavbar = () => {
         w="full"
         justifyContent="space-between"
         px="12px"
-        pt="4px"
+        pt="16px"
       >
         <VStack alignItems="start">
           <Text color="gray.40" fontSize="sm" fontWeight={700}>
@@ -62,7 +62,7 @@ export const TopNavbar = () => {
         </VStack>
 
         <HStack gap="6px" alignItems="center" mt="30px">
-          <Image src={Prize} alt="Prize" />
+          <Gift />
 
           <ColorFullText fontSize="4xl" fontWeight={700} textContent={prize} />
           <ColorFullText fontSize="xs" fontWeight={700} textContent={"USDT"} />
