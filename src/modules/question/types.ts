@@ -1,11 +1,18 @@
-import { QUESTION_STATE } from "@/types";
+import { HINTS, QUESTION_STATE } from "@/types";
 
 export type questionData = {
-  state: QUESTION_STATE;
-  timer: number;
-  question: {
+  activeQuestionId: number;
+  questions: {
+    title: string;
+    state: QUESTION_STATE;
+    timer: number;
     id: number;
     correct: number;
-    choices: { id: string; title: string }[];
-  };
+    choices: { id: string; title: string; stats: string }[];
+  }[];
+};
+
+export type hint = {
+  usedHints: { questionId: number; hintType: HINTS }[];
+  selectedHints: HINTS[];
 };

@@ -7,15 +7,16 @@ import { useState } from "react";
 import { Text } from "@chakra-ui/react";
 
 export const QuestionCard = () => {
-  const {
-    question: { choices },
-  } = useQuestionData();
+  const { questions, activeQuestionId } = useQuestionData();
+  const { choices, state, timer, title } = questions.find(
+    (item) => item.id === activeQuestionId
+  );
   const [selectedChoice, setSelectedChoice] = useState<string>(undefined);
 
   return (
     <Card>
-      <QuestionBanner content="Why can’t we use fork for eating soup?" />
-      <ProgressTimer hasCounter hasIcon />
+      <QuestionBanner content={title} />
+      <ProgressTimer timer={timer} state={state} hasCounter hasIcon />
       {choices.map((choice) => (
         <ChoiceButton
           setSelectedChoice={setSelectedChoice}

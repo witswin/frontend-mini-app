@@ -8,12 +8,26 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/effect-coverflow";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { CircularPattern } from "@/components/CircularPattern";
 import { SelectedQuizProvider } from "@/modules/quiz/context";
+import { NextPage } from "next";
 
-export default function App({ Component, pageProps }: AppProps) {
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+function commonLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+}
+
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component?.getLayout || commonLayout;
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -35,9 +49,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <CircularPattern />
         <QueryClientProvider client={queryClient}>
           <SelectedQuizProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            {getLayout(<Component {...pageProps} />)}
           </SelectedQuizProvider>
         </QueryClientProvider>
       </ChakraProvider>
