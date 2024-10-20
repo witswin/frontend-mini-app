@@ -1,7 +1,6 @@
 import { QuizPrize } from "@/components/QuizCard";
 import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
-import { HintUnit } from "@/components/Icons";
 import { useMemo } from "react";
 import { useSelectedQuiz } from "../../hooks";
 import { TbBulbFilled } from "react-icons/tb";
@@ -24,14 +23,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
         ),
       },
       [STATUS_ENROLL_VALUE.TIME]: {
-        title: (
-          <Text fontSize="lg" color="gray.0" fontWeight="700">
-            {title}
-          </Text>
-        ),
-      },
-      [STATUS_ENROLL_VALUE.HINT]: {
-        icon: <HintUnit />,
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
             {title}
