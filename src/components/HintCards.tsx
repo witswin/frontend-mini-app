@@ -18,7 +18,7 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
         icon: (
           <Widget
             iconStyle="BoldDuotone"
-            size={24}
+            size={32}
             color="var(--chakra-colors-blue)"
           />
         ),
@@ -29,7 +29,7 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
         icon: (
           <AlarmAdd
             iconStyle="Bold"
-            size={24}
+            size={32}
             color="var(--chakra-colors-blue)"
           />
         ),
@@ -40,7 +40,7 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
         icon: (
           <UsersGroupTwoRounded
             iconStyle="Bold"
-            size={24}
+            size={32}
             color="var(--chakra-colors-blue)"
           />
         ),

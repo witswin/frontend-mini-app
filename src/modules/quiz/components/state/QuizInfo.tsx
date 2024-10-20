@@ -3,9 +3,9 @@ import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
 import { useMemo } from "react";
 import { useSelectedQuiz } from "../../hooks";
-import { TbBulbFilled } from "react-icons/tb";
 import { HintCard } from "@/components/HintCards";
 import { useHints } from "@/modules/question/hooks";
+import { LightbulbBolt } from "solar-icon-set";
 
 interface ValueCardProps {
   title: string | number;
@@ -95,7 +95,8 @@ export const QuizInfo = () => {
         width="full"
       >
         <HStack gap="4px" alignItems="start">
-          <TbBulbFilled size={25} />
+          {/* <TbBulbFilled size={25} /> */}
+          <LightbulbBolt iconStyle="Bold" size={25} />
           <Text fontSize="3xl" fontWeight="700">
             Hints
           </Text>
