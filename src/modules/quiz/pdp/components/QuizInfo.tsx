@@ -15,11 +15,11 @@ import { ArticleCard } from "../../components/ArticleCard";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { QUIZ_STATE } from "../types";
-import { TbArrowBadgeRightFilled, TbLogout } from "react-icons/tb";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { axiosClient } from "@/configs/axios";
 import { quizType } from "@/globalTypes";
+import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -39,7 +39,6 @@ export const QuizInfo = () => {
         .then((res) => res.data),
   });
 
-
   const CTAButton = useMemo(
     () => ({
       [QUIZ_STATE.default]: isEnrolled ? null : (
@@ -49,7 +48,12 @@ export const QuizInfo = () => {
       ),
       [QUIZ_STATE.lobby]: isEnrolled ? (
         <Button
-          rightIcon={<TbArrowBadgeRightFilled />}
+          rightIcon={
+            <DoubleAltArrowRight
+              color="var(--chakra-colors-gray-0)"
+              iconStyle="LineDuotone"
+            />
+          }
           width="full"
           size="lg"
           variant="solid"
@@ -63,7 +67,12 @@ export const QuizInfo = () => {
       ),
       [QUIZ_STATE.started]: isEnrolled ? (
         <Button
-          rightIcon={<TbArrowBadgeRightFilled />}
+          rightIcon={
+            <DoubleAltArrowRight
+              color="var(--chakra-colors-gray-0)"
+              iconStyle="LineDuotone"
+            />
+          }
           width="full"
           size="lg"
           variant="solid"
@@ -78,7 +87,12 @@ export const QuizInfo = () => {
       [QUIZ_STATE.penalty]:
         heart > 0 && isEnrolled ? (
           <Button
-            rightIcon={<TbArrowBadgeRightFilled />}
+            rightIcon={
+              <DoubleAltArrowRight
+                color="var(--chakra-colors-gray-0)"
+                iconStyle="LineDuotone"
+              />
+            }
             width="full"
             size="lg"
             variant="solid"
@@ -161,10 +175,23 @@ export const QuizInfo = () => {
               {data?.participantsCount} / 1,400 people enrolled
             </Text>
           </VStack>
-          <CountDown date={new Date(data?.startAt).getTime()} />
+          {data?.startAt && (
+            <CountDown date={new Date(data?.startAt).getTime()} />
+          )}
+
           {isEnrolled ? (
             <Box width="full" position="relative" zIndex={0}>
-              <Button variant="gray" width="full" leftIcon={<TbLogout />}>
+              <Button
+                variant="gray"
+                width="full"
+                leftIcon={
+                  <Logout3
+                    size={20}
+                    iconStyle="LineDuotone"
+                    color="var(--chakra-colors-gray-0)"
+                  />
+                }
+              >
                 Cancel Enrollment
               </Button>
             </Box>

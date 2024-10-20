@@ -1,5 +1,4 @@
 import { Badge, Button, HStack, StackProps, Text } from "@chakra-ui/react";
-import { TbCheck } from "react-icons/tb";
 
 interface RequirementCardProps extends StackProps {
   title: string;
@@ -30,7 +29,8 @@ export const RequirementCard = ({
           size="md"
           variant="primary"
         >
-          <TbCheck />
+          {/* TODO search about icon */}
+          {/* <Check /> */}
         </Badge>
       ) : (
         <Button onClick={onClick} size="mini" variant="outline">

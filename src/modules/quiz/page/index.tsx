@@ -67,7 +67,7 @@ export const QuizPLP = () => {
           },
         }}
       >
-        {[...data?.results,...data?.results]?.map((quiz: quizType) => (
+        {data?.results?.map((quiz: quizType) => (
           <SwiperSlide key={quiz?.id} style={{ width: "fit-content" }}>
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>

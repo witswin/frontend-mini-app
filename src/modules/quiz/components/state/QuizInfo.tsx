@@ -1,7 +1,6 @@
 import { QuizPrize } from "@/components/QuizCard";
 import { Center, Flex, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
-import { HintUnit, HourGlass, Question } from "@/components/Icons";
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSelectedQuiz } from "../../hooks";
@@ -15,7 +14,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
   const statusComponents = useMemo(() => {
     return {
       [STATUS_ENROLL_VALUE.QUESTION]: {
-        icon: <Question />,
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
             {title}
@@ -23,7 +21,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
         ),
       },
       [STATUS_ENROLL_VALUE.TIME]: {
-        icon: <HourGlass />,
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
             {title}
@@ -31,7 +28,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
         ),
       },
       [STATUS_ENROLL_VALUE.HINT]: {
-        icon: <HintUnit />,
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
             {title}
@@ -60,7 +56,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
       >
         {subTitle}
       </Text>
-      {statusComponents[status].icon}
     </VStack>
   );
 };
