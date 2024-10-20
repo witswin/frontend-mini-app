@@ -6,10 +6,10 @@ import {
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
-import { TbHeart, TbWallet } from "react-icons/tb";
 import HeaderBg from "@/assets/HeaderBgImage.svg";
 import Logo from "@/assets/Logo.svg";
 import Image from "next/image";
+import { WalletMoney } from "solar-icon-set";
 
 const WalletStatus = (isConnected: boolean = false) => (
   <Badge
@@ -53,7 +53,7 @@ export const TopNavbar = () => {
       >
         <VStack>
           <HStack gap="2px">
-            <TbHeart size={24} />
+            {/* <Neuron size={24} /> */}
 
             <Badge size="sm" variant="glass">
               {"x "}
@@ -67,11 +67,11 @@ export const TopNavbar = () => {
 
         <VStack>
           <Image src={Logo} alt="wits" />
-        </VStack>
+        </VStack> 
 
         <VStack mr="4px">
           <Box position="relative">
-            <TbWallet size={24} />
+            <WalletMoney iconStyle="BoldDuotone" color="var(--chakra-colors-blue)" size={24} />
             {WalletStatus(isConnected)}
           </Box>
           <Text color="gray.40" fontSize="sm" fontWeight="bold">

@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
-import { ClockPlus, FiftyFifty, UsersGroup } from "./Icons";
 import { HINTS } from "@/types";
 import {
   useCounterDispatch,
@@ -8,6 +8,7 @@ import {
   useQuestionData,
 } from "@/modules/question/hooks";
 import { AnimatePresence, motion } from "framer-motion";
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 
 export const HintButton = ({
   hintType,
@@ -23,21 +24,51 @@ export const HintButton = ({
   const selectedHint: {
     [key in HINTS]: {
       headline: string;
-      icon: React.ReactNode;
+      icon: JSX.Element;
     };
   } = useMemo(
     () => ({
       [HINTS.fiftyFifty]: {
         headline: "50/50",
-        icon: <FiftyFifty isDisabled={isDisabled} width={22} height={22} />,
+        icon: (
+          <Widget
+            iconStyle="BoldDuotone"
+            size={24}
+            color={
+              isDisabled
+                ? "var(--chakra-colors-gray-40)"
+                : "var(--chakra-colors-blue)"
+            }
+          />
+        ),
       },
       [HINTS.extraTime]: {
         headline: "Extra Time",
-        icon: <ClockPlus isDisabled={isDisabled} width={22} height={22} />,
+        icon: (
+          <AlarmAdd
+            iconStyle="Bold"
+            size={24}
+            color={
+              isDisabled
+                ? "var(--chakra-colors-gray-40)"
+                : "var(--chakra-colors-blue)"
+            }
+          />
+        ),
       },
       [HINTS.stats]: {
         headline: "Audience Poll",
-        icon: <UsersGroup isDisabled={isDisabled} width={22} height={22} />,
+        icon: (
+          <UsersGroupTwoRounded
+            iconStyle="Bold"
+            size={24}
+            color={
+              isDisabled
+                ? "var(--chakra-colors-gray-40)"
+                : "var(--chakra-colors-blue)"
+            }
+          />
+        ),
       },
     }),
     [isDisabled]

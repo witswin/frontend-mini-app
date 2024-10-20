@@ -4,7 +4,7 @@ import { INFO_CARD_STATE } from "@/types";
 import { Button, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { memo, useMemo, useState } from "react";
-import { TbArrowBadgeRightFilled } from "react-icons/tb";
+import { DoubleAltArrowRight } from "solar-icon-set";
 
 const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
   const [cardState] = useState(state);
@@ -26,7 +26,13 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
         subHeadline: "Ready to challenge your brain\n and earn rewards?",
         btnObject: {
           btnText: "Get Started",
-          btnIcon: <TbArrowBadgeRightFilled size={24} color="gray.0" />,
+          btnIcon: (
+            <DoubleAltArrowRight
+              size={24}
+              color="var(--chakra-colors-gray-0)"
+              iconStyle="LineDuotone"
+            />
+          ),
           href: "/quiz",
         },
       },
