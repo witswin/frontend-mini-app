@@ -21,7 +21,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { TbArrowBadgeRightFilled } from "react-icons/tb";
+import { DoubleAltArrowRight } from "solar-icon-set";
 // import { Swiper, SwiperSlide } from "swiper/react";
 
 const CountDown = dynamic(
@@ -77,8 +77,9 @@ const QuizCard = forwardRef(
           text: "Join Now",
           onClick: () => {},
           icon: (
-            <TbArrowBadgeRightFilled
-              size="24px"
+            <DoubleAltArrowRight
+              iconStyle="LineDuotone"
+              size={24}
               color="var(--chakra-colors-gray-0)"
             />
           ),
@@ -88,8 +89,9 @@ const QuizCard = forwardRef(
           text: "Go to Quiz Lobby",
           onClick: () => {},
           icon: (
-            <TbArrowBadgeRightFilled
-              size="24px"
+            <DoubleAltArrowRight
+              iconStyle="LineDuotone"
+              size={24}
               color="var(--chakra-colors-gray-0)"
             />
           ),

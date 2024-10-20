@@ -1,9 +1,9 @@
 import { QUESTION_STATE } from "@/types";
 import { HStack, StackProps, Text } from "@chakra-ui/react";
 import { CSSProperties, useMemo } from "react";
-import { TimerClock } from "./Icons";
 import { Progress } from "./Progress";
 import { AnimatePresence, motion } from "framer-motion";
+import { Alarm } from "solar-icon-set";
 
 interface TimeCounterProps extends CSSProperties {
   count: number;
@@ -70,6 +70,15 @@ export const ProgressTimer = ({
     }),
     []
   );
+  const color = useMemo(
+    () => ({
+      [QUESTION_STATE.default]: "var(--chakra-colors-blue)",
+      [QUESTION_STATE.answered]: "var(--chakra-colors-gray-100)",
+      [QUESTION_STATE.alert]: "var(--chakra-colors-red-400)",
+      [QUESTION_STATE.freeze]: "var(--chakra-colors-gray-100)",
+    }),
+    []
+  );
 
   return (
     <HStack
@@ -79,7 +88,7 @@ export const ProgressTimer = ({
       width="full"
       {...otherProps}
     >
-      {hasIcon && <TimerClock state={state} />}
+      {hasIcon && <Alarm size={28} iconStyle="Bold" color={color[state]} />}
       <Progress
         value={(timer * 100) / 10}
         filledTrack={{

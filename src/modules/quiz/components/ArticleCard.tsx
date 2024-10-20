@@ -1,7 +1,7 @@
 import { Card } from "@/components/Card";
-import { ArrowBadgeRight } from "@/components/Icons";
 import { Button, HStack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
+import { DoubleAltArrowRight } from "solar-icon-set";
 
 interface ArticleCardProps {
   header?: {
@@ -56,7 +56,13 @@ export const ArticleCard = ({
                 e.preventDefault();
                 header.CTAAction();
               }}
-              rightIcon={<ArrowBadgeRight />}
+              rightIcon={
+                <DoubleAltArrowRight
+                  iconStyle="LineDuotone"
+                  color="var(--chakra-colors-blue)"
+                  size={16}
+                />
+              }
               variant="ghost"
               size="mini"
             >

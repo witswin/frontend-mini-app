@@ -1,8 +1,8 @@
 import { Box, Card, Text, VStack } from "@chakra-ui/react";
 import React, { useMemo } from "react";
-import { TbX } from "react-icons/tb";
-import { ClockPlus, FiftyFifty, Plus, UsersGroup } from "./Icons";
 import { HINTS } from "@/types";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useHintsDispatch } from "@/modules/question/hooks";
 
 export const HintCard = ({ hint }: { hint: HINTS }) => {
@@ -15,17 +15,35 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
       [HINTS.fiftyFifty]: {
         headline: "50/50",
         subHeadline: "Remove 2 Answers",
-        icon: <FiftyFifty />,
+        icon: (
+          <Widget
+            iconStyle="BoldDuotone"
+            size={24}
+            color="var(--chakra-colors-blue)"
+          />
+        ),
       },
       [HINTS.extraTime]: {
         headline: "Extra Time",
         subHeadline: "3 More Seconds",
-        icon: <ClockPlus />,
+        icon: (
+          <AlarmAdd
+            iconStyle="Bold"
+            size={24}
+            color="var(--chakra-colors-blue)"
+          />
+        ),
       },
       [HINTS.stats]: {
         headline: "Audience Poll",
         subHeadline: "See Others Answers",
-        icon: <UsersGroup />,
+        icon: (
+          <UsersGroupTwoRounded
+            iconStyle="Bold"
+            size={24}
+            color="var(--chakra-colors-blue)"
+          />
+        ),
       },
     }),
     []
@@ -46,7 +64,7 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
       cursor={isHintCardEmpty ? "pointer" : "default"}
     >
       {isHintCardEmpty ? (
-        <Plus />
+        <AddIcon color="blue" boxSize="32px" fontSize="32px" />
       ) : (
         <>
           <Box
@@ -65,7 +83,7 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
             }}
             cursor="pointer"
           >
-            <TbX color="gray.60" />
+            <CloseIcon color="gray.60" />
           </Box>
 
           {selectedHint[hint].icon}
