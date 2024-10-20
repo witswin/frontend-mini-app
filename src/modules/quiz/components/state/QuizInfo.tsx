@@ -2,12 +2,11 @@ import { QuizPrize } from "@/components/QuizCard";
 import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
 import { HintUnit } from "@/components/Icons";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useMemo } from "react";
 import { useSelectedQuiz } from "../../hooks";
 import { TbBulbFilled } from "react-icons/tb";
 import { HintCard } from "@/components/HintCards";
-import { HINTS } from "@/types";
+import { useHints } from "@/modules/question/hooks";
 
 interface ValueCardProps {
   title: string | number;
@@ -67,24 +66,11 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
 
 export const QuizInfo = () => {
   const selectedQuiz = useSelectedQuiz();
-  const [userHint, setUserHint] = useState<HINTS[] | undefined[]>([
-    HINTS.extraTime,
-    HINTS.fiftyFifty,
-  ]);
+  const hints = useHints();
+  console.log(hints.selectedHints[0]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        alignItems: "center",
-        rowGap: "16px",
-      }}
-    >
+    <Flex flexDirection="column" width="100%" alignItems="center" rowGap="16px">
       <Center
         py="12px"
         borderRadius="10px"
@@ -124,22 +110,10 @@ export const QuizInfo = () => {
           </Text>
         </HStack>
         <Flex width="full" columnGap="12px">
-          <HintCard
-            hintObject={{
-              hint: userHint[0],
-              hints: userHint,
-              setHints: setUserHint,
-            }}
-          />
-          <HintCard
-            hintObject={{
-              hint: userHint[1],
-              hints: userHint,
-              setHints: setUserHint,
-            }}
-          />
+          <HintCard hint={hints.selectedHints[0]} />
+          <HintCard hint={hints.selectedHints[1]} />
         </Flex>
       </VStack>
-    </motion.div>
+    </Flex>
   );
 };

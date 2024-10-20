@@ -1,19 +1,12 @@
 import { Box, Card, Text, VStack } from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction, useMemo } from "react";
+import React, { useMemo } from "react";
 import { TbX } from "react-icons/tb";
 import { ClockPlus, FiftyFifty, Plus, UsersGroup } from "./Icons";
 import { HINTS } from "@/types";
+import { useHintsDispatch } from "@/modules/question/hooks";
 
-interface HINTS_OBJECT {
-  hintObject: {
-    hint: HINTS;
-    hints: HINTS[];
-    setHints: Dispatch<SetStateAction<HINTS[] | undefined[]>>;
-  };
-}
-
-export const HintCard = ({ hintObject }: HINTS_OBJECT) => {
-  const { hint, hints, setHints } = hintObject;
+export const HintCard = ({ hint }: { hint: HINTS }) => {
+  const setHints = useHintsDispatch();
 
   const isHintCardEmpty = hint === undefined;
 
@@ -63,7 +56,12 @@ export const HintCard = ({ hintObject }: HINTS_OBJECT) => {
             color="gray.60"
             onClick={(e) => {
               e.stopPropagation();
-              setHints(hints.filter((h) => h !== hint));
+              setHints((prevState) => ({
+                ...prevState,
+                selectedHints: prevState.selectedHints.filter(
+                  (h) => h !== hint
+                ),
+              }));
             }}
             cursor="pointer"
           >

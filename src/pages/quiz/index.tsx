@@ -1,3 +1,4 @@
+import { HintProvider } from "@/modules/question/context";
 import { EnrolledModalProvider } from "@/modules/quiz/context";
 import { QuizPLP } from "@/modules/quiz/page";
 import { prefetchSSRData } from "@/utils";
@@ -14,7 +15,9 @@ const Index = ({ dehydratedState }: IndexProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <EnrolledModalProvider>
-        <QuizPLP />
+        <HintProvider>
+          <QuizPLP />
+        </HintProvider>
       </EnrolledModalProvider>
     </HydrationBoundary>
   );
