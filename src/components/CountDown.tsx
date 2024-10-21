@@ -1,15 +1,14 @@
-import { BoxProps, HStack, Icon, Text, VStack } from "@chakra-ui/react";
+import { BoxProps, HStack, Text, VStack } from "@chakra-ui/react";
 import Countdown, { CountdownRenderProps } from "react-countdown";
-import { IconType } from "react-icons";
-import { Calendar, Clock } from "./Icons";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
+import { CalendarMark, ClockCircle } from "solar-icon-set";
 
 interface TimerBoxProps extends BoxProps {
   topText: number | string;
-  topIcon?: IconType;
+  topIcon?: ReactNode;
   bottomText: string;
-  bottomIcon?: IconType;
+  bottomIcon?: ReactNode;
   isComplete?: boolean;
   isDisabled?: boolean;
 }
@@ -32,7 +31,7 @@ const TimerBox = ({
       {...boxProps}
     >
       <HStack columnGap="4px" width="full">
-        {topIcon && <Icon as={topIcon} />}
+        {topIcon}
         <Text
           fontWeight="600"
           lineHeight="20px"
@@ -58,7 +57,7 @@ const TimerBox = ({
         </Text>
       </HStack>
       <HStack columnGap="4px" width="full">
-        {bottomIcon && <Icon as={bottomIcon} />}
+        {bottomIcon}
         <Text
           fontWeight="600"
           fontSize={bottomIcon ? "13px" : "10px"}
@@ -107,10 +106,22 @@ export const CountDown = ({
     return (
       <HStack justifyContent="flex-start" width="full" columnGap="12px">
         <TimerBox
-          topIcon={Calendar}
+          topIcon={
+            <CalendarMark
+              size={16}
+              iconStyle="Bold"
+              color="var(--chakra-colors-gray-40)"
+            />
+          }
           topText={dateString[0]}
           bottomText={dateString[1]}
-          bottomIcon={Clock}
+          bottomIcon={
+            <ClockCircle
+              size={16}
+              iconStyle="Bold"
+              color="var(--chakra-colors-gray-40)"
+            />
+          }
           flex="1"
           {...dateTimeStyle}
         />
