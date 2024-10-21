@@ -199,7 +199,7 @@ interface HintProviderProps extends PropsWithChildren {}
 export const HintProvider = ({ children }: HintProviderProps) => {
   const [state, setState] = useState<hint>({
     usedHints: [],
-    selectedHints: [HINTS.extraTime, HINTS.fiftyFifty],
+    selectedHints: [HINTS.stats, HINTS.fiftyFifty],
   });
 
   return (
