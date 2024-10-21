@@ -1,9 +1,11 @@
 import { QuizPrize } from "@/components/QuizCard";
-import { Center, Flex, Text, VStack } from "@chakra-ui/react";
+import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
 import { useMemo } from "react";
-import { motion } from "framer-motion";
 import { useSelectedQuiz } from "../../hooks";
+import { HintCard } from "@/components/HintCards";
+import { useHints } from "@/modules/question/hooks";
+import { LightbulbBolt } from "solar-icon-set";
 
 interface ValueCardProps {
   title: string | number;
@@ -27,13 +29,6 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
           </Text>
         ),
       },
-      [STATUS_ENROLL_VALUE.HINT]: {
-        title: (
-          <Text fontSize="lg" color="gray.0" fontWeight="700">
-            {title}
-          </Text>
-        ),
-      },
     };
   }, []);
 
@@ -44,7 +39,7 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
       borderColor="gray.400"
       bg="glassBackground"
       flex={1}
-      py="8px"
+      py="12px"
     >
       {statusComponents[status].title}
       <Text
@@ -62,20 +57,11 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
 
 export const QuizInfo = () => {
   const selectedQuiz = useSelectedQuiz();
+  const hints = useHints();
+  console.log(hints.selectedHints[0]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        alignItems: "center",
-        rowGap: "16px",
-      }}
-    >
+    <Flex flexDirection="column" width="100%" alignItems="center" rowGap="16px">
       <Center
         py="12px"
         borderRadius="10px"
@@ -98,12 +84,28 @@ export const QuizInfo = () => {
           subTitle="Each Question"
           title="10 sec"
         />
-        <ValueCard
-          status={STATUS_ENROLL_VALUE.HINT}
-          subTitle={`${selectedQuiz?.hintCount} Hint`}
-          title={selectedQuiz?.hintCount}
-        />
       </Flex>
-    </motion.div>
+
+      <VStack
+        borderRadius="8px"
+        border="1px solid"
+        borderColor="gray.400"
+        bg="glassBackground"
+        p="12px"
+        width="full"
+      >
+        <HStack gap="4px" alignItems="start">
+          {/* <TbBulbFilled size={25} /> */}
+          <LightbulbBolt iconStyle="Bold" size={25} />
+          <Text fontSize="3xl" fontWeight="700">
+            Hints
+          </Text>
+        </HStack>
+        <Flex width="full" columnGap="12px">
+          <HintCard hint={hints.selectedHints[0]} />
+          <HintCard hint={hints.selectedHints[1]} />
+        </Flex>
+      </VStack>
+    </Flex>
   );
 };

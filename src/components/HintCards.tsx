@@ -3,9 +3,12 @@ import React, { useMemo } from "react";
 import { HINTS } from "@/types";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
+import { useHintsDispatch } from "@/modules/question/hooks";
 
-export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
-  const isHintCardEmpty = hintType === undefined;
+export const HintCard = ({ hint }: { hint: HINTS }) => {
+  const setHints = useHintsDispatch();
+
+  const isHintCardEmpty = hint === undefined;
 
   const selectedHint = useMemo(
     () => ({
@@ -15,7 +18,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
         icon: (
           <Widget
             iconStyle="BoldDuotone"
-            size={24}
+            size={32}
             color="var(--chakra-colors-blue)"
           />
         ),
@@ -26,7 +29,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
         icon: (
           <AlarmAdd
             iconStyle="Bold"
-            size={24}
+            size={32}
             color="var(--chakra-colors-blue)"
           />
         ),
@@ -37,7 +40,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
         icon: (
           <UsersGroupTwoRounded
             iconStyle="Bold"
-            size={24}
+            size={32}
             color="var(--chakra-colors-blue)"
           />
         ),
@@ -48,7 +51,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
 
   return (
     <Card
-      bg="rgba(110, 129, 238, 0.08)"
+      bg="glassBackground"
       p="8px"
       borderRadius="8px"
       justifyContent="center"
@@ -57,7 +60,7 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
       gap="8px"
       h="102px"
       w="full"
-      onClick={isHintCardEmpty && (() => {})}
+      {...(isHintCardEmpty && { onClick: () => {} })}
       cursor={isHintCardEmpty ? "pointer" : "default"}
     >
       {isHintCardEmpty ? (
@@ -69,20 +72,28 @@ export const HintCard = ({ hintType }: { hintType?: HINTS }) => {
             top="9px"
             right="9px"
             color="gray.60"
-            onClick={() => {}}
+            onClick={(e) => {
+              e.stopPropagation();
+              setHints((prevState) => ({
+                ...prevState,
+                selectedHints: prevState.selectedHints.filter(
+                  (h) => h !== hint
+                ),
+              }));
+            }}
             cursor="pointer"
           >
             <CloseIcon color="gray.60" />
           </Box>
 
-          {selectedHint[hintType].icon}
+          {selectedHint[hint].icon}
 
           <VStack gap="2px" w="full">
             <Text fontSize="lg" color="gray.0">
-              {selectedHint[hintType]?.headline}
+              {selectedHint[hint]?.headline}
             </Text>
             <Text fontSize="sm" color="gray.60">
-              {selectedHint[hintType]?.subHeadline}
+              {selectedHint[hint]?.subHeadline}
             </Text>
           </VStack>
         </>
