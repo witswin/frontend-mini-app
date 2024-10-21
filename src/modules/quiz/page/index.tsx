@@ -41,8 +41,7 @@ export const QuizPLP = () => {
         Find exciting quizzes to join and earn points!
       </Text>
 
-      {/* the below part should be un-commented */}
-      {/* <ChakraSwiper
+      <ChakraSwiper
         py="2px"
         width="full"
         slidesPerView="auto"
@@ -71,7 +70,7 @@ export const QuizPLP = () => {
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}
-      </ChakraSwiper> */}
+      </ChakraSwiper>
 
       {/* this button should be removed */}
       <Button onClick={onOpen}>open</Button>
