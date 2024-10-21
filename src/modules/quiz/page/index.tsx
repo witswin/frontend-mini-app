@@ -1,10 +1,9 @@
 import { ColorFullText } from "@/components/ColorFullText";
-import { Button, chakra, Text, VStack } from "@chakra-ui/react";
+import { chakra, Text, VStack } from "@chakra-ui/react";
 import { EffectCoverflow } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MemoizedSwiperItem } from "../components/QuizItem";
 import { EnrolledCard } from "../components/EnrolledCard";
-import { useEnrolledModalProps } from "../hooks";
 import { axiosClient } from "@/configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { quizType } from "@/globalTypes";
@@ -12,8 +11,6 @@ import { quizType } from "@/globalTypes";
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
-  const { onOpen } = useEnrolledModalProps();
-
   const { data } = useQuery({
     queryKey: ["quizzes"],
     queryFn: async () =>
@@ -71,9 +68,6 @@ export const QuizPLP = () => {
           </SwiperSlide>
         ))}
       </ChakraSwiper>
-
-      {/* this button should be removed */}
-      <Button onClick={onOpen}>open</Button>
 
       <EnrolledCard />
     </VStack>

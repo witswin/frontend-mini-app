@@ -18,7 +18,7 @@ import { QuizTask } from "./state/QuizTask";
 import { QuizEnrolled } from "./state/QuizEnrolled";
 
 export const EnrolledCard = () => {
-  const { onClose } = useEnrolledModalProps();
+  const { onClose, isOpen } = useEnrolledModalProps();
   const selectedQuiz = useSelectedQuiz();
 
   const [enrollCardState, setEnrollCardState] = useState(
@@ -59,7 +59,6 @@ export const EnrolledCard = () => {
       },
     };
   }, []);
-  const { isOpen } = useEnrolledModalProps();
 
   return (
     <>
@@ -101,7 +100,18 @@ export const EnrolledCard = () => {
             </Text>
           </HStack>
 
-          <DrawerBody>
+          <DrawerBody
+            sx={{
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+
+              "&": {
+                "-ms-overflow-style": "none",
+                "scrollbar-width": "none",
+              },
+            }}
+          >
             <VStack gap="24px">
               <Img
                 mt="8px"
