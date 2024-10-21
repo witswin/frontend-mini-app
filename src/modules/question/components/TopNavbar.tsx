@@ -39,13 +39,7 @@ export const TopNavbar = () => {
         />
       </Box>
 
-      <HStack
-        zIndex="docked"
-        w="full"
-        justifyContent="space-between"
-        px="12px"
-        pt="16px"
-      >
+      <HStack zIndex="docked" w="full" justifyContent="space-between" px="12px">
         <VStack alignItems="start">
           <Text color="gray.40" fontSize="sm" fontWeight={700}>
             Question
