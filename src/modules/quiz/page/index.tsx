@@ -7,6 +7,8 @@ import { EnrolledCard } from "../components/EnrolledCard";
 import { axiosClient } from "@/configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { quizType } from "@/globalTypes";
+import { Timer } from "../components/Timer";
+import { useEffect, useState } from "react";
 
 const ChakraSwiper = chakra(Swiper);
 
@@ -25,7 +27,7 @@ export const QuizPLP = () => {
       width="full"
       height="full"
     >
-      <ColorFullText textContent="Quiz Space" fontSize="5xl" />
+      {/* <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Text
         fontWeight="600"
         color="gray.60"
@@ -69,7 +71,8 @@ export const QuizPLP = () => {
         ))}
       </ChakraSwiper>
 
-      <EnrolledCard />
+      <EnrolledCard /> */}
+      <Timer />
     </VStack>
   );
 };
