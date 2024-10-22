@@ -15,6 +15,20 @@ export const baseTheme = extendTheme({
   },
   styles: {
     global: {
+      "*::-webkit-scrollbar": {
+        width: "6px",
+        height: "6px",
+      },
+      "*::-webkit-scrollbar-track": {
+        background: "transparent",
+      },
+      "*::-webkit-scrollbar-thumb": {
+        borderRadius: "14px",
+        background: "glassBackground",
+        "&:hover": {
+          background: "rgba(217,217,217,0.5)",
+        },
+      },
       body: {
         minH: "100vh",
         width: "100%",

@@ -4,10 +4,12 @@ import { Card } from "@/components/Card";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
 import { QuestionBanner } from "../components/QuestionBanner";
-import { HINTS, QUESTION_STATE } from "@/types";
+import { CARD_STATE, HINTS, QUESTION_STATE } from "@/types";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
+import { useEffect, useMemo, useState } from "react";
+import { Lobby } from "../components/Lobby";
 
 interface HintContentProps {
   hint: HINTS;
@@ -21,12 +23,11 @@ const HintContent = ({ hint }: HintContentProps) => {
   return <HintButton hintType={hint} isDisabled={!!isDisabled} />;
 };
 
-export const Question = () => {
+const QuizPage = () => {
   const { questions, activeQuestionId } = useQuestionData();
   const activeQuestion = questions.find((item) => item.id === activeQuestionId);
 
   const selectedHints = useHints().selectedHints;
-
   return (
     <VStack height="full" position="relative" width="full">
       {questions.map((item, index, array) => (
@@ -121,5 +122,41 @@ export const Question = () => {
           )}
       </AnimatePresence>
     </VStack>
+  );
+};
+
+export const Question = () => {
+  const [pageState, setState] = useState<
+    CARD_STATE.join | CARD_STATE.lobby | CARD_STATE.watch
+  >(CARD_STATE.lobby);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setState(CARD_STATE.join);
+    }, 3000);
+  }, []);
+
+  const content = useMemo(
+    () => ({
+      lobby: <Lobby />,
+      join: <QuizPage />,
+      watch: <div>watch</div>,
+    }),
+    []
+  );
+
+  return (
+    <AnimatePresence mode="sync">
+      <motion.div
+        key={pageState}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+        style={{ width: "100%" }}
+      >
+        {content[pageState]}
+      </motion.div>
+    </AnimatePresence>
   );
 };
