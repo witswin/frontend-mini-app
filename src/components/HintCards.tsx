@@ -1,11 +1,17 @@
 import { Box, Card, Text, VStack } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { HINTS } from "@/types";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useHintsDispatch } from "@/modules/question/hooks";
 
-export const HintCard = ({ hint }: { hint: HINTS }) => {
+export const HintCard = ({
+  hint,
+  isSelectHintOpen,
+}: {
+  hint: HINTS;
+  isSelectHintOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const setHints = useHintsDispatch();
 
   const isHintCardEmpty = hint === undefined;
@@ -60,7 +66,11 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
       gap="8px"
       h="102px"
       w="full"
-      {...(isHintCardEmpty && { onClick: () => {} })}
+      {...(isHintCardEmpty && {
+        onClick: () => {
+          isSelectHintOpen(true);
+        },
+      })}
       cursor={isHintCardEmpty ? "pointer" : "default"}
     >
       {isHintCardEmpty ? (

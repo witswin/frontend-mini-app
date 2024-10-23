@@ -6,10 +6,12 @@ import { QuizInfo } from "./state/QuizInfo";
 import { QuizTask } from "./state/QuizTask";
 import { QuizEnrolled } from "./state/QuizEnrolled";
 import { BottomModal } from "@/components/BottomModal";
+import { SelectHint } from "./SelectHint";
 
 export const EnrolledCard = () => {
   const { onClose, isOpen } = useEnrolledModalProps();
   const selectedQuiz = useSelectedQuiz();
+  const [selectHintOpen, isSelectHintOpen] = useState(false);
 
   const [enrollCardState, setEnrollCardState] = useState(
     ENROLL_STATUS.quizInfo
@@ -17,7 +19,9 @@ export const EnrolledCard = () => {
 
   const stateComponents = useMemo(() => {
     return {
-      [ENROLL_STATUS.quizInfo]: <QuizInfo />,
+      [ENROLL_STATUS.quizInfo]: (
+        <QuizInfo isSelectHintOpen={isSelectHintOpen} />
+      ),
       [ENROLL_STATUS.task]: <QuizTask />,
       [ENROLL_STATUS.enrolled]: <QuizEnrolled />,
     };
@@ -90,6 +94,8 @@ export const EnrolledCard = () => {
           {button[enrollCardState].title}
         </Button>
       </VStack>
+
+      <SelectHint isOpen={selectHintOpen} setIsOpen={isSelectHintOpen} />
     </BottomModal>
   );
 };
