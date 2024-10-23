@@ -1,23 +1,37 @@
 import { Box, VStack } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export const Timer = ({ count }: { count: number }) => {
+  const [state, setSate] = useState(count);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (state > 0) {
+        setSate((prev) => prev - 1);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <VStack w="full" h="full" justifyContent="center" alignItems="center">
       <motion.div
         style={{
-          width: "2000px",
-          height: "2000px",
+          width: "100%",
+          height: "100%",
           position: "absolute",
-          background:
-            "conic-gradient(from -135deg at 50% 50%, var(--chakra-colors-blue), transparent 100%)",
+          background: `conic-gradient(from -360deg, #6E81EE 0deg, rgba(110, 129, 238, 0) 360deg)`,
         }}
-        animate={{ rotate: 360 }}
+        animate={{
+          background: `conic-gradient(from ${
+            -(360 * state) / count
+          }deg, #6E81EE 0deg, rgba(110, 129, 238, 0) 360deg)`,
+        }}
         transition={{
-          repeat: Infinity,
-          duration: 5,
-          ease: "linear",
+          duration: 1,
         }}
       />
       <Box
@@ -57,7 +71,7 @@ export const Timer = ({ count }: { count: number }) => {
               }}
               transition={{ duration: 1 }}
             >
-              {!!count && count > 0 ? count.toString() : "Go"}
+              {state > 0 ? state.toString() : "Go"}
             </motion.p>
           </AnimatePresence>
         </VStack>
