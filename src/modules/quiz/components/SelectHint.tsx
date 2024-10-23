@@ -1,7 +1,7 @@
 import { BottomModal } from "@/components/BottomModal";
 import { useHintsDispatch } from "@/modules/question/hooks";
 import { HINTS } from "@/types";
-import { Box, ButtonProps, HStack, Tag, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Tag, Text, VStack } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction } from "react";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 
@@ -12,12 +12,7 @@ interface HintProps {
   icon: React.JSX.Element;
 }
 
-const Hint = ({
-  headline,
-  subHeadline,
-  count,
-  icon,
-}: HintProps & ButtonProps) => {
+const Hint = ({ headline, subHeadline, count, icon }: HintProps) => {
   return (
     <HStack
       w="full"
@@ -38,7 +33,6 @@ const Hint = ({
           </Text>
         </VStack>
       </HStack>
-
       <Tag size="lg" variant="colored">
         {count}
       </Tag>
@@ -88,7 +82,6 @@ export const SelectHint = ({
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const setHints = useHintsDispatch();
-  console.log(HINTS["extraTime"]);
 
   return (
     <BottomModal
