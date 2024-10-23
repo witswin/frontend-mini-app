@@ -54,7 +54,7 @@ export const Tag = {
           right: "-1px",
           bottom: "-1px",
           position: "absolute",
-          bg: "var(--chakra-colors-primaryRadial)",
+          bg: "var(--chakra-colors-primaryLinear)",
           width: "calc(100% + 2px )",
           height: "calc(100% + 2px)",
           zIndex: "-1",
