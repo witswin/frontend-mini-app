@@ -10,6 +10,7 @@ import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
 import { useEffect, useMemo, useState } from "react";
 import { Lobby } from "../components/Lobby";
+import { Timer } from "@/modules/quiz/components/Timer";
 
 interface HintContentProps {
   hint: HINTS;
@@ -133,30 +134,37 @@ export const Question = () => {
   useEffect(() => {
     setTimeout(() => {
       setState(CARD_STATE.join);
-    }, 3000);
+    }, 5000);
   }, []);
 
   const content = useMemo(
     () => ({
       lobby: <Lobby />,
       join: <QuizPage />,
-      watch: <div>watch</div>,
+      watch: <Timer count={5} />,
     }),
     []
   );
 
   return (
-    <AnimatePresence mode="sync">
-      <motion.div
-        key={pageState}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1 }}
-        style={{ width: "100%" }}
-      >
-        {content[pageState]}
-      </motion.div>
-    </AnimatePresence>
+    <VStack height="full" width="full">
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={pageState}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          style={{
+            width: "100%",
+            position: "relative",
+            display: "inline-block",
+            height: "100%",
+          }}
+        >
+          {content[pageState]}
+        </motion.div>
+      </AnimatePresence>
+    </VStack>
   );
 };
