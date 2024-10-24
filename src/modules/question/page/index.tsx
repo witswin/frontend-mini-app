@@ -10,7 +10,7 @@ import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
 import { useEffect, useMemo, useState } from "react";
 import { Lobby } from "../components/Lobby";
-import { Timer } from "@/modules/quiz/components/Timer";
+import { QuizTimerScreen } from "../components/QuizTimerScreen ";
 
 interface HintContentProps {
   hint: HINTS;
@@ -141,7 +141,7 @@ export const Question = () => {
     () => ({
       lobby: <Lobby />,
       join: <QuizPage />,
-      watch: <Timer count={5} />,
+      watch: <QuizTimerScreen count={5} />,
     }),
     []
   );

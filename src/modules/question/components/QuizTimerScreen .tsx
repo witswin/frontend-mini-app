@@ -2,7 +2,7 @@ import { Box, VStack } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
-export const Timer = ({ count }: { count: number }) => {
+export const QuizTimerScreen = ({ count }: { count: number }) => {
   const [state, setSate] = useState(count);
 
   useEffect(() => {
