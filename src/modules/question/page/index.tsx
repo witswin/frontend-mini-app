@@ -11,6 +11,7 @@ import { HintButton } from "@/components/HintButtons";
 import { useEffect, useMemo, useState } from "react";
 import { Lobby } from "../components/Lobby";
 import { QuizTimerScreen } from "../components/QuizTimerScreen ";
+import { TopNavbar } from "../components/TopNavbar";
 
 interface HintContentProps {
   hint: HINTS;
@@ -147,24 +148,27 @@ export const Question = () => {
   );
 
   return (
-    <VStack height="full" width="full">
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={pageState}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
-          style={{
-            width: "100%",
-            position: "relative",
-            display: "inline-block",
-            height: "100%",
-          }}
-        >
-          {content[pageState]}
-        </motion.div>
-      </AnimatePresence>
-    </VStack>
+    <>
+      <TopNavbar />
+      <VStack px="16px" height="full" width="full">
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={pageState}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            style={{
+              width: "100%",
+              position: "relative",
+              display: "inline-block",
+              height: "100%",
+            }}
+          >
+            {content[pageState]}
+          </motion.div>
+        </AnimatePresence>
+      </VStack>
+    </>
   );
 };

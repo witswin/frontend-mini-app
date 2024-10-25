@@ -28,9 +28,17 @@ export const TopNavbar = () => {
       justifyContent="center"
       alignItems="center"
       position="relative"
-      mt="-20px"
       px={isLarge ? "16px" : "0"}
+      pb="38px"
     >
+      <Box
+        zIndex={0}
+        width="full"
+        height="full"
+        position="absolute"
+        filter="blur(100px)"
+        background="radial-gradient(101.43% 155% at 49.76% -9%, #9553F6 0%, #6E81EE 29.98%, #63C6E1 100%)"
+      />
       <Box position="absolute" zIndex="base" width="100%" height="100%">
         <Image
           src={HeaderBg}
