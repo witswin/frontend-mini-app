@@ -3,9 +3,7 @@ import { chakra, Text, VStack } from "@chakra-ui/react";
 import { EffectCoverflow } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MemoizedSwiperItem } from "../components/QuizItem";
-import { AnimatePresence } from "framer-motion";
 import { EnrolledCard } from "../components/EnrolledCard";
-import { useEnrolledModalProps } from "../hooks";
 import { axiosClient } from "@/configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { quizType } from "@/globalTypes";
@@ -13,15 +11,11 @@ import { quizType } from "@/globalTypes";
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
-  const { isOpen } = useEnrolledModalProps();
-
   const { data } = useQuery({
     queryKey: ["quizzes"],
     queryFn: async () =>
       await axiosClient.get("quiz/competitions/").then((res) => res.data),
   });
-
-  
 
   return (
     <VStack
@@ -43,6 +37,7 @@ export const QuizPLP = () => {
       >
         Find exciting quizzes to join and earn points!
       </Text>
+
       <ChakraSwiper
         py="2px"
         width="full"
@@ -73,7 +68,8 @@ export const QuizPLP = () => {
           </SwiperSlide>
         ))}
       </ChakraSwiper>
-      <AnimatePresence>{isOpen && <EnrolledCard />}</AnimatePresence>
+
+      <EnrolledCard />
     </VStack>
   );
 };

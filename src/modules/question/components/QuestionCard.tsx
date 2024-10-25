@@ -45,7 +45,7 @@ export const QuestionCard = () => {
           selectedChoice={selectedChoice}
           key={choice.id}
           buttonInfo={choice}
-          isDisabled={
+          disabledFiftyFiftyHint={
             +questionHintInfo?.questionId === +activeQuestionId &&
             disabledChoices?.includes(+choice.id)
           }
