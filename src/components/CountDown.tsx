@@ -80,11 +80,21 @@ interface CountDownProps {
   date: Date | number;
   dateTimeStyle?: BoxProps;
   timerStyle?: BoxProps;
+  containerStyle?: BoxProps;
+  shows: {
+    info?: boolean;
+    day?: boolean;
+    hour?: boolean;
+    min?: boolean;
+    sec?: boolean;
+  };
 }
 export const CountDown = ({
   date,
   dateTimeStyle,
   timerStyle,
+  shows,
+  containerStyle,
 }: CountDownProps) => {
   const renderer = ({
     days,
@@ -105,26 +115,28 @@ export const CountDown = ({
 
     return (
       <HStack justifyContent="flex-start" width="full" columnGap="12px">
-        <TimerBox
-          topIcon={
-            <CalendarMark
-              size={16}
-              iconStyle="Bold"
-              color="var(--chakra-colors-gray-40)"
-            />
-          }
-          topText={dateString[0]}
-          bottomText={dateString[1]}
-          bottomIcon={
-            <ClockCircle
-              size={16}
-              iconStyle="Bold"
-              color="var(--chakra-colors-gray-40)"
-            />
-          }
-          flex="1"
-          {...dateTimeStyle}
-        />
+        {shows.info && (
+          <TimerBox
+            topIcon={
+              <CalendarMark
+                size={16}
+                iconStyle="Bold"
+                color="var(--chakra-colors-gray-40)"
+              />
+            }
+            topText={dateString[0]}
+            bottomText={dateString[1]}
+            bottomIcon={
+              <ClockCircle
+                size={16}
+                iconStyle="Bold"
+                color="var(--chakra-colors-gray-40)"
+              />
+            }
+            flex="1"
+            {...dateTimeStyle}
+          />
+        )}
         <HStack
           flex="1"
           justifyContent="space-between"
@@ -135,46 +147,54 @@ export const CountDown = ({
             </Text>
           }
         >
-          <TimerBox
-            isDisabled={completed}
-            isComplete={days === 0 && !completed}
-            topText={days}
-            bottomText="Day"
-            background="cardBackground"
-            px="6px"
-            py="4px"
-            {...timerStyle}
-          />
-          <TimerBox
-            isDisabled={completed}
-            isComplete={days === 0 && hours === 0 && !completed}
-            topText={hours}
-            bottomText="Hour"
-            background="cardBackground"
-            px="6px"
-            py="4px"
-            {...timerStyle}
-          />
-          <TimerBox
-            isDisabled={completed}
-            isComplete={minutes === 0 && hours === 0 && !completed}
-            topText={minutes}
-            bottomText="Min"
-            background="cardBackground"
-            px="6px"
-            py="4px"
-            {...timerStyle}
-          />
-          <TimerBox
-            isDisabled={completed}
-            isComplete={minutes === 0 && seconds <= 10 && !completed}
-            topText={seconds}
-            bottomText="Sec"
-            background="cardBackground"
-            px="6px"
-            py="4px"
-            {...timerStyle}
-          />
+          {shows.day && (
+            <TimerBox
+              isDisabled={completed}
+              isComplete={days === 0 && !completed}
+              topText={days}
+              bottomText="Day"
+              background="cardBackground"
+              px="6px"
+              py="4px"
+              {...timerStyle}
+            />
+          )}
+          {shows.hour && (
+            <TimerBox
+              isDisabled={completed}
+              isComplete={days === 0 && hours === 0 && !completed}
+              topText={hours}
+              bottomText="Hour"
+              background="cardBackground"
+              px="6px"
+              py="4px"
+              {...timerStyle}
+            />
+          )}
+          {shows.min && (
+            <TimerBox
+              isDisabled={completed}
+              isComplete={minutes === 0 && hours === 0 && !completed}
+              topText={minutes}
+              bottomText="Min"
+              background="cardBackground"
+              px="6px"
+              py="4px"
+              {...timerStyle}
+            />
+          )}
+          {shows.sec && (
+            <TimerBox
+              isDisabled={completed}
+              isComplete={minutes === 0 && seconds <= 10 && !completed}
+              topText={seconds}
+              bottomText="Sec"
+              background="cardBackground"
+              px="6px"
+              py="4px"
+              {...timerStyle}
+            />
+          )}
         </HStack>
       </HStack>
     );
@@ -202,6 +222,7 @@ export const CountDown = ({
       ref={ref}
       width="full"
       borderRadius="8px"
+      {...containerStyle}
     >
       <Countdown
         ref={countDownRef}

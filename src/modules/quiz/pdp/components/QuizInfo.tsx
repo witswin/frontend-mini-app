@@ -176,7 +176,16 @@ export const QuizInfo = () => {
             </Text>
           </VStack>
           {data?.startAt && (
-            <CountDown date={new Date(data?.startAt).getTime()} />
+            <CountDown
+              shows={{
+                day: true,
+                hour: true,
+                info: true,
+                min: true,
+                sec: true,
+              }}
+              date={new Date(data?.startAt).getTime()}
+            />
           )}
 
           {isEnrolled ? (
