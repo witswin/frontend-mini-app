@@ -35,9 +35,7 @@ Index.getLayout = function getLayout(page: ReactElement) {
       justifyContent="stretch"
       alignItems="stretch"
     >
-      <Box px="16px" width="full">
-        {page}
-      </Box>
+      <Box width="full">{page}</Box>
     </Container>
   );
 };
