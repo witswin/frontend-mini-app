@@ -3,17 +3,17 @@ import React from "react";
 import { HStack, Text, VStack } from "@chakra-ui/react";
 import SpectatorImg from "@/assets/rest-spectator.svg";
 import PlayerImg from "@/assets/rest-player.svg";
-import { Card } from "./Card";
+import { Card } from "@/components/Card";
 
-interface restProps {
+interface RestProps {
   loosers: number;
   seconds: number;
   isSpectator: boolean;
 }
 
-export const Rest = ({ loosers, seconds, isSpectator }: restProps) => {
+export const Rest = ({ loosers, seconds, isSpectator }: RestProps) => {
   return (
-    <Card height="554px">
+    <Card height="full">
       <VStack w="full" h="full" justifyContent="center" gap="24px" mb="20px">
         <Image src={isSpectator ? SpectatorImg : PlayerImg} alt="" />
 
