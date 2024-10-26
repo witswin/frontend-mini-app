@@ -177,6 +177,7 @@ const QuizCard = forwardRef(
             </Text>
           </VStack>
           <CountDown
+            shows={{ day: true, hour: true, info: true, min: true, sec: true }}
             date={
               new Date(quiz?.startAt).getTime() || new Date().getTime() + 10000
             }

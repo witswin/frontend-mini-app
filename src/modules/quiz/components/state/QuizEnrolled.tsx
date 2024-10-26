@@ -18,6 +18,7 @@ export const QuizEnrolled = () => {
       style={{ width: "100%" }}
     >
       <CountDown
+        shows={{ day: true, hour: true, info: true, min: true, sec: true }}
         date={new Date(selectedQuiz?.startAt).getTime()}
         dateTimeStyle={{
           maxWidth: "74px",
