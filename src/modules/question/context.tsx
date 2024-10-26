@@ -25,6 +25,7 @@ export const QuestionDataProvider = ({
   const counterDispatch = useCounterDispatch();
   const [state, setState] = useState<questionData>({
     activeQuestionId: 0,
+    quizStartDate: new Date().getTime() + 15000,
     questions: [
       {
         state: QUESTION_STATE.default,
@@ -72,15 +73,17 @@ export const QuestionDataProvider = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      counterDispatch((prev) => {
-        if (prev - 1 > 0) {
-          return prev - 1;
-        }
-        return 0;
-      });
+      if (new Date().getTime() > state.quizStartDate) {
+        counterDispatch((prev) => {
+          if (prev - 1 > 0) {
+            return prev - 1;
+          }
+          return 0;
+        });
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [state.quizStartDate]);
 
   useEffect(() => {
     if (counter === 0) {
@@ -92,6 +95,7 @@ export const QuestionDataProvider = ({
       );
       const freezeTimeOut = setTimeout(() => {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
@@ -143,6 +147,7 @@ export const QuestionDataProvider = ({
     if (activeQuestion.state !== QUESTION_STATE.answered) {
       if (counter === 0) {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
@@ -155,6 +160,7 @@ export const QuestionDataProvider = ({
         }));
       } else if (counter > 3) {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
@@ -167,6 +173,7 @@ export const QuestionDataProvider = ({
         }));
       } else {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
