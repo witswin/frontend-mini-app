@@ -1,9 +1,12 @@
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { ColorFullText } from "./ColorFullText";
 import Image from "next/image";
-import PrizeOpen from "@/assets/prize-open.svg";
-import PrizeColse from "@/assets/prize-close.svg";
+// import PrizeOpen from "@/assets/prize-open.svg";
+// import PrizeColse from "@/assets/prize-close.svg";
+import GiftClose from "@/assets/gift-close.svg";
+import GiftOpen from "@/assets/gift-open.svg";
+import { ColorFullText } from "@/components/ColorFullText";
+import TestImage from "@/assets/prizeTest.gif";
 
 export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
   const [prizeOpen, setPrizeOpen] = useState(false);
@@ -23,7 +26,8 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
       borderRadius="16px"
     >
       <Box position="relative">
-        <Image src={prizeOpen ? PrizeOpen : PrizeColse} alt="Prize" />
+        <Image src={prizeOpen ? GiftOpen : GiftClose} alt="Prize" />
+        {/* <Image src={TestImage} alt="Prize" /> */}
         {prizeOpen && (
           <VStack
             w="full"
@@ -31,11 +35,11 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
             position="absolute"
             top={0}
             justifyContent="center"
-            gap='0'
-            pb='6px'
+            gap="2px"
+            pb="6px"
           >
-            <ColorFullText fontSize='6xl' textContent={`${prizeCount} `} />
-            <ColorFullText fontSize='sm' textContent={`USDT`} />
+            <ColorFullText fontSize="6xl" textContent={`${prizeCount} `} />
+            <ColorFullText fontSize="sm" textContent={`USDT`} />
           </VStack>
         )}
       </Box>

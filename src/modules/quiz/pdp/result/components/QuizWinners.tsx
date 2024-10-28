@@ -13,19 +13,35 @@ const winnerUsers = [
   { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
   { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
   { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
 ];
 
-export const QuizWinners = () => {
+export const QuizWinners = ({ isSpectator }: { isSpectator: boolean }) => {
   const winnersCount = 10;
   const isCurrentPlayerInWinners = true;
 
   return (
     <VStack
+      // h={isSpectator ? "full" : "50%"}
+      // flex={1}
+      h="full"
       w="full"
       p="16px"
       bg="glassBackground"
       borderRadius="16px"
       gap="16px"
+      overflow="hidden"
     >
       <Text fontSize="2xl" fontWeight={500} color="gray.0">
         Quiz Winners
@@ -40,10 +56,12 @@ export const QuizWinners = () => {
 
       <VStack
         w="full"
-        height={isCurrentPlayerInWinners ? "300px" : "full"}
-        overflowY="scroll"
+        maxH="282px"
+        // height={isSpectator ? "full" : "full"}
+        overflow="auto"
         p="1px"
         pr="8px"
+        // bg="lightcoral"
       >
         {winnerUsers.map((user) => (
           <WinnerCard
