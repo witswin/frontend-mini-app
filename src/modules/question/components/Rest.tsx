@@ -6,12 +6,12 @@ import PlayerImg from "@/assets/rest-player.svg";
 import { Card } from "@/components/Card";
 
 interface RestProps {
-  loosers: number;
+  losers: number;
   seconds: number;
   isSpectator: boolean;
 }
 
-export const Rest = ({ loosers, seconds, isSpectator }: RestProps) => {
+export const Rest = ({ losers, seconds, isSpectator }: RestProps) => {
   return (
     <Card height="full">
       <VStack w="full" h="full" justifyContent="center" gap="24px" mb="20px">
@@ -30,7 +30,7 @@ export const Rest = ({ loosers, seconds, isSpectator }: RestProps) => {
               fontWeight={500}
               textDecoration="underline"
             >
-              {loosers}
+              {losers}
             </Text>
             <Text fontSize="sm" color="gray.60" fontWeight={500}>
               people lost last round.
