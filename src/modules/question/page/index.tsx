@@ -10,50 +10,48 @@ import { useQuestionData } from "../hooks";
 
 export const Question = () => {
   const [pageState, setPageState] = useState<
-    CARD_STATE.join | CARD_STATE.lobby | CARD_STATE.watch
+    CARD_STATE.join | CARD_STATE.lobby
   >(CARD_STATE.lobby);
 
   const [quizContentMode, setQuizContentMode] = useState("timer");
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setState(CARD_STATE.lobby);
-  //   }, 5000);
-  // }, []);
 
   const { quizStartDate } = useQuestionData();
 
   useEffect(() => {
     const interval = setInterval(() => {
+      console.log(
+        Math.round((quizStartDate - new Date().getTime()) / 1000),
+        new Date().getTime(),
+        quizStartDate
+      );
+
       if (
-        Math.abs(new Date().getTime() - quizStartDate) > 5000 &&
+        quizStartDate - new Date().getTime() >= 6000 &&
         pageState !== CARD_STATE.lobby
       ) {
         setPageState(CARD_STATE.lobby);
       }
-      if (
-        Math.abs(new Date().getTime() - quizStartDate) <= 5000 &&
-        quizContentMode !== "timer"
-      ) {
+      if (quizStartDate - new Date().getTime() <= 5000) {
         setPageState(CARD_STATE.join);
         setQuizContentMode("timer");
       }
-      if (new Date().getTime() > quizStartDate && quizContentMode !== "quiz") {
-        setPageState(CARD_STATE.join);
-        setQuizContentMode("timer");
+      if (quizStartDate - new Date().getTime() <= -2) {
+        setQuizContentMode("quiz");
       }
     }, 1000);
-    clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
+
+  console.log(pageState);
 
   const content = useMemo(
     () => ({
       lobby: <Lobby />,
       join: (
-        <AnimatePresence>
-          {quizContentMode==="timer" ? (
+        <AnimatePresence mode="wait">
+          {quizContentMode === "timer" ? (
             <motion.div
-              key="quiz"
+              key="timer"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -68,36 +66,33 @@ export const Question = () => {
               <QuizTimerScreen count={5} />
             </motion.div>
           ) : (
-            <AnimatePresence>
-              <motion.div
-                key="timer"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                style={{
-                  width: "100%",
-                  position: "relative",
-                  display: "inline-block",
-                  height: "100%",
-                }}
-              >
-                <QuizPage />
-              </motion.div>
-            </AnimatePresence>
+            <motion.div
+              key="quiz"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              style={{
+                width: "100%",
+                position: "relative",
+                display: "inline-block",
+                height: "100%",
+              }}
+            >
+              <QuizPage />
+            </motion.div>
           )}
         </AnimatePresence>
       ),
-      watch: <div>sdasd</div>,
     }),
-    [quizStartDate]
+    [quizStartDate, quizContentMode]
   );
 
   return (
     <>
       {pageState !== CARD_STATE.lobby && <TopNavbar />}
       <VStack px="16px" height="full" width="full">
-        <AnimatePresence mode="sync">
+        <AnimatePresence mode="wait">
           <motion.div
             key={pageState}
             initial={{ opacity: 0 }}

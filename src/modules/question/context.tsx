@@ -25,7 +25,7 @@ export const QuestionDataProvider = ({
   const counterDispatch = useCounterDispatch();
   const [state, setState] = useState<questionData>({
     activeQuestionId: 0,
-    quizStartDate: new Date().getTime() + 15000,
+    quizStartDate: new Date().getTime() + 10000,
     questions: [
       {
         state: QUESTION_STATE.default,
