@@ -25,6 +25,7 @@ export const QuestionDataProvider = ({
   const counterDispatch = useCounterDispatch();
   const [state, setState] = useState<questionData>({
     activeQuestionId: 0,
+    quizStartDate: new Date().getTime() + 10000,
     questions: [
       {
         state: QUESTION_STATE.default,
@@ -72,15 +73,17 @@ export const QuestionDataProvider = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      counterDispatch((prev) => {
-        if (prev - 1 > 0) {
-          return prev - 1;
-        }
-        return 0;
-      });
+      if (new Date().getTime() > state.quizStartDate) {
+        counterDispatch((prev) => {
+          if (prev - 1 > 0) {
+            return prev - 1;
+          }
+          return 0;
+        });
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [state.quizStartDate]);
 
   useEffect(() => {
     if (counter === 0) {
@@ -92,6 +95,7 @@ export const QuestionDataProvider = ({
       );
       const freezeTimeOut = setTimeout(() => {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
@@ -109,11 +113,14 @@ export const QuestionDataProvider = ({
     }
   }, [counter]);
 
+  // add freeze state
   useEffect(() => {
     const activeQuestion = state.questions.find(
       (item) => item.id === state.activeQuestionId
     );
-
+    const filteredQuestions = state.questions.filter(
+      (item) => item.id !== state.activeQuestionId
+    );
     let timeout: NodeJS.Timeout;
     if (
       activeQuestion.state === QUESTION_STATE.answered &&
@@ -122,9 +129,37 @@ export const QuestionDataProvider = ({
       timeout = setTimeout(() => {
         setState((prev) => ({
           ...prev,
-          activeQuestionId: prev.activeQuestionId + 1,
+          activeQuestionId: prev.activeQuestionId,
+          questions: [
+            ...filteredQuestions,
+            {
+              ...activeQuestion,
+              timer: counter,
+              state: QUESTION_STATE.rest,
+            },
+          ],
         }));
       }, 1000);
+    }
+    return () => clearTimeout(timeout);
+  }, [counter, state.activeQuestionId, state.questions]);
+
+  useEffect(() => {
+    const activeQuestion = state.questions.find(
+      (item) => item.id === state.activeQuestionId
+    );
+
+    let timeout: NodeJS.Timeout;
+    if (
+      activeQuestion.state === QUESTION_STATE.rest &&
+      state.activeQuestionId !== state.questions.length - 1
+    ) {
+      timeout = setTimeout(() => {
+        setState((prev) => ({
+          ...prev,
+          activeQuestionId: prev.activeQuestionId + 1,
+        }));
+      }, 5000);
     }
     return () => clearTimeout(timeout);
   }, [counter, state.activeQuestionId, state.questions]);
@@ -143,6 +178,7 @@ export const QuestionDataProvider = ({
     if (activeQuestion.state !== QUESTION_STATE.answered) {
       if (counter === 0) {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
@@ -155,6 +191,7 @@ export const QuestionDataProvider = ({
         }));
       } else if (counter > 3) {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,
@@ -167,6 +204,7 @@ export const QuestionDataProvider = ({
         }));
       } else {
         setState((prev) => ({
+          ...prev,
           activeQuestionId: prev.activeQuestionId,
           questions: [
             ...filteredQuestions,

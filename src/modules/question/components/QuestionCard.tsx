@@ -5,8 +5,9 @@ import { useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { useMemo, useState } from "react";
 import { Text } from "@chakra-ui/react";
-import { HINTS } from "@/types";
+import { HINTS, QUESTION_STATE } from "@/types";
 import { getUniqueRandomNumbers } from "@/utils";
+import { Rest } from "./Rest";
 
 export const QuestionCard = () => {
   const { questions, activeQuestionId } = useQuestionData();
@@ -35,7 +36,9 @@ export const QuestionCard = () => {
     }
   }, [hints.usedHints, activeQuestionId]);
 
-  return (
+  return activeQuestion.state === QUESTION_STATE.rest ? (
+    <Rest losers={20} seconds={5} isSpectator />
+  ) : (
     <Card>
       <QuestionBanner content={title} />
       <ProgressTimer timer={timer} state={state} hasCounter hasIcon />

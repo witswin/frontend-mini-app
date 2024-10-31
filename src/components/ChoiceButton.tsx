@@ -73,32 +73,39 @@ export const ChoiceButton = ({
   );
 
   return (
-    <HStack borderRadius='8px' overflow="hidden" position="relative" width="full">
-      <Button
-        variant={variant[state]}
-        color="gray.0"
-        size="md"
-        height="54px"
-        width="full"
-        onClick={handleClick}
-        isDisabled={
-          (state === QUESTION_STATE.freeze &&
-            +selectedChoice !== +buttonInfo.id) ||
-          (state === QUESTION_STATE.answered &&
-            +buttonInfo.id !== correct &&
-            +selectedChoice !== +buttonInfo.id) ||
-          disabledFiftyFiftyHint
-        }
-        as={motion.button}
-        key={state}
-        {...buttonProps}
-        {...(+selectedChoice === +buttonInfo.id &&
-          state === QUESTION_STATE.freeze && {
-            animate,
-          })}
-      >
-        {buttonInfo.title}
-      </Button>
+    <HStack
+      borderRadius="8px"
+      overflow="hidden"
+      position="relative"
+      width="full"
+    >
+      {state !== QUESTION_STATE.rest && (
+        <Button
+          variant={variant[state]}
+          color="gray.0"
+          size="md"
+          height="54px"
+          width="full"
+          onClick={handleClick}
+          isDisabled={
+            (state === QUESTION_STATE.freeze &&
+              +selectedChoice !== +buttonInfo.id) ||
+            (state === QUESTION_STATE.answered &&
+              +buttonInfo.id !== correct &&
+              +selectedChoice !== +buttonInfo.id) ||
+            disabledFiftyFiftyHint
+          }
+          as={motion.button}
+          key={state}
+          {...buttonProps}
+          {...(+selectedChoice === +buttonInfo.id &&
+            state === QUESTION_STATE.freeze && {
+              animate,
+            })}
+        >
+          {buttonInfo.title}
+        </Button>
+      )}
       <AnimatePresence>
         {state !== QUESTION_STATE.freeze &&
           state !== QUESTION_STATE.answered &&
