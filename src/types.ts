@@ -5,6 +5,7 @@ export enum QUESTION_STATE {
   "freeze" = "freeze",
   "answered" = "answered",
   "alert" = "alert",
+  "rest" = "rest",
 }
 
 // export enum CHOICE_BUTTON_STATE {
