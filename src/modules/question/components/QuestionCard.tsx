@@ -28,12 +28,7 @@ export const QuestionCard = () => {
   );
 
   const disabledChoices = useMemo(() => {
-    const questionHint = hints.usedHints.find(
-      (item) =>
-        item.hintType === HINTS.fiftyFifty &&
-        +item.questionId === +activeQuestionId
-    );
-    if (questionHint) {
+    if (questionHintInfo) {
       const randomButtonId = getUniqueRandomNumbers(activeQuestion.correct);
 
       return randomButtonId;
