@@ -19,12 +19,6 @@ export const Question = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log(
-        Math.round((quizStartDate - new Date().getTime()) / 1000),
-        new Date().getTime(),
-        quizStartDate
-      );
-
       if (
         quizStartDate - new Date().getTime() >= 6000 &&
         pageState !== CARD_STATE.lobby
@@ -41,8 +35,6 @@ export const Question = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  console.log(pageState);
 
   const content = useMemo(
     () => ({
