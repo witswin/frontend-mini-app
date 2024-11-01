@@ -4,12 +4,13 @@ import { HINTS } from "@/types";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useHintsDispatch } from "@/modules/question/hooks";
+import { selectedHint } from "@/modules/question/types";
 
 export const HintCard = ({
   hint,
   isSelectHintOpen,
 }: {
-  hint: HINTS;
+  hint: selectedHint;
   isSelectHintOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const setHints = useHintsDispatch();
@@ -87,7 +88,7 @@ export const HintCard = ({
               setHints((prevState) => ({
                 ...prevState,
                 selectedHints: prevState.selectedHints.filter(
-                  (h) => h !== hint
+                  (h) => h.id !== hint.id
                 ),
               }));
             }}
@@ -96,14 +97,14 @@ export const HintCard = ({
             <CloseIcon color="gray.60" />
           </Box>
 
-          {selectedHint[hint].icon}
+          {selectedHint[hint.type].icon}
 
           <VStack gap="2px" w="full">
             <Text fontSize="lg" color="gray.0">
-              {selectedHint[hint]?.headline}
+              {selectedHint[hint.type]?.headline}
             </Text>
             <Text fontSize="sm" color="gray.60">
-              {selectedHint[hint]?.subHeadline}
+              {selectedHint[hint.type]?.subHeadline}
             </Text>
           </VStack>
         </>
