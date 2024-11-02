@@ -13,6 +13,9 @@ import { Layout } from "@/components/Layout";
 import { CircularPattern } from "@/components/CircularPattern";
 import { SelectedQuizProvider } from "@/modules/quiz/context";
 import { NextPage } from "next";
+import { config } from "@/configs/wagmi";
+import { WagmiProvider } from "wagmi";
+import { AuthProvider } from "@/context/auth";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -48,11 +51,15 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       </Head>
       <ChakraProvider theme={baseTheme}>
         <CircularPattern />
-        <QueryClientProvider client={queryClient}>
-          <SelectedQuizProvider>
-            {getLayout(<Component {...pageProps} />)}
-          </SelectedQuizProvider>
-        </QueryClientProvider>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <SelectedQuizProvider>
+              <AuthProvider>
+                {getLayout(<Component {...pageProps} />)}
+              </AuthProvider>
+            </SelectedQuizProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
       </ChakraProvider>
     </>
   );
