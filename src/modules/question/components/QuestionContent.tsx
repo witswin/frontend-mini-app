@@ -4,21 +4,21 @@ import { Card } from "@/components/Card";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
 import { QuestionBanner } from "../components/QuestionBanner";
-import { HINTS, QUESTION_STATE } from "@/types";
+import { QUESTION_STATE } from "@/types";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
+import { selectedHint } from "../types";
 
 interface HintContentProps {
-  hint: HINTS;
+  hint: selectedHint;
 }
 const HintContent = ({ hint }: HintContentProps) => {
   const isDisabled = useHints().usedHints.find(
-    (item) => item.hintType === hint
+    (item) => item.hintId === hint.id
   );
-  console.log(isDisabled);
 
-  return <HintButton hintType={hint} isDisabled={!!isDisabled} />;
+  return <HintButton hint={hint} isDisabled={!!isDisabled} />;
 };
 
 export const QuizPage = () => {
@@ -85,10 +85,27 @@ export const QuizPage = () => {
           transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
+          <Text
+            mt="8px !important"
+            backgroundClip="text"
+            background="glassBackground"
+            sx={{
+              WebkitTextFillColor: "transparent",
+              WebkitBackgroundClip: "text",
+            }}
+            textAlign="center"
+            fontSize="24px"
+            fontWeight="700"
+            fontFamily="Kanit"
+            width="full"
+          >
+            Spectator Mode
+          </Text>
         </motion.div>
       </AnimatePresence>
       <AnimatePresence>
         {activeQuestion.state !== QUESTION_STATE.freeze &&
+          activeQuestion.state !== QUESTION_STATE.rest &&
           activeQuestion.state !== QUESTION_STATE.answered && (
             <motion.div
               initial={{
@@ -114,7 +131,7 @@ export const QuizPage = () => {
               }}
             >
               {selectedHints.map((item) => (
-                <HintContent hint={item} key={item} />
+                <HintContent hint={item} key={item.id} />
               ))}
             </motion.div>
           )}

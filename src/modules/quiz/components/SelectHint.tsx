@@ -2,7 +2,7 @@ import { BottomModal } from "@/components/BottomModal";
 import { useHintsDispatch } from "@/modules/question/hooks";
 import { HINTS } from "@/types";
 import { Box, HStack, Tag, Text, VStack } from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useId } from "react";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 
 interface HintProps {
@@ -11,6 +11,54 @@ interface HintProps {
   count: number;
   icon: React.JSX.Element;
 }
+
+interface HintBoxProps {
+  type: keyof typeof HINTS;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  headline: string;
+  subHeadline: string;
+  count: number;
+  icon: React.JSX.Element;
+}
+const HintBox = ({
+  type,
+  setIsOpen,
+  count,
+  headline,
+  icon,
+  subHeadline,
+}: HintBoxProps) => {
+  const setHints = useHintsDispatch();
+
+  const id = useId();
+  return (
+    <Box
+      w="full"
+      h="full"
+      onClick={() => {
+        setHints((prevState) => {
+          return {
+            ...prevState,
+            selectedHints: [
+              ...prevState.selectedHints,
+              { type: HINTS[type], id: id },
+            ],
+          };
+        });
+        setIsOpen(false);
+      }}
+      cursor="pointer"
+    >
+      <Hint
+        key={type}
+        headline={headline}
+        subHeadline={subHeadline}
+        count={count}
+        icon={icon}
+      />
+    </Box>
+  );
+};
 
 const Hint = ({ headline, subHeadline, count, icon }: HintProps) => {
   return (
@@ -81,8 +129,6 @@ export const SelectHint = ({
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const setHints = useHintsDispatch();
-
   return (
     <BottomModal
       title="Select Your Hint"
@@ -91,30 +137,15 @@ export const SelectHint = ({
     >
       <VStack w="full" gap="12px">
         {Object.entries(hints).map(([key, hint]) => (
-          <Box
-            w="full"
-            h="full"
+          <HintBox
+            headline={hint.headline}
+            subHeadline={hint.subHeadline}
+            count={hint.count}
+            icon={hint.icon}
+            type={key as keyof typeof HINTS}
+            setIsOpen={setIsOpen}
             key={key}
-            onClick={() => {
-              setHints((prevState) => ({
-                ...prevState,
-                selectedHints: [
-                  ...prevState.selectedHints,
-                  HINTS[key as keyof typeof HINTS],
-                ],
-              }));
-              setIsOpen(false);
-            }}
-            cursor="pointer"
-          >
-            <Hint
-              key={key}
-              headline={hint.headline}
-              subHeadline={hint.subHeadline}
-              count={hint.count}
-              icon={hint.icon}
-            />
-          </Box>
+          />
         ))}
       </VStack>
     </BottomModal>

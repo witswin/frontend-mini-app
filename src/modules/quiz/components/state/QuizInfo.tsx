@@ -56,9 +56,9 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
 };
 
 export const QuizInfo = ({
-  isSelectHintOpen,
+  setHintModal,
 }: {
-  isSelectHintOpen: Dispatch<SetStateAction<boolean>>;
+  setHintModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const selectedQuiz = useSelectedQuiz();
   const hints = useHints();
@@ -104,14 +104,8 @@ export const QuizInfo = ({
           </Text>
         </HStack>
         <Flex width="full" columnGap="12px">
-          <HintCard
-            isSelectHintOpen={isSelectHintOpen}
-            hint={hints.selectedHints[0]}
-          />
-          <HintCard
-            isSelectHintOpen={isSelectHintOpen}
-            hint={hints.selectedHints[1]}
-          />
+          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[0]} />
+          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[1]} />
         </Flex>
       </VStack>
     </Flex>

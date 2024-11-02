@@ -5,8 +5,9 @@ import { useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { useMemo, useState } from "react";
 import { Text } from "@chakra-ui/react";
-import { HINTS } from "@/types";
+import { HINTS, QUESTION_STATE } from "@/types";
 import { getUniqueRandomNumbers } from "@/utils";
+import { Rest } from "./Rest";
 
 export const QuestionCard = () => {
   const { questions, activeQuestionId } = useQuestionData();
@@ -21,21 +22,24 @@ export const QuestionCard = () => {
 
   const usedHints = hints.usedHints;
   const questionHintInfo = usedHints.find(
-    (item) => item.hintType === HINTS.fiftyFifty
+    (item) =>
+      item.hintType === HINTS.fiftyFifty &&
+      +item.questionId === +activeQuestionId
   );
 
   const disabledChoices = useMemo(() => {
-    const questionHint = hints.usedHints.find(
-      (item) => item.hintType === HINTS.fiftyFifty
-    );
-    if (questionHint && +questionHint.questionId === +activeQuestionId) {
+    if (questionHintInfo) {
       const randomButtonId = getUniqueRandomNumbers(activeQuestion.correct);
 
       return randomButtonId;
     }
   }, [hints.usedHints, activeQuestionId]);
 
-  return (
+  console.log({ disabledChoices });
+
+  return activeQuestion.state === QUESTION_STATE.rest ? (
+    <Rest losers={20} seconds={5} isSpectator />
+  ) : (
     <Card>
       <QuestionBanner content={title} />
       <ProgressTimer timer={timer} state={state} hasCounter hasIcon />

@@ -7,12 +7,11 @@ import {
   DrawerOverlay,
   HStack,
   Text,
+  UseDisclosureProps,
 } from "@chakra-ui/react";
 import React from "react";
 
-interface ModalProps {
-  onClose: () => void;
-  isOpen: boolean;
+interface ModalProps extends UseDisclosureProps {
   title?: string;
   haveHeader?: boolean;
 }
@@ -67,20 +66,7 @@ export const BottomModal = ({
           </>
         )}
 
-        <DrawerBody
-          sx={{
-            "&::-webkit-scrollbar": {
-              display: "none",
-            },
-
-            "&": {
-              "-ms-overflow-style": "none",
-              "scrollbar-width": "none",
-            },
-          }}
-        >
-          {children}
-        </DrawerBody>
+        <DrawerBody>{children}</DrawerBody>
       </DrawerContent>
     </Drawer>
   );

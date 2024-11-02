@@ -113,11 +113,14 @@ export const QuestionDataProvider = ({
     }
   }, [counter]);
 
+  // add freeze state
   useEffect(() => {
     const activeQuestion = state.questions.find(
       (item) => item.id === state.activeQuestionId
     );
-
+    const filteredQuestions = state.questions.filter(
+      (item) => item.id !== state.activeQuestionId
+    );
     let timeout: NodeJS.Timeout;
     if (
       activeQuestion.state === QUESTION_STATE.answered &&
@@ -126,9 +129,37 @@ export const QuestionDataProvider = ({
       timeout = setTimeout(() => {
         setState((prev) => ({
           ...prev,
-          activeQuestionId: prev.activeQuestionId + 1,
+          activeQuestionId: prev.activeQuestionId,
+          questions: [
+            ...filteredQuestions,
+            {
+              ...activeQuestion,
+              timer: counter,
+              state: QUESTION_STATE.rest,
+            },
+          ],
         }));
       }, 1000);
+    }
+    return () => clearTimeout(timeout);
+  }, [counter, state.activeQuestionId, state.questions]);
+
+  useEffect(() => {
+    const activeQuestion = state.questions.find(
+      (item) => item.id === state.activeQuestionId
+    );
+
+    let timeout: NodeJS.Timeout;
+    if (
+      activeQuestion.state === QUESTION_STATE.rest &&
+      state.activeQuestionId !== state.questions.length - 1
+    ) {
+      timeout = setTimeout(() => {
+        setState((prev) => ({
+          ...prev,
+          activeQuestionId: prev.activeQuestionId + 1,
+        }));
+      }, 5000);
     }
     return () => clearTimeout(timeout);
   }, [counter, state.activeQuestionId, state.questions]);
@@ -206,7 +237,10 @@ interface HintProviderProps extends PropsWithChildren {}
 export const HintProvider = ({ children }: HintProviderProps) => {
   const [state, setState] = useState<hint>({
     usedHints: [],
-    selectedHints: [HINTS.stats, HINTS.fiftyFifty],
+    selectedHints: [
+      { id: ":r5v:", type: HINTS.stats },
+      { id: ":r5v1:", type: HINTS.stats },
+    ],
   });
 
   return (

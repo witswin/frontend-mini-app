@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HStack, Text, VStack } from "@chakra-ui/react";
 import SpectatorImg from "@/assets/rest-spectator.svg";
 import PlayerImg from "@/assets/rest-player.svg";
@@ -12,8 +12,22 @@ interface RestProps {
 }
 
 export const Rest = ({ losers, seconds, isSpectator }: RestProps) => {
+  const [countDown, setCountDown] = useState(seconds);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountDown((prev) => {
+        if (prev - 1 >= 0) {
+          return prev - 1;
+        }
+        return 0;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <Card height="full">
+    <Card minH="554px" justifyContent="center">
       <VStack w="full" h="full" justifyContent="center" gap="24px" mb="20px">
         <Image src={isSpectator ? SpectatorImg : PlayerImg} alt="" />
 
@@ -44,7 +58,7 @@ export const Rest = ({ losers, seconds, isSpectator }: RestProps) => {
         fontSize="sm"
         color="gray.80"
         fontWeight={700}
-      >{`Next Questions in ${seconds} seconds... `}</Text>
+      >{`Next Questions in ${countDown} seconds... `}</Text>
     </Card>
   );
 };

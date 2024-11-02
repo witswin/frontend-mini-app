@@ -9,12 +9,13 @@ import {
 } from "@/modules/question/hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
+import { selectedHint } from "@/modules/question/types";
 
 export const HintButton = ({
-  hintType,
+  hint,
   isDisabled,
 }: {
-  hintType: HINTS;
+  hint: selectedHint;
   isDisabled?: boolean;
 }) => {
   const hintDispatch = useHintsDispatch();
@@ -102,7 +103,7 @@ export const HintButton = ({
         h="52px"
         w="full"
         onClick={() => {
-          if (hintType === HINTS.extraTime) {
+          if (hint.type === HINTS.extraTime) {
             setShowExtraTime(true);
             counterDispatch((prev) => prev + 3);
           }
@@ -110,7 +111,11 @@ export const HintButton = ({
             ...prev,
             usedHints: [
               ...prev.usedHints,
-              { hintType, questionId: activeQuestionId },
+              {
+                hintType: hint.type,
+                hintId: hint.id,
+                questionId: activeQuestionId,
+              },
             ],
           }));
         }}
@@ -125,19 +130,19 @@ export const HintButton = ({
           w="full"
           h="full"
         >
-          {selectedHint[hintType].icon}
+          {selectedHint[hint.type].icon}
 
           <Text
             fontSize="sm"
             fontWeight="700"
             color={isDisabled ? "gray.400" : "gray.0"}
           >
-            {selectedHint[hintType].headline}
+            {selectedHint[hint.type].headline}
           </Text>
         </HStack>
       </VStack>
       <AnimatePresence>
-        {hintType === HINTS.extraTime && showExtraTime && (
+        {hint.type === HINTS.extraTime && showExtraTime && (
           <motion.div
             style={{
               position: "absolute",

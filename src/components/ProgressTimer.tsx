@@ -81,29 +81,31 @@ export const ProgressTimer = ({
   );
 
   return (
-    <HStack
-      height="30px"
-      position="relative"
-      columnGap="8px"
-      width="full"
-      {...otherProps}
-    >
-      {hasIcon && <Alarm size={28} iconStyle="Bold" color={color[state]} />}
-      <Progress
-        value={(timer * 100) / 10}
-        filledTrack={{
-          bg: `var(--chakra-colors-${progressBg[state]})`,
-        }}
-        track={{
-          bg: `var(--chakra-colors-${progressBg[state]})`,
-        }}
-      />
-      {hasCounter && (
-        <TimerCounter
-          background={`var(--chakra-colors-${progressBg[state]})`}
-          count={timer}
+    state !== QUESTION_STATE.rest && (
+      <HStack
+        height="30px"
+        position="relative"
+        columnGap="8px"
+        width="full"
+        {...otherProps}
+      >
+        {hasIcon && <Alarm size={28} iconStyle="Bold" color={color[state]} />}
+        <Progress
+          value={(timer * 100) / 10}
+          filledTrack={{
+            bg: `var(--chakra-colors-${progressBg[state]})`,
+          }}
+          track={{
+            bg: `var(--chakra-colors-${progressBg[state]})`,
+          }}
         />
-      )}
-    </HStack>
+        {hasCounter && (
+          <TimerCounter
+            background={`var(--chakra-colors-${progressBg[state]})`}
+            count={timer}
+          />
+        )}
+      </HStack>
+    ) 
   );
 };

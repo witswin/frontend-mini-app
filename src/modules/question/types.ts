@@ -13,7 +13,11 @@ export type questionData = {
   }[];
 };
 
+export type selectedHint = {
+  id: string;
+  type: HINTS;
+};
 export type hint = {
-  usedHints: { questionId: number; hintType: HINTS }[];
-  selectedHints: HINTS[];
+  usedHints: { questionId: number; hintType: HINTS; hintId: string }[];
+  selectedHints: selectedHint[];
 };
