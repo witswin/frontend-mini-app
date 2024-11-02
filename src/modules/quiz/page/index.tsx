@@ -39,6 +39,7 @@ export const QuizPLP = () => {
       </Text>
 
       <ChakraSwiper
+        speed={1000}
         py="2px"
         width="full"
         slidesPerView="auto"
@@ -53,7 +54,7 @@ export const QuizPLP = () => {
           stretch: -20,
           depth: 150,
           modifier: 1,
-          slideShadows: false,
+          slideShadows: false,  
         }}
         sx={{
           ".swiper-slide": {
@@ -63,7 +64,7 @@ export const QuizPLP = () => {
         }}
       >
         {data?.results?.map((quiz: quizType) => (
-          <SwiperSlide key={quiz?.id} style={{ width: "fit-content" }}>
+          <SwiperSlide key={quiz?.id} style={{ maxWidth: "318px" }}>
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}

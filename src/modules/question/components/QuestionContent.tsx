@@ -85,10 +85,27 @@ export const QuizPage = () => {
           transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
+          <Text
+            mt="8px !important"
+            backgroundClip="text"
+            background="glassBackground"
+            sx={{
+              WebkitTextFillColor: "transparent",
+              WebkitBackgroundClip: "text",
+            }}
+            textAlign="center"
+            fontSize="24px"
+            fontWeight="700"
+            fontFamily="Kanit"
+            width="full"
+          >
+            Spectator Mode
+          </Text>
         </motion.div>
       </AnimatePresence>
       <AnimatePresence>
         {activeQuestion.state !== QUESTION_STATE.freeze &&
+          activeQuestion.state !== QUESTION_STATE.rest &&
           activeQuestion.state !== QUESTION_STATE.answered && (
             <motion.div
               initial={{
