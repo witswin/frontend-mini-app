@@ -1,4 +1,4 @@
-import { Box, Card, Text, VStack } from "@chakra-ui/react";
+import { Box, Card, Text, useMediaQuery, VStack } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { HINTS } from "@/types";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
@@ -8,12 +8,13 @@ import { selectedHint } from "@/modules/question/types";
 
 export const HintCard = ({
   hint,
-  isSelectHintOpen,
+  setHintModal,
 }: {
   hint: selectedHint;
-  isSelectHintOpen: Dispatch<SetStateAction<boolean>>;
+  setHintModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const setHints = useHintsDispatch();
+  const [isSmall] = useMediaQuery("(min-width: 415px)");
 
   const isHintCardEmpty = hint === undefined;
 
@@ -69,7 +70,7 @@ export const HintCard = ({
       w="full"
       {...(isHintCardEmpty && {
         onClick: () => {
-          isSelectHintOpen(true);
+          setHintModal(true);
         },
       })}
       cursor={isHintCardEmpty ? "pointer" : "default"}
@@ -100,10 +101,14 @@ export const HintCard = ({
           {selectedHint[hint.type].icon}
 
           <VStack gap="2px" w="full">
-            <Text fontSize="lg" color="gray.0">
+            <Text fontSize={isSmall ? "lg" : "sm"} color="gray.0">
               {selectedHint[hint.type]?.headline}
             </Text>
-            <Text fontSize="sm" color="gray.60">
+            <Text
+              fontSize={isSmall ? "sm" : "xs"}
+              color="gray.60"
+              textAlign="center"
+            >
               {selectedHint[hint.type]?.subHeadline}
             </Text>
           </VStack>
