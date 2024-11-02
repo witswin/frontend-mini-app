@@ -1,12 +1,9 @@
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-// import PrizeOpen from "@/assets/prize-open.svg";
-// import PrizeColse from "@/assets/prize-close.svg";
 import GiftClose from "@/assets/gift-close.svg";
 import GiftOpen from "@/assets/gift-open.svg";
 import { ColorFullText } from "@/components/ColorFullText";
-import TestImage from "@/assets/prizeTest.gif";
 
 export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
   const [prizeOpen, setPrizeOpen] = useState(false);
@@ -24,10 +21,10 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
       gap="16px"
       bg="glassBackground"
       borderRadius="16px"
+      // flex={1}
     >
       <Box position="relative">
         <Image src={prizeOpen ? GiftOpen : GiftClose} alt="Prize" />
-        {/* <Image src={TestImage} alt="Prize" /> */}
         {prizeOpen && (
           <VStack
             w="full"

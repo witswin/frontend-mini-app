@@ -29,13 +29,10 @@ const winnerUsers = [
 
 export const QuizWinners = ({ isSpectator }: { isSpectator: boolean }) => {
   const winnersCount = 10;
-  const isCurrentPlayerInWinners = true;
 
   return (
     <VStack
-      // h={isSpectator ? "full" : "50%"}
-      // flex={1}
-      h="full"
+      h={isSpectator ? "698px" : "320px"}
       w="full"
       p="16px"
       bg="glassBackground"
@@ -54,15 +51,7 @@ export const QuizWinners = ({ isSpectator }: { isSpectator: boolean }) => {
         !!winnersCount && winnersCount
       } winners.`}</Text>
 
-      <VStack
-        w="full"
-        maxH="282px"
-        // height={isSpectator ? "full" : "full"}
-        overflow="auto"
-        p="1px"
-        pr="8px"
-        // bg="lightcoral"
-      >
+      <VStack w="full" overflow="auto" p="1px" pr="8px">
         {winnerUsers.map((user) => (
           <WinnerCard
             key={user.id}

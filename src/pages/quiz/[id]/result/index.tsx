@@ -18,11 +18,12 @@ Index.getLayout = function getLayout(page: ReactElement) {
       display="flex"
       height="full"
       px="0"
-      minH="100vh"
       justifyContent="stretch"
       alignItems="stretch"
     >
-      <Box width="full">{page}</Box>
+      <Box width="full" h="full">
+        {page}
+      </Box>
     </Container>
   );
 };
