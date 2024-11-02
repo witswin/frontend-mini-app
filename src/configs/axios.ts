@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const axiosClient = axios.create({
-  baseURL: "https://api.wits.win/",
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
