@@ -1,12 +1,20 @@
-import { Box, Card, Text, VStack } from "@chakra-ui/react";
-import React, { useMemo } from "react";
+import { Box, Card, Text, useMediaQuery, VStack } from "@chakra-ui/react";
+import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { HINTS } from "@/types";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useHintsDispatch } from "@/modules/question/hooks";
+import { selectedHint } from "@/modules/question/types";
 
-export const HintCard = ({ hint }: { hint: HINTS }) => {
+export const HintCard = ({
+  hint,
+  setHintModal,
+}: {
+  hint: selectedHint;
+  setHintModal: Dispatch<SetStateAction<boolean>>;
+}) => {
   const setHints = useHintsDispatch();
+  const [isSmall] = useMediaQuery("(min-width: 415px)");
 
   const isHintCardEmpty = hint === undefined;
 
@@ -60,7 +68,11 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
       gap="8px"
       h="102px"
       w="full"
-      {...(isHintCardEmpty && { onClick: () => {} })}
+      {...(isHintCardEmpty && {
+        onClick: () => {
+          setHintModal(true);
+        },
+      })}
       cursor={isHintCardEmpty ? "pointer" : "default"}
     >
       {isHintCardEmpty ? (
@@ -77,7 +89,7 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
               setHints((prevState) => ({
                 ...prevState,
                 selectedHints: prevState.selectedHints.filter(
-                  (h) => h !== hint
+                  (h) => h.id !== hint.id
                 ),
               }));
             }}
@@ -86,14 +98,18 @@ export const HintCard = ({ hint }: { hint: HINTS }) => {
             <CloseIcon color="gray.60" />
           </Box>
 
-          {selectedHint[hint].icon}
+          {selectedHint[hint.type].icon}
 
           <VStack gap="2px" w="full">
-            <Text fontSize="lg" color="gray.0">
-              {selectedHint[hint]?.headline}
+            <Text fontSize={isSmall ? "lg" : "sm"} color="gray.0">
+              {selectedHint[hint.type]?.headline}
             </Text>
-            <Text fontSize="sm" color="gray.60">
-              {selectedHint[hint]?.subHeadline}
+            <Text
+              fontSize={isSmall ? "sm" : "xs"}
+              color="gray.60"
+              textAlign="center"
+            >
+              {selectedHint[hint.type]?.subHeadline}
             </Text>
           </VStack>
         </>

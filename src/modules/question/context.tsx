@@ -237,7 +237,10 @@ interface HintProviderProps extends PropsWithChildren {}
 export const HintProvider = ({ children }: HintProviderProps) => {
   const [state, setState] = useState<hint>({
     usedHints: [],
-    selectedHints: [HINTS.stats, HINTS.fiftyFifty],
+    selectedHints: [
+      { id: ":r5v:", type: HINTS.stats },
+      { id: ":r5v1:", type: HINTS.stats },
+    ],
   });
 
   return (

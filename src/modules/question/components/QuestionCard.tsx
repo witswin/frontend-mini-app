@@ -22,19 +22,20 @@ export const QuestionCard = () => {
 
   const usedHints = hints.usedHints;
   const questionHintInfo = usedHints.find(
-    (item) => item.hintType === HINTS.fiftyFifty
+    (item) =>
+      item.hintType === HINTS.fiftyFifty &&
+      +item.questionId === +activeQuestionId
   );
 
   const disabledChoices = useMemo(() => {
-    const questionHint = hints.usedHints.find(
-      (item) => item.hintType === HINTS.fiftyFifty
-    );
-    if (questionHint && +questionHint.questionId === +activeQuestionId) {
+    if (questionHintInfo) {
       const randomButtonId = getUniqueRandomNumbers(activeQuestion.correct);
 
       return randomButtonId;
     }
   }, [hints.usedHints, activeQuestionId]);
+
+  console.log({ disabledChoices });
 
   return activeQuestion.state === QUESTION_STATE.rest ? (
     <Rest losers={20} seconds={5} isSpectator />

@@ -1,7 +1,7 @@
 import { QuizPrize } from "@/components/QuizCard";
 import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
 import { STATUS_ENROLL_VALUE } from "../../types";
-import { useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { useSelectedQuiz } from "../../hooks";
 import { HintCard } from "@/components/HintCards";
 import { useHints } from "@/modules/question/hooks";
@@ -55,10 +55,13 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
   );
 };
 
-export const QuizInfo = () => {
+export const QuizInfo = ({
+  setHintModal,
+}: {
+  setHintModal: Dispatch<SetStateAction<boolean>>;
+}) => {
   const selectedQuiz = useSelectedQuiz();
   const hints = useHints();
-  console.log(hints.selectedHints[0]);
 
   return (
     <Flex flexDirection="column" width="100%" alignItems="center" rowGap="16px">
@@ -95,15 +98,14 @@ export const QuizInfo = () => {
         width="full"
       >
         <HStack gap="4px" alignItems="start">
-          {/* <TbBulbFilled size={25} /> */}
           <LightbulbBolt iconStyle="Bold" size={25} />
           <Text fontSize="3xl" fontWeight="700">
             Hints
           </Text>
         </HStack>
         <Flex width="full" columnGap="12px">
-          <HintCard hint={hints.selectedHints[0]} />
-          <HintCard hint={hints.selectedHints[1]} />
+          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[0]} />
+          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[1]} />
         </Flex>
       </VStack>
     </Flex>
