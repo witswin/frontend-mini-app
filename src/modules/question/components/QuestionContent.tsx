@@ -4,21 +4,21 @@ import { Card } from "@/components/Card";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
 import { QuestionBanner } from "../components/QuestionBanner";
-import { HINTS, QUESTION_STATE } from "@/types";
+import { QUESTION_STATE } from "@/types";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
+import { selectedHint } from "../types";
 
 interface HintContentProps {
-  hint: HINTS;
+  hint: selectedHint;
 }
 const HintContent = ({ hint }: HintContentProps) => {
   const isDisabled = useHints().usedHints.find(
-    (item) => item.hintType === hint
+    (item) => item.hintId === hint.id
   );
-  console.log(isDisabled);
 
-  return <HintButton hintType={hint} isDisabled={!!isDisabled} />;
+  return <HintButton hint={hint} isDisabled={!!isDisabled} />;
 };
 
 export const QuizPage = () => {
@@ -131,7 +131,7 @@ export const QuizPage = () => {
               }}
             >
               {selectedHints.map((item) => (
-                <HintContent hint={item} key={item} />
+                <HintContent hint={item} key={item.id} />
               ))}
             </motion.div>
           )}
