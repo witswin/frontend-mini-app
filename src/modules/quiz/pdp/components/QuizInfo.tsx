@@ -35,7 +35,7 @@ export const QuizInfo = () => {
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
       await axiosClient
-        .get(`quiz/competitions/${query?.id}/`)
+        .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
   });
 

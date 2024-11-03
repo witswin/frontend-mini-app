@@ -14,7 +14,7 @@ export const QuizPLP = () => {
   const { data } = useQuery({
     queryKey: ["quizzes"],
     queryFn: async () =>
-      await axiosClient.get("quiz/competitions/").then((res) => res.data),
+      await axiosClient.get("/quiz/competitions/").then((res) => res.data),
   });
 
   return (
