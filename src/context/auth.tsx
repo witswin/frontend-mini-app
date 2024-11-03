@@ -3,12 +3,17 @@ import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 import { SignableMessage } from "viem";
 import { useAccount, useSignMessage } from "wagmi";
+import { setCookie } from "cookies-next";
+import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
+import { auth } from "@/globalTypes";
 
 export const AuthState = createContext(undefined);
 export const AuthDispatch = createContext(undefined);
 
-interface AuthProvider extends PropsWithChildren {}
-export const AuthProvider = ({ children }: AuthProvider) => {
+interface AuthProvider extends PropsWithChildren {
+  auth: auth;
+}
+export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const [message, setMessage] = useState<{
     message: SignableMessage;
     nonce: string;
@@ -19,10 +24,10 @@ export const AuthProvider = ({ children }: AuthProvider) => {
   console.log({ props });
 
   const { isConnected, address } = useAccount();
-  const [state, setState] = useState();
+  const [state, setState] = useState(auth);
 
   useEffect(() => {
-    if (isConnected && address) {
+    if (isConnected && address && !state) {
       axiosClient
         .post("/auth/create-message/", {
           address,
@@ -34,25 +39,36 @@ export const AuthProvider = ({ children }: AuthProvider) => {
   }, [isConnected]);
 
   useEffect(() => {
-    if (message.message) {
+    if (message.message && !state) {
       signMessageAsync({
         message: message.message,
         account: address,
       })
         .then((res) => {
-          axiosClient
-            .post("/auth/authenticate/", {
+          return axiosClient
+            .post("/auth/verify-wallet/", {
               address: address,
               signature: res,
-              message: message.message,
+              nonce: message.nonce,
             })
-            .then((response) => {
-              console.log({ response });
+            .then(({ data }) => {
+              setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token);
+              return data.token;
+            });
+        })
+        .then((token) => {
+          axiosClient
+            .get("/auth/info/", {
+              headers: {
+                Authorization: `TOKEN ${token}`,
+              },
+            })
+            .then((res) => {
+              setState(res.data);
             });
         })
         .catch((err) => {
           console.warn(err);
-          console.log({ err });
         });
     }
   }, [message]);

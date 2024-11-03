@@ -11,16 +11,20 @@ import Logo from "@/assets/Logo.svg";
 import Image from "next/image";
 import { WalletMoney } from "solar-icon-set";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
+import { useAuth } from "@/hooks/useAuthorization";
 
-const WalletStatus = (isConnected: boolean = false) => (
-  <Badge
-    variant={isConnected ? "green" : "red"}
-    size="xs"
-    position="absolute"
-    left="0"
-    bottom="0"
-  />
-);
+const WalletStatus = () => {
+  const authInfo = useAuth();
+  return (
+    <Badge
+      variant={!!authInfo ? "green" : "red"}
+      size="xs"
+      position="absolute"
+      left="0"
+      bottom="0"
+    />
+  );
+};
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
