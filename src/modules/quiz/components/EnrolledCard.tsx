@@ -11,7 +11,7 @@ import { SelectHint } from "./SelectHint";
 export const EnrolledCard = () => {
   const { onClose, isOpen } = useEnrolledModalProps();
   const selectedQuiz = useSelectedQuiz();
-  const [hintModal, setHintModal] = useState(false);
+  const [showHintModal, setShowHintModal] = useState(false);
 
   const [enrollCardState, setEnrollCardState] = useState(
     ENROLL_STATUS.quizInfo
@@ -19,7 +19,7 @@ export const EnrolledCard = () => {
 
   const stateComponents = useMemo(() => {
     return {
-      [ENROLL_STATUS.quizInfo]: <QuizInfo setHintModal={setHintModal} />,
+      [ENROLL_STATUS.quizInfo]: <QuizInfo setHintModal={setShowHintModal} />,
       [ENROLL_STATUS.task]: <QuizTask />,
       [ENROLL_STATUS.enrolled]: <QuizEnrolled />,
     };
@@ -93,7 +93,7 @@ export const EnrolledCard = () => {
         </Button>
       </VStack>
 
-      <SelectHint isOpen={hintModal} setIsOpen={setHintModal} />
+      <SelectHint isOpen={showHintModal} setIsOpen={setShowHintModal} />
     </BottomModal>
   );
 };
