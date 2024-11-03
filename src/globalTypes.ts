@@ -32,3 +32,9 @@ export declare type quizType = {
   hintCount: number;
   userProfile: number;
 };
+
+export declare type auth = {
+  pk: number;
+  username: string;
+  walletAddress: string;
+};
