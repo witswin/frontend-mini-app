@@ -204,3 +204,5 @@ export const unitapPassSupportedNetworks = [
 ];
 
 export const lightingChainId = "286621";
+
+export const ACCESS_TOKEN_COOKIE_KEY = "access_token";
