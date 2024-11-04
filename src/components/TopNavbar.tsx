@@ -29,7 +29,6 @@ const WalletStatus = () => {
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
   const health = 3;
-  const isConnected = true;
 
   const { connect, connectors } = useWalletConnection();
 
@@ -93,7 +92,7 @@ export const TopNavbar = () => {
               color="var(--chakra-colors-blue)"
               size={24}
             />
-            {WalletStatus(isConnected)}
+            <WalletStatus />
           </Box>
           <Text color="gray.40" fontSize="sm" fontWeight="bold">
             Wallet
