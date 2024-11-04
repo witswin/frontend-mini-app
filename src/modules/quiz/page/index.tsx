@@ -3,12 +3,28 @@ import { chakra, Text, VStack } from "@chakra-ui/react";
 import { EffectCoverflow } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MemoizedSwiperItem } from "../components/QuizItem";
+import { EnrolledCard } from "../components/EnrolledCard";
+import { axiosClient } from "@/configs/axios";
+import { useQuery } from "@tanstack/react-query";
+import { quizType } from "@/globalTypes";
 
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
+  const { data } = useQuery({
+    queryKey: ["quizzes"],
+    queryFn: async () =>
+      await axiosClient.get("/quiz/competitions/").then((res) => res.data),
+  });
+
   return (
-    <VStack justifyContent="center" width="full">
+    <VStack
+      overflow="hidden"
+      position="relative"
+      justifyContent="center"
+      width="full"
+      height="full"
+    >
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Text
         fontWeight="600"
@@ -21,13 +37,15 @@ export const QuizPLP = () => {
       >
         Find exciting quizzes to join and earn points!
       </Text>
+
       <ChakraSwiper
+        speed={1000}
         py="2px"
         width="full"
         slidesPerView="auto"
         effect="coverflow"
         modules={[EffectCoverflow]}
-        spaceBetween={16}
+        spaceBetween={0}
         centeredSlides
         initialSlide={1}
         grabCursor
@@ -36,15 +54,23 @@ export const QuizPLP = () => {
           stretch: -20,
           depth: 150,
           modifier: 1,
-          slideShadows: false,
+          slideShadows: false,  
+        }}
+        sx={{
+          ".swiper-slide": {
+            mr: "0 !important",
+            px: "4px",
+          },
         }}
       >
-        {[0, 1, 2, 3, 4].map((quiz) => (
-          <SwiperSlide key={quiz} style={{ width: "fit-content" }}>
-            <MemoizedSwiperItem />
+        {data?.results?.map((quiz: quizType) => (
+          <SwiperSlide key={quiz?.id} style={{ maxWidth: "318px" }}>
+            <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}
       </ChakraSwiper>
+
+      <EnrolledCard />
     </VStack>
   );
 };

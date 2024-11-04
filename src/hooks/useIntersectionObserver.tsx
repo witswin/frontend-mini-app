@@ -15,7 +15,6 @@ export const useIntersectionObserver = (
     const observer = new IntersectionObserver(([entry]) => {
       setIntersecting(entry.isIntersecting);
       setIntersectionRatio(entry.intersectionRatio);
-      //@ts-expect-error idk typeof bounding
       setBoundingClientRect(entry.boundingClientRect);
       if (runOnce && entry.isIntersecting && refCurrent)
         observer.unobserve(refCurrent);

@@ -46,6 +46,12 @@ export const colors = {
   },
   purple: "#9227FF",
   cyan: "#63C6E1",
+  blue: "#6E81EE",
+
+  progressDefaultLinear:
+    "linear-gradient(273.53deg, #63C6E1 2.9%, #6E81EE 97.1%)",
+  progressAlertLinear:
+    "radial-gradient(100% 100% at 50% 0%, #FF3B30 0%, #FF7C74 100%);",
   primaryRadial: "radial-gradient(at top ,#9553F6 ,#6E81EE 30%,#63C6E1)",
   primaryLinear: "linear-gradient(339.81deg, #63C6E1 21.75%, #9227FF 133.12%)",
   redRadial: "radial-gradient(#FF3B30,#FF7C74)",
@@ -54,4 +60,6 @@ export const colors = {
     "radial-gradient(100% 100% at 50% 0%, rgba(239, 239, 238, 0.04) 0%, rgba(239, 239, 238, 0.1) 100%)",
   cardBackground: "rgba(32,32,51,0.6)",
   cardBg: "rgba(32,32,51,0.6)",
+  blackGradient:
+    "linear-gradient(2.73deg, #111125 23.73%, rgba(17, 17, 37, 0.4) 60.91%, rgba(17, 17, 37, 0) 97.72%)",
 };
