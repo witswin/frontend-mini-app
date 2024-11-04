@@ -17,11 +17,11 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
   return (
     <VStack
       w="full"
-      p="16px"
-      gap="16px"
+      p={{ base: "8px", sm: "16px" }}
+      gap={{ base: "8px", sm: "16px" }}
       bg="glassBackground"
       borderRadius="16px"
-      // flex={1}
+      height="full"
     >
       <Box position="relative">
         <Image src={prizeOpen ? GiftOpen : GiftClose} alt="Prize" />
@@ -40,12 +40,24 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
           </VStack>
         )}
       </Box>
-      <ColorFullText fontSize="5xl" textContent="Awesome, you're a winner!" />
+      <ColorFullText
+        fontSize={{ base: "xl", sm: "5xl" }}
+        textContent="Awesome, you're a winner!"
+      />
       <HStack>
-        <Text color="green.400" fontSize="lg" fontWeight={700}>
+        <Text
+          whiteSpace="nowrap"
+          color="green.400"
+          fontSize={{ base: "sm", sm: "lg" }}
+          fontWeight={700}
+        >
           {`${prizeCount} USDT`}
         </Text>
-        <Text color="green.0" fontSize="lg" fontWeight={700}>
+        <Text
+          color="green.0"
+          fontSize={{ base: "sm", sm: "lg" }}
+          fontWeight={700}
+        >
           has been added to your wallet.
         </Text>
       </HStack>

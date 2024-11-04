@@ -16,29 +16,46 @@ export const WinnerCard = ({
   return (
     <HStack
       w="full"
-      h="56px"
+      h={{base:'40px',sm:"56px"}}
       bg="glassBackground"
       paddingX="8px"
       paddingY="12px"
       justifyContent="space-between"
       borderRadius="8px"
       position="relative"
-      border={
-        isCurrentPlayerInWinners
-          ? "1px solid var(--chakra-colors-cyan)"
-          : "unset"
-      }
+      // border={
+      //   isCurrentPlayerInWinners
+      //     ? "1px solid var(--chakra-colors-cyan)"
+      //     : "unset"
+      // }
     >
-      {/* <Box
-        position="absolute"
-        top="1px"
-        left="1px"
-        bg="green"
-        borderRadius="md"
-        w="calc(100% + 2px)"
-        h="calc(100% + 2px)"
-        zIndex="-1"
-      /> */}
+      {isCurrentPlayerInWinners && (
+        <>
+          <Box
+            zIndex={-1}
+            position="absolute"
+            left="50%"
+            top="50%"
+            bg="primaryLinear"
+            height="full"
+            w="calc(100%)"
+            h="calc(100%)"
+            transform="translate(-50%,-50%)"
+            borderRadius="8px"
+          />
+          <Box
+            position="absolute"
+            top="50%"
+            left="50%"
+            borderRadius="md"
+            width="calc(100% - 2px)"
+            height="calc(100% - 2px)"
+            zIndex={-1}
+            bg="gray.900"
+            transform="translate(-50%,-50%)"
+          />
+        </>
+      )}
       <Box
         position="absolute"
         top={0}

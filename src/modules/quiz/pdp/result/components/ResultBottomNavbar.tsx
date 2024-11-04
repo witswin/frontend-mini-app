@@ -5,9 +5,9 @@ import { Cup, HomeAngle2, XXX } from "solar-icon-set";
 
 export const ResultBottomNavbar = () => {
   return (
-    <HStack w="full" h="45px" gap="16px" position="relative" pl='1px' bottom="0">
+    <HStack px="16px" w="full" h="45px" gap="16px" position="fixed" bottom="8px" left="0">
       <Link href="/">
-        <Button size="sm">
+        <Button variant="solid" size="sm">
           <HomeAngle2
             color="var(--chakra-colors-gray-0)"
             iconStyle="Bold"
