@@ -1,3 +1,4 @@
+import { ResultBottomNavbar } from "@/modules/quiz/pdp/result/components/ResultBottomNavbar";
 import { Result } from "@/modules/quiz/pdp/result/page";
 import { Box, Container } from "@chakra-ui/react";
 import React, { ReactElement } from "react";
@@ -15,15 +16,15 @@ Index.getLayout = function getLayout(page: ReactElement) {
       maxWidth="538px"
       zIndex={1}
       gap="16px"
-      display="flex"
       height="full"
       px="0"
-      justifyContent="stretch"
-      alignItems="stretch"
+      minH="100vh"
+      position="relative"
     >
-      <Box width="full" h="full">
+      <Box px="16px" width="full">
         {page}
       </Box>
+      <ResultBottomNavbar />
     </Container>
   );
 };
