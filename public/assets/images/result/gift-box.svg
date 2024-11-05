@@ -1,0 +1,20 @@
+<svg width="150" height="220" viewBox="0 0 150 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M75.0337 150.796L18.2256 128.31C19.8456 149.651 20.688 171.683 20.4504 192.354C20.4504 192.916 20.7744 193.369 21.2712 193.628L72.9169 218.9C73.6081 219.246 74.3209 219.397 75.0121 219.397C75.7033 219.397 76.4377 219.224 77.1073 218.9L128.753 193.628C129.25 193.391 129.574 192.916 129.574 192.354C129.336 171.683 130.179 149.651 131.799 128.31L74.9905 150.796H75.0337Z" fill="#7C21DC"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M75.0338 150.79L18.2257 128.305C19.8457 149.645 20.6881 171.677 20.4505 192.349C20.4505 192.91 20.7745 193.364 21.2713 193.623L72.917 218.895C73.6082 219.241 74.321 219.392 75.0122 219.392V150.79H75.0338Z" fill="url(#paint0_radial_12_245)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M75.0332 150.796L131.841 128.31C130.221 149.651 129.379 171.683 129.617 192.354C129.617 192.916 129.292 193.369 128.796 193.628L77.15 218.9C76.4588 219.246 75.746 219.397 75.0548 219.397V150.796H75.0332Z" fill="url(#paint1_radial_12_245)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M75.0337 150.796L18.2256 128.31C19.8456 149.651 20.688 171.683 20.4504 192.354C20.4504 192.916 20.7744 193.369 21.2712 193.628L72.9169 218.9C73.6081 219.246 74.3209 219.397 75.0121 219.397V150.796H75.0337Z" fill="url(#paint2_radial_12_245)"/>
+<defs>
+<radialGradient id="paint0_radial_12_245" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(26.9305 -11.8793) scale(69.6601 69.66)">
+<stop stop-color="#BF50ED"/>
+<stop offset="1" stop-color="#9B20C7"/>
+</radialGradient>
+<radialGradient id="paint1_radial_12_245" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(56.9034 75.7647) scale(100.152 173.687)">
+<stop stop-color="#9651F2"/>
+<stop offset="1" stop-color="#6925CE"/>
+</radialGradient>
+<radialGradient id="paint2_radial_12_245" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(19.5096 142.83) scale(109.695 92.166)">
+<stop stop-color="#B680FF"/>
+<stop offset="1" stop-color="#944DFF"/>
+</radialGradient>
+</defs>
+</svg>

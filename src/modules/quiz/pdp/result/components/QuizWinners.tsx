@@ -6,26 +6,39 @@ export const winnerUsers = [
   {
     id: 0,
     userId: "Ali",
-    publicKey: "0x1231....123123",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
     isCurrentPlayerInWinners: true,
   },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
-  { id: 0, userId: "Ali", publicKey: "0x1231....123123" },
+  {
+    id: 1,
+    userId: "Ali",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
+  },
+  {
+    id: 2,
+    userId: "Ali",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
+  },
+  {
+    id: 3,
+    userId: "Ali",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
+  },
+  {
+    id: 4,
+    userId: "Ali",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
+  },
+  {
+    id: 5,
+    userId: "Ali",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
+  },
+  {
+    id: 6,
+    userId: "Ali",
+    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
+  },
 ];
 
 export const QuizWinners = () => {
@@ -34,7 +47,6 @@ export const QuizWinners = () => {
       {winnerUsers.map((user) => (
         <WinnerCard
           key={user.id}
-          isCurrentPlayerInWinners={!!user.isCurrentPlayerInWinners}
           userId={user.userId}
           publicKey={user.publicKey}
         />

@@ -1,9 +1,8 @@
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import GiftClose from "@/assets/gift-close.svg";
-import GiftOpen from "@/assets/gift-open.svg";
 import { ColorFullText } from "@/components/ColorFullText";
+import { motion } from "framer-motion";
 
 export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
   const [prizeOpen, setPrizeOpen] = useState(false);
@@ -24,21 +23,66 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
       height="full"
     >
       <Box position="relative">
-        <Image src={prizeOpen ? GiftOpen : GiftClose} alt="Prize" />
-        {prizeOpen && (
-          <VStack
-            w="full"
-            h="full"
-            position="absolute"
-            top={0}
-            justifyContent="center"
-            gap="2px"
-            pb="6px"
+        <Box position="relative" zIndex={10}>
+          <Image
+            src={"/assets/images/result/gift-box.svg"}
+            width={150}
+            height={220}
+            alt="Prize"
+            style={{ zIndex: 10 }}
+          />
+        </Box>
+        <Box position="absolute" top={0} left={0} zIndex={5}>
+          <Image
+            src={"/assets/images/result/gift-interior.svg"}
+            width={150}
+            height={220}
+            alt="Prize"
+            style={{ zIndex: 5 }}
+          />
+        </Box>
+
+        <Box position="absolute" top={"80px"} left={0} zIndex={20}>
+          <motion.div
+            animate={prizeOpen ? { y: "-80px" } : {}}
+            transition={{ duration: 1 }}
           >
-            <ColorFullText fontSize="6xl" textContent={`${prizeCount} `} />
-            <ColorFullText fontSize="sm" textContent={`USDT`} />
-          </VStack>
-        )}
+            <Image
+              src={"/assets/images/result/gift-door.svg"}
+              width={150}
+              height={220}
+              alt="Prize"
+            />
+          </motion.div>
+        </Box>
+
+        <Box position="absolute" top={0} left={0} zIndex={7}>
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={prizeOpen ? { y: 0, opacity: 1 } : {}}
+            transition={{ duration: 1, ease: "easeOut" }}
+          >
+            <Image
+              src={"/assets/images/result/gift-light.svg"}
+              width={150}
+              height={220}
+              alt="Prize"
+            />
+
+            <VStack
+              w="full"
+              h="full"
+              position="absolute"
+              top={0}
+              justifyContent="center"
+              gap={0}
+              pb="6px"
+            >
+              <ColorFullText fontSize="6xl" textContent={`${prizeCount} `} />
+              <ColorFullText mt="-6px" fontSize="sm" textContent={`USDT`} />
+            </VStack>
+          </motion.div>
+        </Box>
       </Box>
       <ColorFullText
         fontSize={{ base: "xl", sm: "5xl" }}
