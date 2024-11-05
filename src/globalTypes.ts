@@ -37,4 +37,5 @@ export declare type auth = {
   pk: number;
   username: string;
   walletAddress: string;
+  token: string;
 };

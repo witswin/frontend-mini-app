@@ -1,14 +1,22 @@
 import { axiosClient } from "@/configs/axios";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { createContext, PropsWithChildren, useEffect, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { SignableMessage } from "viem";
 import { useAccount, useSignMessage } from "wagmi";
 import { setCookie } from "cookies-next";
 import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
 import { auth } from "@/globalTypes";
 
-export const AuthState = createContext(undefined);
-export const AuthDispatch = createContext(undefined);
+export const AuthState = createContext<auth>(undefined);
+export const AuthDispatch =
+  createContext<Dispatch<SetStateAction<auth>>>(undefined);
 
 interface AuthProvider extends PropsWithChildren {
   auth: auth;
@@ -64,7 +72,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
               },
             })
             .then((res) => {
-              setState(res.data);
+              setState({ ...res.data, token });
             });
         })
         .catch((err) => {
