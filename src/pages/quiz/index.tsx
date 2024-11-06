@@ -6,6 +6,7 @@ import {
   dehydrate,
   DehydratedState,
   HydrationBoundary,
+  QueryClient,
 } from "@tanstack/react-query";
 
 interface IndexProps {
@@ -26,7 +27,9 @@ const Index = ({ dehydratedState }: IndexProps) => {
 export default Index;
 
 export const getServerSideProps = async () => {
-  const queryClient = await prefetchSSRData(["quizzes"], "quiz/competitions/");
+  const queryClient = new QueryClient();
+
+  await prefetchSSRData(["quizzes"], "quiz/competitions/", queryClient);
 
   return {
     props: {
