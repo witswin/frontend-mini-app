@@ -39,3 +39,14 @@ export declare type auth = {
   walletAddress: string;
   token: string;
 };
+
+export declare type enrolledCompetition = {
+  id: number;
+  registered_hints: string;
+  is_winner: boolean;
+  amount_won: string;
+  hint_count: number;
+  tx_hash: string;
+  user_profile: number;
+  competition: number;
+};
