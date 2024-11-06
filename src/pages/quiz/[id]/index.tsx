@@ -4,6 +4,7 @@ import {
   dehydrate,
   DehydratedState,
   HydrationBoundary,
+  QueryClient,
 } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next";
 
@@ -23,10 +24,12 @@ export default QuizPDP;
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
   const quizId = query?.id as string;
+  const queryClient = new QueryClient();
 
-  const queryClient = await prefetchSSRData(
+  await prefetchSSRData(
     ["quiz", quizId],
-    `quiz/competitions/${quizId}/`
+    `quiz/competitions/${quizId}/`,
+    queryClient
   );
 
   return {
