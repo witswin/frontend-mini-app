@@ -2,7 +2,6 @@ import { axiosClient } from "@/configs/axios";
 import { LOBBY_THRESHOLD } from "@/constants";
 import { enrolledCompetition, quizType } from "@/globalTypes";
 import { useAuth } from "@/hooks/useAuthorization";
-import { useCalculateStartUTCTime } from "@/hooks/useCalculateUTCTime";
 import { INFO_CARD_STATE } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
@@ -30,31 +29,32 @@ export const useCheckEnrolled = () => {
   if (!authInfo?.token) {
     return () => {};
   }
+  console.log(enrolledCompetitions);
 
   return (competitionId: number) =>
     enrolledCompetitions?.find(
-      (competition) => competition.id === competitionId
+      (competition) => competition.competition === competitionId
     );
 };
 
-export const useGetCardState = (competition: quizType) => {
+export const useGetHomeCardState = (competition: quizType) => {
   const enrolledChecker = useCheckEnrolled();
 
   const [competitionState, setCompetitionState] =
     useState<INFO_CARD_STATE>(undefined);
   const [timeState, setTimeState] = useState(undefined);
 
-  // const convertedStartAt = new Date(competition.startAt).getTime();
+  const convertedStartAt = new Date(competition.startAt).getTime();
 
   const isEnrolled = enrolledChecker(competition?.id);
 
-  const leftTimeCalculator = useCalculateStartUTCTime();
+  // const leftTimeCalculator = useCalculateStartUTCTime();
 
   console.log({ timeState });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const calculatedTime = leftTimeCalculator(new Date(competition.startAt));
+      const calculatedTime = convertedStartAt - new Date().getTime();
       if (calculatedTime > LOBBY_THRESHOLD) {
         setTimeState("default");
       } else if (calculatedTime <= LOBBY_THRESHOLD && calculatedTime > 10000) {
