@@ -1,8 +1,9 @@
 import { Card } from "@/components/Card";
+import { useCheckEnrolled } from "@/modules/home/hooks";
 import { useSelectedQuizDispatch } from "@/modules/quiz/hooks";
 import { CARD_STATE, QuizCardProps } from "@/types";
 import {
-  // Badge,
+  Badge,
   Box,
   Button,
   // chakra,
@@ -13,14 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
-import {
-  forwardRef,
-  LegacyRef,
-  memo,
-  ReactElement,
-  useMemo,
-  useState,
-} from "react";
+import { forwardRef, LegacyRef, memo, ReactElement, useMemo } from "react";
 import { DoubleAltArrowRight } from "solar-icon-set";
 // import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -34,7 +28,7 @@ interface QuizPrizeProps {
 }
 export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
   return (
-    <HStack>
+    <HStack width="full">
       <Text
         fontWeight="700"
         as="span"
@@ -45,7 +39,15 @@ export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
         sx={{ WebkitTextFillColor: "transparent" }}
         alignItems="center"
       >
-        <Text lineHeight="36px" fontFamily="Kanit" fontSize="5xl">
+        <Text
+          whiteSpace="break-spaces"
+          wordBreak="break-all"
+          lineHeight="36px"
+          fontFamily="Kanit"
+          fontSize="5xl"
+          noOfLines={1}
+          title={prize?.toFixed(2)}
+        >
           {prize?.toFixed(2)}
         </Text>
         <Text fontSize="xs">{unitPrize?.toUpperCase()}</Text>
@@ -57,11 +59,11 @@ export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
 // const ChakraSwiper = chakra(Swiper);
 const QuizCard = forwardRef(
   (
-    { state, quiz, colored, onOpen }: QuizCardProps,
+    { state, quiz, colored, onOpen, isLarge }: QuizCardProps,
     ref: LegacyRef<HTMLDivElement>
   ) => {
     const selectedQuizDispatch = useSelectedQuizDispatch();
-    const [cardState] = useState(state);
+    const checkIsEnrolled = useCheckEnrolled();
 
     const selectedCTA: {
       [key in CARD_STATE]: {
@@ -118,8 +120,8 @@ const QuizCard = forwardRef(
       []
     );
     return (
-      <VStack height="full" alignItems="stretch" ref={ref} width="full">
-        <Card maxH="336px" alignItems="stretch" height="full" colored={colored}>
+      <VStack ref={ref} width="full">
+        <Card colored={colored}>
           {quiz?.prizeAmount && quiz?.token && quiz?.details && (
             <VStack mb="8px" rowGap="0">
               <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
@@ -140,13 +142,21 @@ const QuizCard = forwardRef(
               inset: "-1px",
               rounded: "full",
               bg: "glassBackground",
+              width: isLarge ? "124px" : "80px",
+              height: isLarge ? "124px" : "80px",
             }}
             rounded="full"
-            boxSize={quiz ? "124px" : "80px"}
+            boxSize={isLarge ? "124px" : "80px"}
             position="relative"
           >
-            <Img rounded="full" width="full" height="full" src={quiz?.image} />
-            {/* {quiz?.isEnrolled && (
+            <Img
+              minH={isLarge ? "124px" : "80px"}
+              minW={isLarge ? "124px" : "80px"}
+              rounded="full"
+              boxSize={isLarge ? "124px" : "80px"}
+              src={quiz?.image}
+            />
+            {checkIsEnrolled(quiz.id) && (
               <Badge
                 position="absolute"
                 bottom="12px"
@@ -159,7 +169,7 @@ const QuizCard = forwardRef(
               >
                 Enrolled
               </Badge>
-            )} */}
+            )}
           </Box>
           <VStack rowGap="4px" width="full">
             <Text
@@ -178,9 +188,7 @@ const QuizCard = forwardRef(
           </VStack>
           <CountDown
             shows={{ day: true, hour: true, info: true, min: true, sec: true }}
-            date={
-              new Date(quiz?.startAt).getTime() || new Date().getTime() + 10000
-            }
+            date={new Date(quiz?.startAt).getTime()}
           />
           {/* {quiz?.values && (
             <ChakraSwiper
@@ -199,23 +207,25 @@ const QuizCard = forwardRef(
               ))}
             </ChakraSwiper>
           )} */}
-          <Button
-            width="100%"
-            size="lg"
-            variant={selectedCTA[cardState].variant}
-            onClick={(e) => {
-              e.stopPropagation();
-              selectedCTA[cardState].onClick();
-            }}
-            {...("icon" in selectedCTA[cardState] && {
-              rightIcon: selectedCTA[cardState].icon,
-            })}
-          >
-            {selectedCTA[cardState].text}
-          </Button>
+          {state && (
+            <Button
+              width="100%"
+              size="lg"
+              variant={selectedCTA[state].variant}
+              onClick={(e) => {
+                e.stopPropagation();
+                selectedCTA[state].onClick();
+              }}
+              {...("icon" in selectedCTA[state] && {
+                rightIcon: selectedCTA[state].icon,
+              })}
+            >
+              {selectedCTA[state].text}
+            </Button>
+          )}
           {quiz?.participantsCount && quiz?.userProfile && (
             <Text fontSize="xs" fontWeight="600" color="gray.100">
-              {quiz?.userProfile} / {quiz?.participantsCount} people enrolled
+              {quiz?.participantsCount} / {quiz?.maxParticipants} people enrolled
             </Text>
           )}
         </Card>

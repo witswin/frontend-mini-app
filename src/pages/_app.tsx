@@ -90,7 +90,7 @@ App.getInitialProps = async ({ ctx }: { ctx: GetServerSidePropsContext }) => {
       });
 
       if (response.statusText === "OK") {
-        return { auth: response.data };
+        return { auth: { ...response.data, token: accessToken } };
       }
     } catch (error) {
       console.log(error);

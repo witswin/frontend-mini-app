@@ -12,7 +12,7 @@ const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
   const { data } = useQuery({
-    queryKey: ["quizzes"],
+    queryKey: ["competitions"],
     queryFn: async () =>
       await axiosClient.get("/quiz/competitions/").then((res) => res.data),
   });
@@ -54,7 +54,7 @@ export const QuizPLP = () => {
           stretch: -20,
           depth: 150,
           modifier: 1,
-          slideShadows: false,  
+          slideShadows: false,
         }}
         sx={{
           ".swiper-slide": {

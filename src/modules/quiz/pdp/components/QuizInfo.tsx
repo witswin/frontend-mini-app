@@ -7,6 +7,7 @@ import {
   HStack,
   Tag,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import Image from "next/image";
@@ -14,12 +15,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { ArticleCard } from "../../components/ArticleCard";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
-import { QUIZ_STATE } from "../types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { axiosClient } from "@/configs/axios";
 import { quizType } from "@/globalTypes";
 import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
+import { useCheckEnrolled } from "@/modules/home/hooks";
+import { useGetCardState } from "../../hooks";
+import { CARD_STATE } from "@/types";
+import { useAuth } from "@/hooks/useAuthorization";
+import { useWalletConnection } from "@/hooks/useWalletConnection";
+import { AxiosError } from "axios";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -27,9 +33,6 @@ const CountDown = dynamic(
 );
 const ChakraSwiper = chakra(Swiper);
 export const QuizInfo = () => {
-  const isEnrolled = true;
-  const heart = 3;
-
   const { query } = useRouter();
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
@@ -39,33 +42,60 @@ export const QuizInfo = () => {
         .then((res) => res.data),
   });
 
+  const checkIsEnrolledQuiz = useCheckEnrolled();
+  const isEnrolled = checkIsEnrolledQuiz(data?.id);
+  const cardState = useGetCardState(data);
+
+  const { connect, connectors } = useWalletConnection();
+
+  const queryClient = useQueryClient();
+
+  const authInfo = useAuth();
+  const toast = useToast({
+    position: "bottom",
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      return await axiosClient
+        .post(
+          "/quiz/competitions/enroll/",
+          {
+            user_hints: [],
+            hint_count: 1,
+            competition: 3,
+          },
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          }
+        )
+        .then((res) => console.log(res.data));
+    },
+    onError: (data: AxiosError<{ detail: string }>) => {
+      toast({
+        description: data.response.data.detail,
+        status: "error",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
+      toast({
+        description: `You have enrolled ${data?.title}`,
+        status: "success",
+      });
+    },
+  });
+
   const CTAButton = useMemo(
     () => ({
-      [QUIZ_STATE.default]: isEnrolled ? null : (
+      [CARD_STATE.join]: isEnrolled ? null : (
         <Button width="full" size="lg" variant="solid">
           Enroll Quiz
         </Button>
       ),
-      [QUIZ_STATE.lobby]: isEnrolled ? (
-        <Button
-          rightIcon={
-            <DoubleAltArrowRight
-              color="var(--chakra-colors-gray-0)"
-              iconStyle="LineDuotone"
-            />
-          }
-          width="full"
-          size="lg"
-          variant="solid"
-        >
-          Go to Quiz Lobby
-        </Button>
-      ) : (
-        <Button width="full" size="lg" variant="outline">
-          Watch as spectator
-        </Button>
-      ),
-      [QUIZ_STATE.started]: isEnrolled ? (
+      [CARD_STATE.lobby]: (
         <Button
           rightIcon={
             <DoubleAltArrowRight
@@ -79,31 +109,33 @@ export const QuizInfo = () => {
         >
           Join Now
         </Button>
-      ) : (
+      ),
+      [CARD_STATE.resource]: <></>,
+      [CARD_STATE.watch]: (
         <Button width="full" size="lg" variant="outline">
           Watch as spectator
         </Button>
       ),
-      [QUIZ_STATE.penalty]:
-        heart > 0 && isEnrolled ? (
-          <Button
-            rightIcon={
-              <DoubleAltArrowRight
-                color="var(--chakra-colors-gray-0)"
-                iconStyle="LineDuotone"
-              />
+      [CARD_STATE.enroll]: (
+        <Button
+          onClick={() => {
+            if (!authInfo?.token) {
+              connect({
+                connector: connectors.find(
+                  (connector) => connector.id === "injected"
+                )!,
+              });
+            } else {
+              mutate();
             }
-            width="full"
-            size="lg"
-            variant="solid"
-          >
-            Join Now
-          </Button>
-        ) : (
-          <Button width="full" size="lg" variant="outline">
-            Watch as spectator
-          </Button>
-        ),
+          }}
+          width="full"
+          size="lg"
+          variant="solid"
+        >
+          Enroll Quiz
+        </Button>
+      ),
     }),
     []
   );
@@ -172,7 +204,7 @@ export const QuizInfo = () => {
               lineHeight="16px"
               color="gray.100"
             >
-              {data?.participantsCount} / 1,400 people enrolled
+              {data?.participantsCount} / {data?.maxParticipants}
             </Text>
           </VStack>
           {data?.startAt && (
@@ -212,13 +244,7 @@ export const QuizInfo = () => {
               px="2px"
               width="full"
             >
-              {[
-                "Aura Authentication",
-                "Unitap Pass Owner",
-                "sadfkhasoidhasoiudg",
-                "dhasuuid uw",
-                "asjdhasu",
-              ].map((value) => (
+              {["Aura Authentication", "Unitap Pass Owner"].map((value) => (
                 <SwiperSlide style={{ width: "fit-content" }} key={value}>
                   <Tag size="sm" variant="gray">
                     {value}
@@ -240,17 +266,17 @@ export const QuizInfo = () => {
       </VStack>
 
       <Box
-        px="16px"
         py="10px"
         bg="blackGradient"
         zIndex={2}
-        position="sticky"
+        position="fixed"
         bottom="0px"
-        left="0"
+        left="50%"
+        transform="translateX(-50%)"
         width="full"
         maxW="538px"
       >
-        {CTAButton["lobby"]}
+        {CTAButton[cardState]}
       </Box>
     </>
   );

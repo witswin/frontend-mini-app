@@ -31,6 +31,8 @@ export declare type quizType = {
   isActive: boolean;
   hintCount: number;
   userProfile: number;
+  questionTimeSeconds: number;
+  maxParticipants: number;
 };
 
 export declare type auth = {
@@ -38,4 +40,15 @@ export declare type auth = {
   username: string;
   walletAddress: string;
   token: string;
+};
+
+export declare type enrolledCompetition = {
+  id: number;
+  registered_hints: string;
+  is_winner: boolean;
+  amount_won: string;
+  hint_count: number;
+  tx_hash: string;
+  user_profile: number;
+  competition: number;
 };

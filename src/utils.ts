@@ -1,14 +1,18 @@
 import { QueryClient } from "@tanstack/react-query";
 import { axiosClient } from "./configs/axios";
+import { RawAxiosRequestHeaders } from "axios";
 
-export const prefetchSSRData = async (key: string[], endpoint: string) => {
-  const queryClient = new QueryClient();
-
+export const prefetchSSRData = async (
+  key: string[],
+  endpoint: string,
+  queryClient: QueryClient,
+  headers?: RawAxiosRequestHeaders
+) => {
   await queryClient.prefetchQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: key,
     queryFn: async () =>
-      await axiosClient.get(endpoint).then((res) => res.data),
+      await axiosClient.get(endpoint, { headers }).then((res) => res.data),
   });
   return queryClient;
 };
