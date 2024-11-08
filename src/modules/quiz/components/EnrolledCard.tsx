@@ -1,21 +1,75 @@
-import { Button, Img, Text, VStack } from "@chakra-ui/react";
+import { Button, Img, Text, useToast, VStack } from "@chakra-ui/react";
 import { useEnrolledModalProps, useSelectedQuiz } from "../hooks";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ENROLL_STATUS } from "../types";
 import { QuizInfo } from "./state/QuizInfo";
 import { QuizTask } from "./state/QuizTask";
 import { QuizEnrolled } from "./state/QuizEnrolled";
 import { BottomModal } from "@/components/BottomModal";
 import { SelectHint } from "./SelectHint";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosClient } from "@/configs/axios";
+import { useAuth } from "@/hooks/useAuthorization";
+import { AxiosError } from "axios";
+import { useWalletConnection } from "@/hooks/useWalletConnection";
+import { useCheckEnrolled } from "@/modules/home/hooks";
 
 export const EnrolledCard = () => {
   const { onClose, isOpen } = useEnrolledModalProps();
   const selectedQuiz = useSelectedQuiz();
   const [showHintModal, setShowHintModal] = useState(false);
 
+  const authInfo = useAuth();
+  const toast = useToast({
+    position: "bottom",
+  });
+
   const [enrollCardState, setEnrollCardState] = useState(
     ENROLL_STATUS.quizInfo
   );
+
+  const { connect, connectors } = useWalletConnection();
+
+  const queryClient = useQueryClient();
+
+  const checkIsEnrolled = useCheckEnrolled();
+
+  useEffect(() => {
+    setEnrollCardState(ENROLL_STATUS.enrolled);
+  }, [checkIsEnrolled(selectedQuiz?.id)]);
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      return await axiosClient
+        .post(
+          "/quiz/competitions/enroll/",
+          {
+            user_hints: [],
+            hint_count: 1,
+            competition: 3,
+          },
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          }
+        )
+        .then((res) => console.log(res.data));
+    },
+    onError: (data: AxiosError<{ detail: string }>) => {
+      toast({
+        description: data.response.data.detail,
+        status: "error",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
+      toast({
+        description: `You have enrolled ${selectedQuiz.title}`,
+        status: "success",
+      });
+    },
+  });
 
   const stateComponents = useMemo(() => {
     return {
@@ -36,7 +90,16 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.quizInfo]: {
         title: "Enroll",
         onClick: () => {
-          setEnrollCardState(ENROLL_STATUS.task);
+          if (!authInfo?.token) {
+            connect({
+              connector: connectors.find(
+                (connector) => connector.id === "injected"
+              )!,
+            });
+          } else {
+            mutate();
+          }
+          // setEnrollCardState(ENROLL_STATUS.task);
         },
       },
       [ENROLL_STATUS.task]: {

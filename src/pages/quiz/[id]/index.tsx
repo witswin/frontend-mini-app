@@ -1,5 +1,6 @@
 import { Index } from "@/modules/quiz/pdp/page";
 import { prefetchSSRData } from "@/utils";
+import { Box, Container } from "@chakra-ui/react";
 import {
   dehydrate,
   DehydratedState,
@@ -7,6 +8,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next";
+import { ReactElement } from "react";
 
 interface QuizPDPProps {
   dehydratedState: DehydratedState;
@@ -37,4 +39,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       dehydratedState: dehydrate(queryClient),
     },
   };
+};
+
+QuizPDP.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Container
+      py="8px"
+      maxWidth="538px"
+      zIndex={1}
+      gap="16px"
+      display="flex"
+      height="full"
+      px="0"
+      minH="calc(100vh - 122px)"
+      justifyContent="stretch"
+      alignItems="stretch"
+    >
+      <Box width="full">{page}</Box>
+    </Container>
+  );
 };

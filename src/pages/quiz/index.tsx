@@ -29,7 +29,7 @@ export default Index;
 export const getServerSideProps = async () => {
   const queryClient = new QueryClient();
 
-  await prefetchSSRData(["quizzes"], "quiz/competitions/", queryClient);
+  await prefetchSSRData(["competitions"], "/quiz/competitions/", queryClient);
 
   return {
     props: {
