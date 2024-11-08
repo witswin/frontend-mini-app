@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { InfoCard } from "../components/InfoCard";
 import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/configs/axios";
-import { useGetCardState } from "../hooks";
+import { useGetHomeCardState } from "../hooks";
 
 export const Home = () => {
   const { data: closeCompetition } = useQuery({
@@ -17,7 +17,7 @@ export const Home = () => {
         .then((res) => res.data),
   });
 
-  const cardState = useGetCardState(closeCompetition);
+  const cardState = useGetHomeCardState(closeCompetition);
 
   console.log({ cardState });
 
