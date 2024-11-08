@@ -59,13 +59,11 @@ export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
 // const ChakraSwiper = chakra(Swiper);
 const QuizCard = forwardRef(
   (
-    { state, quiz, colored, onOpen }: QuizCardProps,
+    { state, quiz, colored, onOpen, isLarge }: QuizCardProps,
     ref: LegacyRef<HTMLDivElement>
   ) => {
     const selectedQuizDispatch = useSelectedQuizDispatch();
     const checkIsEnrolled = useCheckEnrolled();
-
-    console.log({ enroleld: checkIsEnrolled(quiz?.id) });
 
     const selectedCTA: {
       [key in CARD_STATE]: {
@@ -144,21 +142,18 @@ const QuizCard = forwardRef(
               inset: "-1px",
               rounded: "full",
               bg: "glassBackground",
-              // width: quiz ? "124px" : "80px",
-              width: "80px",
-              // height: quiz ? "124px" : "80px",
-              height: "80px",
+              width: isLarge ? "124px" : "80px",
+              height: isLarge ? "124px" : "80px",
             }}
             rounded="full"
-            // boxSize={quiz ? "124px" : "80px"}
-            boxSize="80px"
+            boxSize={isLarge ? "124px" : "80px"}
             position="relative"
           >
             <Img
-              minH="80px"
-              minW="80px"
+              minH={isLarge ? "124px" : "80px"}
+              minW={isLarge ? "124px" : "80px"}
               rounded="full"
-              boxSize="80px"
+              boxSize={isLarge ? "124px" : "80px"}
               src={quiz?.image}
             />
             {checkIsEnrolled(quiz.id) && (
@@ -212,23 +207,25 @@ const QuizCard = forwardRef(
               ))}
             </ChakraSwiper>
           )} */}
-          <Button
-            width="100%"
-            size="lg"
-            variant={selectedCTA[state].variant}
-            onClick={(e) => {
-              e.stopPropagation();
-              selectedCTA[state].onClick();
-            }}
-            {...("icon" in selectedCTA[state] && {
-              rightIcon: selectedCTA[state].icon,
-            })}
-          >
-            {selectedCTA[state].text}
-          </Button>
+          {state && (
+            <Button
+              width="100%"
+              size="lg"
+              variant={selectedCTA[state].variant}
+              onClick={(e) => {
+                e.stopPropagation();
+                selectedCTA[state].onClick();
+              }}
+              {...("icon" in selectedCTA[state] && {
+                rightIcon: selectedCTA[state].icon,
+              })}
+            >
+              {selectedCTA[state].text}
+            </Button>
+          )}
           {quiz?.participantsCount && quiz?.userProfile && (
             <Text fontSize="xs" fontWeight="600" color="gray.100">
-              {quiz?.userProfile} / {quiz?.participantsCount} people enrolled
+              {quiz?.participantsCount} / {quiz?.maxParticipants} people enrolled
             </Text>
           )}
         </Card>
