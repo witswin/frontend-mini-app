@@ -70,6 +70,13 @@ export const QuizInfo = ({
         borderRadius="10px"
         bg="var(--chakra-colors-glassBackground)"
         width="full"
+        sx={{
+          "&>div:first-of-type, span": {
+            width: "fit-content",
+            textAlign: "center",
+            mx: "auto",
+          },
+        }}
       >
         <QuizPrize
           prize={selectedQuiz?.prizeAmount}
@@ -85,7 +92,7 @@ export const QuizInfo = ({
         <ValueCard
           status={STATUS_ENROLL_VALUE.TIME}
           subTitle="Each Question"
-          title="10 sec"
+          title={selectedQuiz?.questionTimeSeconds}
         />
       </Flex>
 
