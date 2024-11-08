@@ -31,6 +31,8 @@ export declare type quizType = {
   isActive: boolean;
   hintCount: number;
   userProfile: number;
+  questionTimeSeconds: number;
+  maxParticipants: number;
 };
 
 export declare type auth = {
