@@ -1,7 +1,7 @@
 import { BoxProps, HStack, Text, VStack } from "@chakra-ui/react";
 import Countdown, { CountdownRenderProps } from "react-countdown";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { CalendarMark, ClockCircle } from "solar-icon-set";
 
 interface TimerBoxProps extends BoxProps {
@@ -206,10 +206,17 @@ export const CountDown = ({
   });
   const countDownRef = useRef<Countdown | null>(null);
 
+  const lastOutOfViewTime = useRef(null);
+  const [adjustedDate, setAdjustedDate] = useState(new Date(date).getTime());
   useEffect(() => {
     if (isIntersecting) {
+      if (lastOutOfViewTime.current) {
+        const timeElapsed = new Date().getTime() - lastOutOfViewTime.current;
+        setAdjustedDate((prevDate) => prevDate - timeElapsed);
+      }
       countDownRef.current?.start();
     } else {
+      lastOutOfViewTime.current = new Date().getTime();
       countDownRef.current?.stop();
     }
   }, [isIntersecting]);
@@ -227,7 +234,7 @@ export const CountDown = ({
       <Countdown
         ref={countDownRef}
         autoStart={false}
-        date={date}
+        date={adjustedDate}
         renderer={renderer}
       />
     </HStack>
