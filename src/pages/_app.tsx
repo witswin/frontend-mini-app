@@ -1,35 +1,37 @@
-import { baseTheme } from "@/theme";
-import { ChakraProvider } from "@chakra-ui/react";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
-import "swiper/css/effect-coverflow";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactElement, ReactNode, useState } from "react";
-import { Layout } from "@/components/Layout";
-import { CircularPattern } from "@/components/CircularPattern";
-import { SelectedQuizProvider } from "@/modules/quiz/context";
-import { GetServerSidePropsContext, NextPage } from "next";
-import { config } from "@/configs/wagmi";
-import { WagmiProvider } from "wagmi";
-import { AuthProvider } from "@/context/auth";
-import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
-import { axiosClient } from "@/configs/axios";
-import { auth } from "@/globalTypes";
+import { baseTheme } from "@/theme"
+import { ChakraProvider } from "@chakra-ui/react"
+import type { AppProps } from "next/app"
+import Head from "next/head"
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
+import "swiper/css/scrollbar"
+import "swiper/css/effect-coverflow"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactElement, ReactNode, useState } from "react"
+import { Layout } from "@/components/Layout"
+import { CircularPattern } from "@/components/CircularPattern"
+import { SelectedQuizProvider } from "@/modules/quiz/context"
+import { GetServerSidePropsContext, NextPage } from "next"
+import { config } from "@/configs/wagmi"
+import { WagmiProvider } from "wagmi"
+import { AuthProvider } from "@/context/auth"
+import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants"
+import { axiosClient } from "@/configs/axios"
+import { auth } from "@/globalTypes"
+import { TelegramAuthProvider } from "@/context/TelegramAuthProvider"
+import { AxiosAuthProvider } from "@/components/AxiosAuthProvider"
 
 type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
+  getLayout?: (page: ReactElement) => ReactNode
+}
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-  auth: auth;
-};
+  Component: NextPageWithLayout
+  auth: auth
+}
 function commonLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
+  return <Layout>{page}</Layout>
 }
 
 export default function App({
@@ -37,7 +39,7 @@ export default function App({
   pageProps,
   auth,
 }: AppPropsWithLayout) {
-  const getLayout = Component?.getLayout || commonLayout;
+  const getLayout = Component?.getLayout || commonLayout
 
   const [queryClient] = useState(
     () =>
@@ -48,7 +50,7 @@ export default function App({
           },
         },
       })
-  );
+  )
   return (
     <>
       <Head>
@@ -63,40 +65,44 @@ export default function App({
           <QueryClientProvider client={queryClient}>
             <SelectedQuizProvider>
               <AuthProvider auth={auth}>
-                {getLayout(<Component {...pageProps} />)}
+                <TelegramAuthProvider>
+                  {getLayout(<Component {...pageProps} />)}
+
+                  <AxiosAuthProvider />
+                </TelegramAuthProvider>
               </AuthProvider>
             </SelectedQuizProvider>
           </QueryClientProvider>
         </WagmiProvider>
       </ChakraProvider>
     </>
-  );
+  )
 }
 
 App.getInitialProps = async ({ ctx }: { ctx: GetServerSidePropsContext }) => {
-  const cookies = ctx.req?.cookies;
+  const cookies = ctx.req?.cookies
   if (!!cookies) {
-    const accessToken = cookies[ACCESS_TOKEN_COOKIE_KEY];
+    const accessToken = cookies[ACCESS_TOKEN_COOKIE_KEY]
     if (!accessToken) {
       return {
         auth: null,
-      };
+      }
     }
     try {
       const response = await axiosClient.get("/auth/info/", {
         headers: {
           Authorization: `TOKEN ${accessToken}`,
         },
-      });
+      })
 
       if (response.statusText === "OK") {
-        return { auth: { ...response.data, token: accessToken } };
+        return { auth: { ...response.data, token: accessToken } }
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
 
-      return { auth: null };
+      return { auth: null }
     }
   }
-  return { auth: null };
-};
+  return { auth: null }
+}

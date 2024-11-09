@@ -1,4 +1,5 @@
-import { quizType } from "./globalTypes";
+import { Address } from "viem"
+import { quizType } from "./globalTypes"
 
 export enum QUESTION_STATE {
   "default" = "default",
@@ -56,8 +57,22 @@ export enum HINTS {
 //   isEnrolled: boolean;
 // };
 export type QuizCardProps = Partial<{
-  quiz: quizType;
-  colored: boolean;
-  onOpen?: () => void;
-  isLarge?: boolean;
-}> & { state: CARD_STATE };
+  quiz: quizType
+  colored: boolean
+  onOpen?: () => void
+  isLarge?: boolean
+}> & { state: CARD_STATE }
+
+type UserWallet = {
+  walletType: string
+  pk: number
+  walletAddress: Address
+}
+
+export type UserProfile = {
+  token: string
+  pk: number
+  walletAddress: Address
+  wallets: UserWallet[]
+  username: string
+}
