@@ -19,6 +19,7 @@ export const Layout = ({ children }: LayoutProps) => {
       minH="calc(100vh - 122px)"
       justifyContent="stretch"
       alignItems="stretch"
+      pb="106px"
     >
       <Box px="16px" width="full">
         {children}
