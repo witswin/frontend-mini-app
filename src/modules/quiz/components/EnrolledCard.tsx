@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuthorization";
 import { AxiosError } from "axios";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useCheckEnrolled } from "@/modules/home/hooks";
+import { useHints } from "@/modules/question/hooks";
 
 export const EnrolledCard = () => {
   const { onClose, isOpen } = useEnrolledModalProps();
@@ -35,8 +36,10 @@ export const EnrolledCard = () => {
   const checkIsEnrolled = useCheckEnrolled();
 
   useEffect(() => {
-    setEnrollCardState(ENROLL_STATUS.enrolled);
+    setEnrollCardState(ENROLL_STATUS.quizInfo);
   }, [checkIsEnrolled(selectedQuiz?.id)]);
+
+  const hints = useHints();
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -44,7 +47,7 @@ export const EnrolledCard = () => {
         .post(
           "/quiz/competitions/enroll/",
           {
-            user_hints: [],
+            user_hints: hints,
             hint_count: 1,
             competition: 3,
           },

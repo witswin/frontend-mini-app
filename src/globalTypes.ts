@@ -1,3 +1,5 @@
+import { HINTS } from "./types";
+
 export declare type sponsorType = {
   id: number;
   name: string;
@@ -5,6 +7,15 @@ export declare type sponsorType = {
   description: string;
   image: string;
 };
+
+export declare type hintType = {
+  title: string;
+  description: string;
+  hintType: HINTS;
+  id: number;
+  isActive: boolean;
+};
+
 export declare type quizType = {
   id: number;
   questions: Record<"pk" | "number", number>[];
@@ -33,6 +44,7 @@ export declare type quizType = {
   userProfile: number;
   questionTimeSeconds: number;
   maxParticipants: number;
+  builtInHints: {id: number; count: number; hint: hintType}[]
 };
 
 export declare type auth = {
