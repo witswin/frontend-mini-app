@@ -40,10 +40,8 @@ export enum PROGRESS_TIME {
 export enum HINTS {
   "fiftyFifty" = "fiftyFifty",
   "stats" = "stats",
-  "extraTime" = "extraTime"
+  "extraTime" = "extraTime",
 }
-
-
 
 // export type quizCardInfo = {
 //   prize: number;
@@ -61,4 +59,5 @@ export type QuizCardProps = Partial<{
   quiz: quizType;
   colored: boolean;
   onOpen?: () => void;
+  isLarge?: boolean;
 }> & { state: CARD_STATE };

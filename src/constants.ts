@@ -206,3 +206,19 @@ export const unitapPassSupportedNetworks = [
 export const lightingChainId = "286621";
 
 export const ACCESS_TOKEN_COOKIE_KEY = "access_token";
+
+// 10 min
+export const LOBBY_THRESHOLD = 10 * 60 * 1000;
+
+// 5 sec
+export const REST_TIME = 5 * 1000;
+
+// 13 sec
+export const QUESTION_TIME = 13 * 1000;
+
+// 3 sec
+export const FREEZE_TIME = 3 * 1000;
+
+export const topBarHeight = "120px";
+
+export const mainBottomNavBar = "122px";

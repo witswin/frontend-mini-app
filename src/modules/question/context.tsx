@@ -1,4 +1,4 @@
-import { HINTS, QUESTION_STATE } from "@/types";
+import { QUESTION_STATE } from "@/types";
 import {
   createContext,
   Dispatch,
@@ -237,10 +237,7 @@ interface HintProviderProps extends PropsWithChildren {}
 export const HintProvider = ({ children }: HintProviderProps) => {
   const [state, setState] = useState<hint>({
     usedHints: [],
-    selectedHints: [
-      { id: ":r5v:", type: HINTS.stats },
-      { id: ":r5v1:", type: HINTS.stats },
-    ],
+    selectedHints: [],
   });
 
   return (

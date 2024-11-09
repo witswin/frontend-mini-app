@@ -1,9 +1,8 @@
 import { memo } from "react";
 import { QuizCard } from "@/components/QuizCard";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { CARD_STATE } from "@/types";
 import { VStack } from "@chakra-ui/react";
-import { useEnrolledModalProps } from "../hooks";
+import { useEnrolledModalProps, useGetCardState } from "../hooks";
 import { useRouter } from "next/router";
 import { quizType } from "@/globalTypes";
 
@@ -18,31 +17,20 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
   });
   const { onOpen } = useEnrolledModalProps();
   const router = useRouter();
+
+  const cardState = useGetCardState(quiz);
+
+  console.log({ cardState }, quiz.id, quiz.title);
+
   return (
     <VStack onClick={() => router.push(`/quiz/${quiz?.id}`)} width="full">
       <QuizCard
+        isLarge
         onOpen={onOpen}
         ref={ref}
-        state={CARD_STATE.enroll}
+        state={cardState}
         colored={isIntersecting}
-        quiz={
-          quiz
-          //   {
-          //   prize: 1200,
-          //   prizeText: "Yours to Win!",
-          //   unitPrize: quiz?.token,
-          //   values: [
-          //     { id: 0, text: "Aura Authentication" },
-          //     { id: 1, text: "Unitap Pass Owner" },
-          //     { id: 2, text: "Aura Authentication" },
-          //     { id: 3, text: "Unitap Pass Owner" },
-          //     { id: 4, text: "Aura Authentication" },
-          //   ],
-          //   capacity: 1400,
-          //   enrolledNumber: 1378,
-          //   isEnrolled: true,
-          // }
-        }
+        quiz={quiz}
       />
     </VStack>
   );
