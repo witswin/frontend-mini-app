@@ -6,17 +6,16 @@ import { GradientBorder } from "./GradientBorder";
 import { BoxShadow } from "./BoxShadow";
 
 export const WinnerCard = ({
-  userId,
+  name,
   publicKey,
   profileAvatar,
+  isSelfUser,
 }: {
-  userId: string;
+  name: string;
   publicKey: string;
   profileAvatar?: string;
+  isSelfUser: boolean;
 }) => {
-  // temp : we should get the  user's real id
-  const id = "0";
-
   return (
     <HStack
       w="full"
@@ -28,7 +27,7 @@ export const WinnerCard = ({
       borderRadius="8px"
       position="relative"
     >
-      {id === userId && <GradientBorder />}
+      {isSelfUser && <GradientBorder />}
 
       <BoxShadow />
 
@@ -36,11 +35,11 @@ export const WinnerCard = ({
         <Box borderRadius="50%" boxSize="32px">
           <Image
             src={!!profileAvatar ? profileAvatar : Avatar}
-            alt={`profile pic of ${userId}`}
+            alt={`profile pic of ${name}`}
           />
         </Box>
         <Text color="gray.20" fontSize="md" fontWeight={500}>
-          {userId}
+          {name}
         </Text>
       </HStack>
 
