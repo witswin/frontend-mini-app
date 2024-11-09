@@ -13,7 +13,9 @@ export const ResultBottomNavbar = () => {
       gap="16px"
       position="fixed"
       bottom="8px"
-      left="0"
+      left="50%"
+      transform="translateX(-50%)"
+      maxWidth="538px"
     >
       <Button variant="solid" size="sm" as={Link} href="/">
         <HomeAngle2
