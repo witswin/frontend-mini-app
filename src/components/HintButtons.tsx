@@ -29,7 +29,7 @@ export const HintButton = ({
     };
   } = useMemo(
     () => ({
-      [HINTS.fifty]: {
+      [HINTS.fiftyFifty]: {
         headline: "50/50",
         icon: (
           <Widget

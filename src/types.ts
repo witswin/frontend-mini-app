@@ -38,7 +38,7 @@ export enum PROGRESS_TIME {
 }
 
 export enum HINTS {
-  "fifty" = "fifty",
+  "fiftyFifty" = "fiftyFifty",
   "stats" = "stats",
   "extraTime" = "extraTime",
 }

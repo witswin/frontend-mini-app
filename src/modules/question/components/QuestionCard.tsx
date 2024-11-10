@@ -23,7 +23,7 @@ export const QuestionCard = () => {
   const usedHints = hints.usedHints;
   const questionHintInfo = usedHints.find(
     (item) =>
-      item.hintType === HINTS.fifty &&
+      item.hintType === HINTS.fiftyFifty &&
       +item.questionId === +activeQuestionId
   );
 

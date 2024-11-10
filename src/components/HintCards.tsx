@@ -22,7 +22,7 @@ export const HintCard = ({
 
   const selectedHint = useMemo(
     () => ({
-      [HINTS.fifty]: {
+      [HINTS.fiftyFifty]: {
         headline: "50/50",
         subHeadline: "Remove 2 Answers",
         icon: (
