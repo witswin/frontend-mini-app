@@ -2,8 +2,8 @@ import { BottomModal } from "@/components/BottomModal";
 import { useHintsDispatch } from "@/modules/question/hooks";
 import { HINTS } from "@/types";
 import { Box, Button, HStack, Tag, Text, VStack } from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction, useId } from "react";
-// import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
+import React, { Dispatch, SetStateAction, useId, useMemo } from "react";
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useSelectedQuiz, useSelectedQuizDispatch } from "../hooks";
 
 interface HintProps {
@@ -113,50 +113,76 @@ export const SelectHint = ({
 }) => {
   const selectedQuiz = useSelectedQuiz();
 
-  console.log(
-    selectedQuiz.builtInHints.filter(
-      (hints) => hints.hint.hintType === HINTS.fifty
-    )[0]
+  const allHints = useMemo(
+    () => ({
+      fifty: (
+        <HintBox
+          headline="50/50"
+          subHeadline="Remove 2 Answers"
+          count={
+            selectedQuiz.builtInHints.filter(
+              (hints) => hints.hint.hintType === "fifty"
+            )[0]?.count || 0
+          }
+          icon={
+            <Widget
+              iconStyle="BoldDuotone"
+              size={32}
+              color="var(--chakra-colors-blue)"
+            />
+          }
+          type={HINTS.fifty}
+          setIsOpen={setIsOpen}
+          key={1}
+        />
+      ),
+      time: (
+        <HintBox
+          headline="Extra Time"
+          subHeadline="3 More Seconds"
+          count={
+            selectedQuiz.builtInHints.filter(
+              (hints) => hints.hint.hintType === "time"
+            )[0]?.count || 0
+          }
+          icon={
+            <AlarmAdd
+              iconStyle="Bold"
+              size={32}
+              color="var(--chakra-colors-blue)"
+            />
+          }
+          type={HINTS.extraTime}
+          setIsOpen={setIsOpen}
+          key={2}
+        />
+      ),
+      stats: (
+        <HintBox
+          headline="Audience Poll"
+          subHeadline="See Others Answers"
+          count={
+            selectedQuiz.builtInHints.filter(
+              (hints) => hints.hint.hintType === "stats"
+            )[0]?.count || 0
+          }
+          icon={
+            <UsersGroupTwoRounded
+              iconStyle="Bold"
+              size={32}
+              color="var(--chakra-colors-blue)"
+            />
+          }
+          type={HINTS.stats}
+          setIsOpen={setIsOpen}
+          key={3}
+        />
+      ),
+    }),
+    [selectedQuiz]
   );
 
-  // const hints = {
-  //   [HINTS.fifty]: {
-  //     headline: "50/50",
-  //     subHeadline: "Remove 2 Answers",
-  //     count: 2,
-  //     icon: (
-  //       <Widget
-  //         iconStyle="BoldDuotone"
-  //         size={32}
-  //         color="var(--chakra-colors-blue)"
-  //       />
-  //     ),
-  //   },
-  //   [HINTS.extraTime]: {
-  //     headline: "Extra Time",
-  //     subHeadline: "3 More Seconds",
-  //     count: 2,
-  //     icon: (
-  //       <AlarmAdd
-  //         iconStyle="Bold"
-  //         size={32}
-  //         color="var(--chakra-colors-blue)"
-  //       />
-  //     ),
-  //   },
-  //   [HINTS.stats]: {
-  //     headline: "Audience Poll",
-  //     subHeadline: "See Others Answers",
-  //     count: 2,
-  //     icon: (
-  //       <UsersGroupTwoRounded
-  //         iconStyle="Bold"
-  //         size={32}
-  //         color="var(--chakra-colors-blue)"
-  //       />
-  //     ),
-  //   },
-  // };
+  type HintTypes = "fifty" | "time" | "stats";
 
   return (
     <BottomModal
@@ -165,38 +191,9 @@ export const SelectHint = ({
       isOpen={isOpen}
     >
       <VStack w="full" gap="12px">
-        {/* {Object.entries(hints).map(([key, hint]) => (
-          <HintBox
-            headline={hint.headline}
-            subHeadline={hint.subHeadline}
-            count={hint.count}
-            icon={hint.icon}
-            type={key as keyof typeof HINTS}
-            setIsOpen={setIsOpen}
-            key={key}
-          />
-        ))} */}
-        {selectedQuiz.builtInHints.map((hint, key) => (
-          <HintBox
-            headline={hint.hint.title}
-            subHeadline={hint.hint.description}
-            count={hint.count}
-            icon={<></>}
-            type={hint.hint.hintType as keyof typeof HINTS}
-            setIsOpen={setIsOpen}
-            key={key}
-          />
-        ))}
-
-        {/* <HintBox
-          headline={selectedQuiz.builtInHints..headline}
-          subHeadline={hint.subHeadline}
-          count={hint.count}
-          icon={hint.icon}
-          type={key as keyof typeof HINTS}
-          setIsOpen={setIsOpen}
-          key={key}
-        /> */}
+        {selectedQuiz.builtInHints.map(
+          (h) => allHints[h.hint.hintType as HintTypes]
+        )}
       </VStack>
     </BottomModal>
   );

@@ -40,6 +40,7 @@ export const EnrolledCard = () => {
   }, [checkIsEnrolled(selectedQuiz?.id)]);
 
   const hints = useHints();
+  const userHints = hints.selectedHints.map((hint) => hint.id);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -47,8 +48,8 @@ export const EnrolledCard = () => {
         .post(
           "/quiz/competitions/enroll/",
           {
-            user_hints: hints,
-            hint_count: 1,
+            user_hints: userHints,
+            hint_count: userHints.length,
             competition: 3,
           },
           {
