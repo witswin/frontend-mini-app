@@ -29,7 +29,7 @@ export const HintButton = ({
     };
   } = useMemo(
     () => ({
-      [HINTS.fiftyFifty]: {
+      [HINTS.fifty]: {
         headline: "50/50",
         icon: (
           <Widget
@@ -43,7 +43,7 @@ export const HintButton = ({
           />
         ),
       },
-      [HINTS.extraTime]: {
+      [HINTS.time]: {
         headline: "Extra Time",
         icon: (
           <AlarmAdd
@@ -103,7 +103,7 @@ export const HintButton = ({
         h="52px"
         w="full"
         onClick={() => {
-          if (hint.type === HINTS.extraTime) {
+          if (hint.type === HINTS.time) {
             setShowExtraTime(true);
             counterDispatch((prev) => prev + 3);
           }
@@ -142,7 +142,7 @@ export const HintButton = ({
         </HStack>
       </VStack>
       <AnimatePresence>
-        {hint.type === HINTS.extraTime && showExtraTime && (
+        {hint.type === HINTS.time && showExtraTime && (
           <motion.div
             style={{
               position: "absolute",

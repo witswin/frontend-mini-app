@@ -152,7 +152,7 @@ export const SelectHint = ({
               color="var(--chakra-colors-blue)"
             />
           }
-          type={HINTS.extraTime}
+          type={HINTS.time}
           setIsOpen={setIsOpen}
           key={2}
         />
