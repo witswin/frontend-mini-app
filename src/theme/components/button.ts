@@ -17,9 +17,9 @@ export const Button = {
       fontSize: "md",
       fontWeight: "600",
       lineHeight: "22px",
-      borderRadius: "50%",
+      borderRadius: "20px",
       _before: {
-        borderRadius: "50%",
+        borderRadius: "20px",
       },
       height: "38px",
     },
