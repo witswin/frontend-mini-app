@@ -1,4 +1,10 @@
-import { Index } from "@/modules/quiz/pdp/page";
+import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
+import {
+  CounterProvider,
+  HintProvider,
+  QuestionDataProvider,
+} from "@/modules/question/context";
+import { Question } from "@/modules/question/page";
 import { prefetchSSRData } from "@/utils";
 import { Box, Container } from "@chakra-ui/react";
 import {
@@ -10,23 +16,40 @@ import {
 import { GetServerSidePropsContext } from "next";
 import { ReactElement } from "react";
 
-interface QuizPDPProps {
+interface IndexProps {
   dehydratedState: DehydratedState;
 }
-const QuizPDP = ({ dehydratedState }: QuizPDPProps) => {
+const Index = ({ dehydratedState }: IndexProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <Index />
+      <CounterProvider
+        timer={dehydratedState.queries[0].state.data.questionTimeSeconds}
+      >
+        <HintProvider>
+          <QuestionDataProvider timer={dehydratedState.queries[0].state.data.questionTimeSeconds}>
+            <Question />
+          </QuestionDataProvider>
+        </HintProvider>
+      </CounterProvider>
     </HydrationBoundary>
   );
 };
 
-export default QuizPDP;
+export default Index;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
   const quizId = query?.id as string;
   const queryClient = new QueryClient();
+  const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
+  if (!accessToken) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/quiz/${quizId}`,
+      },
+    };
+  }
 
   await prefetchSSRData(
     ["quiz", quizId],
@@ -41,7 +64,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   };
 };
 
-QuizPDP.getLayout = function getLayout(page: ReactElement) {
+Index.getLayout = function getLayout(page: ReactElement) {
   return (
     <Container
       py="8px"
@@ -50,7 +73,7 @@ QuizPDP.getLayout = function getLayout(page: ReactElement) {
       gap="16px"
       display="flex"
       height="full"
-      px="16px"
+      px="0"
       minH="calc(100vh - 122px)"
       justifyContent="stretch"
       alignItems="stretch"

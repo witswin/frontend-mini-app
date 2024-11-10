@@ -1,3 +1,5 @@
+import { QUESTION_STATE } from "./types";
+
 export declare type sponsorType = {
   id: number;
   name: string;
@@ -33,6 +35,40 @@ export declare type quizType = {
   userProfile: number;
   questionTimeSeconds: number;
   maxParticipants: number;
+  builtInHints: {
+    count: number;
+    id: number;
+    hint: {
+      description: string;
+      hintType: "stats" | "time" | "fifty";
+      icon: string;
+      id: number;
+      isActive: boolean;
+      title: string;
+    };
+  }[];
+};
+
+export declare type question = {
+  amountWonPerUser: number;
+  choices: choice[];
+  competition: number;
+  id: number;
+  isEligible: boolean;
+  number: number;
+  remainParticipantsCount: number;
+  state: QUESTION_STATE;
+  text: string;
+  timer: number;
+  totalParticipantsCount: number;
+  correct: number | null;
+};
+
+export declare type choice = {
+  id: number;
+  isCorrect: boolean | null;
+  text: string;
+  question: number;
 };
 
 export declare type auth = {

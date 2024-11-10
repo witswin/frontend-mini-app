@@ -8,7 +8,7 @@ export const useSocket = (url: string) => {
 
   useEffect(() => {
     let socketUrl = url;
-    if (authInfo.token) {
+    if (authInfo?.token) {
       socketUrl += `?auth=${authInfo.token}`;
     }
     const socketIo = io(process.env.NEXT_PUBLIC_WS_URL + socketUrl);
@@ -17,7 +17,7 @@ export const useSocket = (url: string) => {
     return () => {
       if (socketIo) socketIo.disconnect();
     };
-  }, [authInfo.token, url]);
+  }, [authInfo?.token, url]);
 
   return socket;
 };

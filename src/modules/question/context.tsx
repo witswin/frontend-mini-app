@@ -9,6 +9,10 @@ import {
 } from "react";
 import { hint, questionData } from "./types";
 import { useCounter, useCounterDispatch } from "./hooks";
+import { axiosClient } from "@/configs/axios";
+import { useRouter } from "next/router";
+import { quizType } from "@/globalTypes";
+import { useQuery } from "@tanstack/react-query";
 
 export const QuestionData = createContext<questionData>(undefined);
 export const QuestionDataDispatch =
@@ -19,61 +23,29 @@ interface QuestionDataProviderProps extends PropsWithChildren {
 }
 export const QuestionDataProvider = ({
   children,
-  timer = 10,
+  timer,
 }: QuestionDataProviderProps) => {
+  const { query, push } = useRouter();
+  const { data } = useQuery<quizType>({
+    queryKey: ["quiz", query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get(`/quiz/competitions/${query?.id}/`)
+        .then((res) => res.data),
+  });
+
   const counter = useCounter();
   const counterDispatch = useCounterDispatch();
   const [state, setState] = useState<questionData>({
-    activeQuestionId: 0,
-    quizStartDate: new Date().getTime() + 10000,
-    questions: [
-      {
-        state: QUESTION_STATE.default,
-        title: "Q 1",
-        timer,
-        id: 0,
-        correct: 1,
-        choices: [
-          { id: "0", title: "choice1", stats: "25" },
-          { id: "1", title: "choice2", stats: "25" },
-          { id: "2", title: "choice3", stats: "25" },
-          { id: "3", title: "choice4", stats: "25" },
-        ],
-      },
-      {
-        state: QUESTION_STATE.default,
-        title: "Q 2",
-
-        timer,
-        id: 1,
-        correct: 3,
-        choices: [
-          { id: "0", title: "choice1", stats: "25" },
-          { id: "1", title: "choice2", stats: "25" },
-          { id: "2", title: "choice3", stats: "25" },
-          { id: "3", title: "choice4", stats: "25" },
-        ],
-      },
-      {
-        state: QUESTION_STATE.default,
-        title: "Q 3",
-
-        timer,
-        id: 2,
-        correct: 2,
-        choices: [
-          { id: "0", title: "choice1", stats: "25" },
-          { id: "1", title: "choice2", stats: "25" },
-          { id: "2", title: "choice3", stats: "25" },
-          { id: "3", title: "choice4", stats: "25" },
-        ],
-      },
-    ],
+    quiz: data,
+    question: null,
   });
+
+  console.log({ counter });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (new Date().getTime() > state.quizStartDate) {
+      if (new Date().getTime() > new Date(state.quiz.startAt).getTime()) {
         counterDispatch((prev) => {
           if (prev - 1 > 0) {
             return prev - 1;
@@ -83,28 +55,18 @@ export const QuestionDataProvider = ({
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [state.quizStartDate]);
+  }, [state.quiz.startAt]);
 
   useEffect(() => {
     if (counter === 0) {
-      const activeQuestion = state.questions.find(
-        (item) => item.id === state.activeQuestionId
-      );
-      const filteredQuestions = state.questions.filter(
-        (item) => item.id !== state.activeQuestionId
-      );
       const freezeTimeOut = setTimeout(() => {
         setState((prev) => ({
           ...prev,
-          activeQuestionId: prev.activeQuestionId,
-          questions: [
-            ...filteredQuestions,
-            {
-              ...activeQuestion,
-              timer: counter,
-              state: QUESTION_STATE.answered,
-            },
-          ],
+          question: {
+            ...prev.question,
+            state: QUESTION_STATE.answered,
+            timer: counter,
+          },
         }));
         return () => {
           clearTimeout(freezeTimeOut);
@@ -115,105 +77,73 @@ export const QuestionDataProvider = ({
 
   // add freeze state
   useEffect(() => {
-    const activeQuestion = state.questions.find(
-      (item) => item.id === state.activeQuestionId
-    );
-    const filteredQuestions = state.questions.filter(
-      (item) => item.id !== state.activeQuestionId
-    );
     let timeout: NodeJS.Timeout;
-    if (
-      activeQuestion.state === QUESTION_STATE.answered &&
-      state.activeQuestionId !== state.questions.length - 1
-    ) {
-      timeout = setTimeout(() => {
-        setState((prev) => ({
-          ...prev,
-          activeQuestionId: prev.activeQuestionId,
-          questions: [
-            ...filteredQuestions,
-            {
-              ...activeQuestion,
+    if (state?.question?.state === QUESTION_STATE.answered) {
+      if (state.question.number !== state.quiz.questions.length) {
+        timeout = setTimeout(() => {
+          setState((prev) => ({
+            ...prev,
+            question: {
+              ...prev.question,
               timer: counter,
               state: QUESTION_STATE.rest,
             },
-          ],
-        }));
-      }, 1000);
+          }));
+        }, 1000);
+      } else {
+        push(`/quiz${query.id}/result`);
+      }
     }
-    return () => clearTimeout(timeout);
-  }, [counter, state.activeQuestionId, state.questions]);
 
-  useEffect(() => {
-    const activeQuestion = state.questions.find(
-      (item) => item.id === state.activeQuestionId
-    );
-
-    let timeout: NodeJS.Timeout;
-    if (
-      activeQuestion.state === QUESTION_STATE.rest &&
-      state.activeQuestionId !== state.questions.length - 1
-    ) {
-      timeout = setTimeout(() => {
-        setState((prev) => ({
-          ...prev,
-          activeQuestionId: prev.activeQuestionId + 1,
-        }));
-      }, 5000);
-    }
     return () => clearTimeout(timeout);
-  }, [counter, state.activeQuestionId, state.questions]);
+  }, [counter, state.question]);
+
+  // useEffect(() => {
+  //   let timeout: NodeJS.Timeout;
+  //   if (
+  //     state.question.state === QUESTION_STATE.rest &&
+  //     state.question.id !== state.quiz.questions.length - 1
+  //   ) {
+  //     timeout = setTimeout(() => {
+
+  //     }, 5000);
+  //   }
+  //   return () => clearTimeout(timeout);
+  // }, [counter, state.question]);
 
   useEffect(() => {
     counterDispatch(timer);
-  }, [state.activeQuestionId]);
+    console.log("render");
+  }, [state?.question?.id]);
 
   useEffect(() => {
-    const activeQuestion = state.questions.find(
-      (item) => item.id === state.activeQuestionId
-    );
-    const filteredQuestions = state.questions.filter(
-      (item) => item.id !== state.activeQuestionId
-    );
-    if (activeQuestion.state !== QUESTION_STATE.answered) {
+    if (state?.question?.state !== QUESTION_STATE.answered) {
       if (counter === 0) {
         setState((prev) => ({
           ...prev,
-          activeQuestionId: prev.activeQuestionId,
-          questions: [
-            ...filteredQuestions,
-            {
-              ...activeQuestion,
-              timer: counter,
-              state: QUESTION_STATE.freeze,
-            },
-          ],
+          question: {
+            ...prev.question,
+            timer: counter,
+            state: QUESTION_STATE.freeze,
+          },
         }));
       } else if (counter > 3) {
         setState((prev) => ({
           ...prev,
-          activeQuestionId: prev.activeQuestionId,
-          questions: [
-            ...filteredQuestions,
-            {
-              ...activeQuestion,
-              timer: counter,
-              state: QUESTION_STATE.default,
-            },
-          ],
+          question: {
+            ...prev.question,
+            timer: counter,
+            state: QUESTION_STATE.default,
+          },
         }));
       } else {
         setState((prev) => ({
           ...prev,
-          activeQuestionId: prev.activeQuestionId,
-          questions: [
-            ...filteredQuestions,
-            {
-              ...activeQuestion,
-              timer: counter,
-              state: QUESTION_STATE.alert,
-            },
-          ],
+          question: {
+            ...prev.question,
+            timer: counter,
+            state: QUESTION_STATE.alert,
+          },
         }));
       }
     }
@@ -247,13 +177,15 @@ export const HintProvider = ({ children }: HintProviderProps) => {
   );
 };
 
-export const Counter = createContext(10);
+export const Counter = createContext(undefined);
 export const CounterDispatch =
   createContext<Dispatch<SetStateAction<number>>>(undefined);
 
-interface CounterProviderProps extends PropsWithChildren {}
-export const CounterProvider = ({ children }: CounterProviderProps) => {
-  const [state, setState] = useState(10);
+interface CounterProviderProps extends PropsWithChildren {
+  timer: number;
+}
+export const CounterProvider = ({ children, timer }: CounterProviderProps) => {
+  const [state, setState] = useState(timer);
   return (
     <Counter.Provider value={state}>
       <CounterDispatch.Provider value={setState}>

@@ -10,49 +10,51 @@ import { getUniqueRandomNumbers } from "@/utils";
 import { Rest } from "./Rest";
 
 export const QuestionCard = () => {
-  const { questions, activeQuestionId } = useQuestionData();
-  const { choices, state, timer, title } = questions.find(
-    (item) => item.id === activeQuestionId
-  );
-  const activeQuestion = questions.find((item) => item.id === activeQuestionId);
+  const { question } = useQuestionData();
 
-  const [selectedChoice, setSelectedChoice] = useState<string>(undefined);
+  const [selectedChoice, setSelectedChoice] = useState<number>(undefined);
 
   const hints = useHints();
 
   const usedHints = hints.usedHints;
   const questionHintInfo = usedHints.find(
     (item) =>
-      item.hintType === HINTS.fiftyFifty &&
-      +item.questionId === +activeQuestionId
+      item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
   );
+  console.log(question.timer);
+  
 
-  const disabledChoices = useMemo(() => {
-    if (questionHintInfo) {
-      const randomButtonId = getUniqueRandomNumbers(activeQuestion.correct);
+  // const disabledChoices = useMemo(() => {
+  //   if (questionHintInfo) {
+  //     const randomButtonId = getUniqueRandomNumbers(question.correct);
 
-      return randomButtonId;
-    }
-  }, [hints.usedHints, activeQuestionId]);
+  //     return randomButtonId;
+  //   }
+  // }, [hints.usedHints, question]);
 
-  console.log({ disabledChoices });
+  // console.log({ disabledChoices });
 
-  return activeQuestion.state === QUESTION_STATE.rest ? (
+  return question?.state === QUESTION_STATE.rest ? (
     <Rest losers={20} seconds={5} isSpectator />
   ) : (
     <Card>
-      <QuestionBanner content={title} />
-      <ProgressTimer timer={timer} state={state} hasCounter hasIcon />
-      {choices.map((choice) => (
+      <QuestionBanner content={question?.text} />
+      <ProgressTimer
+        timer={question?.timer}
+        state={question?.state}
+        hasCounter
+        hasIcon
+      />
+      {question?.choices?.map((choice) => (
         <ChoiceButton
           setSelectedChoice={setSelectedChoice}
           selectedChoice={selectedChoice}
           key={choice.id}
-          buttonInfo={choice}
-          disabledFiftyFiftyHint={
-            +questionHintInfo?.questionId === +activeQuestionId &&
-            disabledChoices?.includes(+choice.id)
-          }
+          choice={choice}
+          // disabledFiftyFiftyHint={
+          //   +questionHintInfo?.questionId === +question.id &&
+          //   disabledChoices?.includes(+choice.id)
+          // }
         />
       ))}
       <Text color="gray.200" fontSize="xs">

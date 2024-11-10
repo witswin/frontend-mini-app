@@ -4,6 +4,7 @@ import { CSSProperties, useMemo } from "react";
 import { Progress } from "./Progress";
 import { AnimatePresence, motion } from "framer-motion";
 import { Alarm } from "solar-icon-set";
+import { useQuestionData } from "@/modules/question/hooks";
 
 interface TimeCounterProps extends CSSProperties {
   count: number;
@@ -61,6 +62,7 @@ export const ProgressTimer = ({
   timer,
   ...otherProps
 }: ProgressTimerProps) => {
+  const questionData = useQuestionData();
   const progressBg = useMemo(
     () => ({
       [QUESTION_STATE.default]: "progressDefaultLinear",
@@ -91,7 +93,7 @@ export const ProgressTimer = ({
       >
         {hasIcon && <Alarm size={28} iconStyle="Bold" color={color[state]} />}
         <Progress
-          value={(timer * 100) / 10}
+          value={(timer * 100) / questionData.quiz.questionTimeSeconds}
           filledTrack={{
             bg: `var(--chakra-colors-${progressBg[state]})`,
           }}
@@ -106,6 +108,6 @@ export const ProgressTimer = ({
           />
         )}
       </HStack>
-    ) 
+    )
   );
 };

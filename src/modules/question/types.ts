@@ -1,16 +1,9 @@
-import { HINTS, QUESTION_STATE } from "@/types";
+import { question, quizType } from "@/globalTypes";
+import { HINTS } from "@/types";
 
 export type questionData = {
-  activeQuestionId: number;
-  quizStartDate: number;
-  questions: {
-    title: string;
-    state: QUESTION_STATE;
-    timer: number;
-    id: number;
-    correct: number;
-    choices: { id: string; title: string; stats: string }[];
-  }[];
+  quiz: quizType;
+  question: question;
 };
 
 export type selectedHint = {

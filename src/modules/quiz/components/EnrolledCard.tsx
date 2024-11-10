@@ -85,6 +85,9 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.enrolled]: "You're Enrolled! Get Ready for the Quiz",
     };
   }, []);
+
+  console.log(authInfo);
+  
   const button = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: {
