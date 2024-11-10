@@ -1,3 +1,5 @@
+import { HINTS } from "./types";
+
 export declare type sponsorType = {
   id: number;
   name: string;
@@ -9,7 +11,7 @@ export declare type sponsorType = {
 export declare type hintType = {
   title: string;
   description: string;
-  hintType: string;
+  hintType: HINTS;
   id: number;
   isActive: boolean;
 };

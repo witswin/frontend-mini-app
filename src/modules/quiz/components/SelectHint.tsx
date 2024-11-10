@@ -115,7 +115,7 @@ export const SelectHint = ({
 
   const allHints = useMemo(
     () => ({
-      fifty: (
+      [HINTS.fifty]: (
         <HintBox
           headline="50/50"
           subHeadline="Remove 2 Answers"
@@ -136,7 +136,7 @@ export const SelectHint = ({
           key={1}
         />
       ),
-      time: (
+      [HINTS.time]: (
         <HintBox
           headline="Extra Time"
           subHeadline="3 More Seconds"
@@ -157,7 +157,7 @@ export const SelectHint = ({
           key={2}
         />
       ),
-      stats: (
+      [HINTS.stats]: (
         <HintBox
           headline="Audience Poll"
           subHeadline="See Others Answers"
@@ -182,8 +182,6 @@ export const SelectHint = ({
     [selectedQuiz]
   );
 
-  type HintTypes = "fifty" | "time" | "stats";
-
   return (
     <BottomModal
       title="Select Your Hint"
@@ -192,7 +190,7 @@ export const SelectHint = ({
     >
       <VStack w="full" gap="12px">
         {selectedQuiz.builtInHints.map(
-          (h) => allHints[h.hint.hintType as HintTypes]
+          (h) => allHints[h.hint.hintType as HINTS]
         )}
       </VStack>
     </BottomModal>
