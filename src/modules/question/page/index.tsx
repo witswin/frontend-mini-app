@@ -1,96 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VStack } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CARD_STATE, QUESTION_STATE } from "@/types";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Lobby } from "../components/Lobby";
+import { useEffect, useMemo, useState } from "react";
 import { QuizTimerScreen } from "../components/QuizTimerScreen ";
 import { TopNavbar } from "../components/TopNavbar";
 import { QuizPage } from "../components/QuestionContent";
 import { useQuestionData, useQuestionDataDispatch } from "../hooks";
-import { useAuth } from "@/hooks/useAuthorization";
-import { shuffleArray } from "@/utils";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import { choice } from "@/globalTypes";
+import { shuffleArray } from "@/utils";
+import dynamic from "next/dynamic";
+
+const Lobby = dynamic(
+  () => import("../components/Lobby").then((modules) => modules.Lobby),
+  { ssr: false }
+);
 
 export const Question = () => {
   const [pageState, setPageState] = useState<
     CARD_STATE.join | CARD_STATE.lobby
   >(CARD_STATE.lobby);
 
-  const authInfo = useAuth();
   const [quizContentMode, setQuizContentMode] = useState("timer");
 
-  const { quiz, question } = useQuestionData();
+  const { quiz, question,quizStats } = useQuestionData();
   const dispatch = useQuestionDataDispatch();
-  const [ping, setPing] = useState(-1);
 
-  const socket = useRef({ client: null as WebSocket | null });
+  const { socket } = useWebSocket();
 
-  console.log({ question });
+console.log({quizStats});
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (
-        new Date(quiz.startAt).getTime() - new Date().getTime() >= 6000 &&
-        pageState !== CARD_STATE.lobby
-      ) {
-        setPageState(CARD_STATE.lobby);
-      }
-      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= 5000) {
-        setPageState(CARD_STATE.join);
-        setQuizContentMode("timer");
-      }
-      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
-        setQuizContentMode("quiz");
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
-    let isMounted = true;
-
-    let interval: NodeJS.Timeout | undefined;
-    let reconnectTimeout: NodeJS.Timeout | undefined;
-    let previousPing: Date | null = null;
-
-    const initializeWebSocket = () => {
-      if (!isMounted) return;
-
-      let socketUrl =
-        process.env.NEXT_PUBLIC_WS_URL! + "/ws/quiz/" + quiz.id + "/";
-
-      if (authInfo) socketUrl += `?auth=${authInfo.token}`;
-
-      socket.current.client = new WebSocket(socketUrl);
-
-      socket.current.client.onopen = () => {
-        previousPing = new Date();
-        socket.current.client?.send(JSON.stringify({ command: "PING" }));
-        interval = setInterval(() => {
-          try {
-            previousPing = new Date();
-            socket.current.client?.send(JSON.stringify({ command: "PING" }));
-          } catch (error) {
-            reconnect();
-            console.log(error);
-          }
-        }, 3000);
-      };
-
-      socket.current.client.onclose = () => {
-        if (isMounted) reconnect();
-        setPing(-1);
-      };
-
-      socket.current.client.onmessage = (e) => {
-        if (e.data === "PONG") {
-          const now = new Date();
-          const timePassed = previousPing
-            ? now.getTime() - previousPing.getTime()
-            : -1;
-          setPing(timePassed);
-        } else {
+    if (socket) {
+      socket.current.client.onmessage = (e: any) => {
+        if (e.data !== "PONG") {
           const data = JSON.parse(e.data);
+          console.log({ e: data.type });
 
           if (data.type === "new_question") {
             dispatch((prev) => {
@@ -122,6 +69,17 @@ export const Question = () => {
                 question: { ...prev.question, correct: correctAnswer.id },
               }));
             }
+          } else if (data.type === "correct_answer") {
+            const answerData = data.data;
+
+            dispatch((prev) => ({
+              ...prev,
+              question: {
+                ...prev.question,
+                correct: answerData,
+              },
+            }));
+            console.log({ answerData });
           }
           //  else if (data.type === "add_answer") {
           //   const answerData = data.data;
@@ -130,24 +88,16 @@ export const Question = () => {
           //       answerData.correctChoice;
           //     return [...answerHistory];
           //   });
-          // } else if (data.type === "correct_answer") {
-          //   const answerData = data.data;
+          // }
+          else if (data.type === "quiz_stats") {
+            const stats = data.data;
 
-          //   setAnswersHistory((answerHistory) => {
-          //     answerHistory[answerData.questionNumber - 1] =
-          //       answerData.answerId;
-
-          //     return [...answerHistory];
-          //   });
-          // } else if (data.type === "quiz_stats") {
-          //   const stats = data.data;
-
-          //   setHint(stats.hintCount);
-          //   setPreviousRoundLosses(stats.previousRoundLosses);
-          //   setAmountWinPerUser(stats.prizeToWin);
-          //   setTotalParticipantsCount(stats.totalParticipantsCount);
-          //   setRemainingPeople(stats.usersParticipating);
-          // } else if (data.type === "quiz_finish") {
+            dispatch((prev) => ({
+              ...prev,
+              quizStats: stats,
+            }));
+          }
+          // else if (data.type === "quiz_finish") {
           //   setWinnersList(data.winnersList);
           // } else if (data.type === "hint_question") {
           //   setHint((prev) => prev - 1);
@@ -181,37 +131,27 @@ export const Question = () => {
           // }
         }
       };
-    };
+    }
+  }, [socket]);
 
-    const reconnect = () => {
-      if (interval) clearInterval(interval); // Clear the existing interval before reconnecting
-      if (reconnectTimeout) clearTimeout(reconnectTimeout); // Clear the existing timeout before setting a new one
-      if (socket.current.client) {
-        socket.current.client.onclose = () => {}; // Prevent the original onclose from firing during reconnect
-        socket.current.client.close();
-        socket.current.client = null;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (
+        new Date(quiz.startAt).getTime() - new Date().getTime() >= 7000 &&
+        pageState !== CARD_STATE.lobby
+      ) {
+        setPageState(CARD_STATE.lobby);
       }
-
-      reconnectTimeout = setTimeout(() => {
-        if (isMounted) {
-          initializeWebSocket();
-        }
-      }, 5000); // Wait 5 seconds before attempting to reconnect
-    };
-
-    initializeWebSocket(); // Initialize the WebSocket connection
-
-    return () => {
-      isMounted = false;
-      if (interval) clearInterval(interval); // Clean up the interval
-      if (reconnectTimeout) clearTimeout(reconnectTimeout); // Clean up the reconnect timeout
-      if (socket.current.client) {
-        socket.current.client.onclose = () => {}; // Prevent the onclose from firing during cleanup
-        socket.current.client.close();
-        socket.current.client = null;
+      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= 6000) {
+        setPageState(CARD_STATE.join);
+        setQuizContentMode("timer");
       }
-    };
-  }, [authInfo]);
+      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
+        setQuizContentMode("quiz");
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const content = useMemo(
     () => ({
@@ -248,7 +188,7 @@ export const Question = () => {
                 height: "100%",
               }}
             >
-              <QuizPage />
+              {question && <QuizPage />}
             </motion.div>
           )}
         </AnimatePresence>
