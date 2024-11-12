@@ -1,12 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Box, Grid, GridItem, Text, VStack } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PrizeCard } from "../components/PrizeCard";
 import { QuizWinners } from "../components/QuizWinners";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const Result = () => {
-  const winnersCount = 10;
-
+  const { socket } = useWebSocket();
   const isSpectator = false;
+  const [finishedData, setFinishedData] = useState(null);
+  const [quizStats, setQuizStats] = useState(null);
+
+  useEffect(() => {
+    socket.current.client.onmessage = (e: any) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
+        if (data.type === "quiz_finish") {
+          setFinishedData(data?.winnersList);
+        }
+        if (data.type === "quiz_stats") {
+          setQuizStats(data.data);
+        }
+      }
+    };
+  }, []);
+
+  console.log({ finishedData, quizStats });
+
   return (
     <VStack
       flexDir="column"
@@ -26,7 +46,11 @@ export const Result = () => {
       >
         {!isSpectator && (
           <GridItem>
-            <PrizeCard prizeCount={200} />
+            <PrizeCard
+              prizeCount={
+                quizStats?.prizeToWin ? quizStats?.prizeToWin / 1e18 : 0
+              }
+            />
           </GridItem>
         )}
         <GridItem
@@ -52,11 +76,9 @@ export const Result = () => {
             fontSize="sm"
             fontWeight={500}
             color="gray.60"
-          >{`Total prize had divided between ${
-            !!winnersCount && winnersCount
-          } winners.`}</Text>
+          >{`Total prize had divided between ${finishedData?.length} winners.`}</Text>
           <Box height="full" overflowY="auto">
-            <QuizWinners />
+            <QuizWinners finishedData={finishedData} />
           </Box>
         </GridItem>
       </Grid>
