@@ -25,7 +25,7 @@ interface IndexProps {
 }
 const Index = ({ dehydratedState }: IndexProps) => {
   // @ts-expect-error as unknown
-  const timer = dehydratedState.queries[0].state.data.questionTimeSeconds!;
+  const timer = dehydratedState.queries[0].state.data.questionTimeSeconds;
   return (
     <HydrationBoundary state={dehydratedState}>
       <CounterProvider timer={timer}>
@@ -61,6 +61,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     queryClient
   );
 
+  const isQuizFinished =
+    // @ts-expect-error as unknown
+    dehydrate(queryClient).queries[0].state.data.isFinished;
+
+  console.log({ isQuizFinished });
+
+  if (isQuizFinished) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/quiz/${quizId}/result`,
+      },
+    };
+  }
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

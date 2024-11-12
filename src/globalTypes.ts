@@ -31,6 +31,7 @@ export declare type quizType = {
   splitPrize: boolean;
   txHash: string;
   isActive: boolean;
+  isFinished: boolean;
   hintCount: number;
   userProfile: number;
   questionTimeSeconds: number;
