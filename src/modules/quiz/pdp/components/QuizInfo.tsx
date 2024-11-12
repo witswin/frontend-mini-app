@@ -41,6 +41,7 @@ export const QuizInfo = () => {
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
   });
+  const router = useRouter();
 
   const checkIsEnrolledQuiz = useCheckEnrolled();
   const isEnrolled = checkIsEnrolledQuiz(data?.id);
@@ -112,8 +113,19 @@ export const QuizInfo = () => {
       ),
       [CARD_STATE.resource]: <></>,
       [CARD_STATE.watch]: (
-        <Button width="full" size="lg" variant="outline">
-          Watch as spectator
+        <Button
+          onClick={() => {
+            if (data?.isFinished) {
+              router.push(`/quiz/${data.id}/result`);
+            } else {
+              router.push(`/quiz/${data.id}/match`);
+            }
+          }}
+          width="full"
+          size="lg"
+          variant="outline"
+        >
+          {data?.isFinished ? "Check Winners" : "Watch as spectator"}
         </Button>
       ),
       [CARD_STATE.enroll]: (

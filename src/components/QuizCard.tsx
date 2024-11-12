@@ -80,7 +80,7 @@ const QuizCard = forwardRef(
           variant: "solid",
           text: "Join Now",
           onClick: () => {
-            router.push(`/quiz/${quiz.id}/match`)
+            router.push(`/quiz/${quiz.id}/match`);
           },
           icon: (
             <DoubleAltArrowRight
@@ -94,7 +94,7 @@ const QuizCard = forwardRef(
           variant: "solid",
           text: "Go to Quiz Lobby",
           onClick: () => {
-            router.push(`/quiz/${quiz.id}/match`)
+            router.push(`/quiz/${quiz.id}/match`);
           },
           icon: (
             <DoubleAltArrowRight
@@ -111,8 +111,14 @@ const QuizCard = forwardRef(
         },
         [CARD_STATE.watch]: {
           variant: "outline",
-          text: "Watch as spectator",
-          onClick: () => {},
+          text: quiz?.isFinished ? "Check Winners" : "Watch as spectator",
+          onClick: () => {
+            if (quiz?.isFinished) {
+              router.push(`/quiz/${quiz.id}/result`);
+            } else {
+              router.push(`/quiz/${quiz.id}/match`);
+            }
+          },
         },
         [CARD_STATE.enroll]: {
           variant: "solid",
