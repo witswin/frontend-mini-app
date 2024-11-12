@@ -1,28 +1,26 @@
 import { Card } from "@/components/Card";
 import { QuestionBanner } from "./QuestionBanner";
 import { ProgressTimer } from "@/components/ProgressTimer";
-import { useHints, useQuestionData } from "../hooks";
+import { useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Text } from "@chakra-ui/react";
-import { HINTS, QUESTION_STATE } from "@/types";
-import { getUniqueRandomNumbers } from "@/utils";
+import { QUESTION_STATE } from "@/types";
 import { Rest } from "./Rest";
 
 export const QuestionCard = () => {
-  const { question } = useQuestionData();
+  const { question, quiz } = useQuestionData();
 
   const [selectedChoice, setSelectedChoice] = useState<number>(undefined);
 
-  const hints = useHints();
+  // const hints = useHints();
 
-  const usedHints = hints.usedHints;
-  const questionHintInfo = usedHints.find(
-    (item) =>
-      item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
-  );
-  console.log(question.timer);
-  
+  // const usedHints = hints.usedHints;
+  // const questionHintInfo = usedHints.find(
+  //   (item) =>
+  //     item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
+  // );
+  console.log(quiz);
 
   // const disabledChoices = useMemo(() => {
   //   if (questionHintInfo) {
@@ -35,7 +33,12 @@ export const QuestionCard = () => {
   // console.log({ disabledChoices });
 
   return question?.state === QUESTION_STATE.rest ? (
-    <Rest losers={20} seconds={5} isSpectator />
+    <Rest
+      seconds={quiz.restTimeSeconds - 3}
+      isSpectator={
+        !question.isEligible || selectedChoice !== question.correct.answerId
+      }
+    />
   ) : (
     <Card>
       <QuestionBanner content={question?.text} />
