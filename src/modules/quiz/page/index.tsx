@@ -2,12 +2,19 @@ import { ColorFullText } from "@/components/ColorFullText";
 import { chakra, Text, VStack } from "@chakra-ui/react";
 import { EffectCoverflow } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { MemoizedSwiperItem } from "../components/QuizItem";
 import { EnrolledCard } from "../components/EnrolledCard";
 import { axiosClient } from "@/configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { quizType } from "@/globalTypes";
+import dynamic from "next/dynamic";
 
+const MemoizedSwiperItem = dynamic(
+  () =>
+    import("../components/QuizItem").then(
+      (modules) => modules.MemoizedSwiperItem
+    ),
+  { ssr: false }
+);
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
