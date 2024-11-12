@@ -20,7 +20,7 @@ export const HintButton = ({
 }) => {
   const hintDispatch = useHintsDispatch();
   const counterDispatch = useCounterDispatch();
-  const { activeQuestionId } = useQuestionData();
+  const { question } = useQuestionData();
 
   const selectedHint: {
     [key in HINTS]: {
@@ -114,7 +114,7 @@ export const HintButton = ({
               {
                 hintType: hint.type,
                 hintId: hint.id,
-                questionId: activeQuestionId,
+                questionId: question.id,
               },
             ],
           }));
