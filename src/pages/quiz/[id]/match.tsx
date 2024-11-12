@@ -4,7 +4,6 @@ import {
   HintProvider,
   QuestionDataProvider,
 } from "@/modules/question/context";
-import { Question } from "@/modules/question/page";
 import { prefetchSSRData } from "@/utils";
 import { Box, Container } from "@chakra-ui/react";
 import {
@@ -14,7 +13,13 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next";
+import dynamic from "next/dynamic";
 import { ReactElement } from "react";
+
+const Question = dynamic(
+  () => import("@/modules/question/page").then((modules) => modules.Question),
+  { ssr: false }
+);
 
 interface IndexProps {
   dehydratedState: DehydratedState;
@@ -26,7 +31,9 @@ const Index = ({ dehydratedState }: IndexProps) => {
         timer={dehydratedState.queries[0].state.data.questionTimeSeconds}
       >
         <HintProvider>
-          <QuestionDataProvider timer={dehydratedState.queries[0].state.data.questionTimeSeconds}>
+          <QuestionDataProvider
+            timer={dehydratedState.queries[0].state.data.questionTimeSeconds}
+          >
             <Question />
           </QuestionDataProvider>
         </HintProvider>
@@ -41,15 +48,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
   const quizId = query?.id as string;
   const queryClient = new QueryClient();
-  const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
-  if (!accessToken) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: `/quiz/${quizId}`,
-      },
-    };
-  }
+  // const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
+  // if (!accessToken) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: `/quiz/${quizId}`,
+  //     },
+  //   };
+  // }
 
   await prefetchSSRData(
     ["quiz", quizId],
