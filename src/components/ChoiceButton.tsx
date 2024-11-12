@@ -103,7 +103,7 @@ export const ChoiceButton = ({
             (question?.state === QUESTION_STATE.freeze &&
               +selectedChoice !== +choice?.id) ||
             (question?.state === QUESTION_STATE.answered &&
-              +choice?.id !== question?.correct.answerId &&
+              +choice?.id !== question?.correct?.answerId &&
               +selectedChoice !== +choice?.id) ||
             disabledFiftyFiftyHint
           }
