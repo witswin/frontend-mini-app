@@ -1,4 +1,5 @@
 import { choice } from "@/globalTypes";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import { useHints, useQuestionData } from "@/modules/question/hooks";
 import { HINTS, QUESTION_STATE } from "@/types";
 import { Button, ButtonProps, HStack, Text } from "@chakra-ui/react";
@@ -31,12 +32,25 @@ export const ChoiceButton = ({
 }: ChoiceButtonProps) => {
   const { question } = useQuestionData();
 
+  const { socket } = useWebSocket();
+
   const handleClick = () => {
     if (
-      question?.state === QUESTION_STATE.default ||
-      question?.state === QUESTION_STATE.alert
+      (question?.state === QUESTION_STATE.default ||
+        question?.state === QUESTION_STATE.alert) &&
+      question.isEligible
     ) {
       setSelectedChoice(choice?.id);
+
+      socket.current.client?.send(
+        JSON.stringify({
+          command: "ANSWER",
+          args: {
+            questionId: question.id,
+            selectedChoiceId: choice.id,
+          },
+        })
+      );
     }
   };
   const hints = useHints();
@@ -55,12 +69,13 @@ export const ChoiceButton = ({
         +selectedChoice === +choice?.id ? "pressed" : "default",
       [QUESTION_STATE.freeze]: "default",
       [QUESTION_STATE.answered]:
-        +selectedChoice === +choice?.id && +selectedChoice === question?.correct
+        +selectedChoice === +choice?.id &&
+        +selectedChoice === question?.correct?.answerId
           ? "rightAnswer"
           : +selectedChoice === +choice?.id &&
-            +selectedChoice !== question?.correct
+            +selectedChoice !== question?.correct?.answerId
           ? "wrongAnswer"
-          : +question?.correct === +choice?.id
+          : +question?.correct?.answerId === +choice?.id
           ? "rightAnswer"
           : "default",
       [QUESTION_STATE.alert]:
@@ -88,7 +103,7 @@ export const ChoiceButton = ({
             (question?.state === QUESTION_STATE.freeze &&
               +selectedChoice !== +choice?.id) ||
             (question?.state === QUESTION_STATE.answered &&
-              +choice?.id !== question?.correct &&
+              +choice?.id !== question?.correct.answerId &&
               +selectedChoice !== +choice?.id) ||
             disabledFiftyFiftyHint
           }
