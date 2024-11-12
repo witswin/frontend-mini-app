@@ -4,15 +4,17 @@ import { HStack, Text, VStack } from "@chakra-ui/react";
 import SpectatorImg from "@/assets/rest-spectator.svg";
 import PlayerImg from "@/assets/rest-player.svg";
 import { Card } from "@/components/Card";
+import { useQuestionData } from "../hooks";
 
 interface RestProps {
-  losers: number;
   seconds: number;
   isSpectator: boolean;
 }
 
-export const Rest = ({ losers, seconds, isSpectator }: RestProps) => {
+export const Rest = ({ seconds, isSpectator }: RestProps) => {
   const [countDown, setCountDown] = useState(seconds);
+
+  const { quizStats } = useQuestionData();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -44,7 +46,7 @@ export const Rest = ({ losers, seconds, isSpectator }: RestProps) => {
               fontWeight={500}
               textDecoration="underline"
             >
-              {losers}
+              {quizStats?.previousRoundLosses}
             </Text>
             <Text fontSize="sm" color="gray.60" fontWeight={500}>
               people lost last round.
