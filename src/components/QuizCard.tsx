@@ -14,6 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import { forwardRef, LegacyRef, memo, ReactElement, useMemo } from "react";
 import { DoubleAltArrowRight } from "solar-icon-set";
 // import { Swiper, SwiperSlide } from "swiper/react";
@@ -65,6 +66,7 @@ const QuizCard = forwardRef(
     const selectedQuizDispatch = useSelectedQuizDispatch();
     const checkIsEnrolled = useCheckEnrolled();
 
+    const router = useRouter();
     const selectedCTA: {
       [key in CARD_STATE]: {
         icon?: ReactElement;
@@ -77,7 +79,9 @@ const QuizCard = forwardRef(
         [CARD_STATE.join]: {
           variant: "solid",
           text: "Join Now",
-          onClick: () => {},
+          onClick: () => {
+            router.push(`/quiz/${quiz.id}/match`)
+          },
           icon: (
             <DoubleAltArrowRight
               iconStyle="LineDuotone"
@@ -89,7 +93,9 @@ const QuizCard = forwardRef(
         [CARD_STATE.lobby]: {
           variant: "solid",
           text: "Go to Quiz Lobby",
-          onClick: () => {},
+          onClick: () => {
+            router.push(`/quiz/${quiz.id}/match`)
+          },
           icon: (
             <DoubleAltArrowRight
               iconStyle="LineDuotone"
@@ -225,7 +231,8 @@ const QuizCard = forwardRef(
           )}
           {quiz?.participantsCount && quiz?.userProfile && (
             <Text fontSize="xs" fontWeight="600" color="gray.100">
-              {quiz?.participantsCount} / {quiz?.maxParticipants} people enrolled
+              {quiz?.participantsCount} / {quiz?.maxParticipants} people
+              enrolled
             </Text>
           )}
         </Card>
