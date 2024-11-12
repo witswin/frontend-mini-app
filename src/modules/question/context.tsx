@@ -39,6 +39,7 @@ export const QuestionDataProvider = ({
   const [state, setState] = useState<questionData>({
     quiz: data,
     question: null,
+    quizStats: null,
   });
 
   console.log({ counter });
@@ -91,7 +92,9 @@ export const QuestionDataProvider = ({
           }));
         }, 1000);
       } else {
-        push(`/quiz${query.id}/result`);
+        timeout = setTimeout(() => {
+          push(`/quiz/${query.id}/result`);
+        }, 1000);
       }
     }
 

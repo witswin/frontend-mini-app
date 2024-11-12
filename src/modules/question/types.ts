@@ -1,9 +1,10 @@
-import { question, quizType } from "@/globalTypes";
+import { question, quizStats, quizType } from "@/globalTypes";
 import { HINTS } from "@/types";
 
 export type questionData = {
   quiz: quizType;
   question: question;
+  quizStats: quizStats;
 };
 
 export type selectedHint = {
