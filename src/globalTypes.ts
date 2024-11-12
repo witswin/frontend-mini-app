@@ -76,6 +76,7 @@ export declare type auth = {
   username: string;
   walletAddress: string;
   token: string;
+  neurons: number
 };
 
 export declare type enrolledCompetition = {

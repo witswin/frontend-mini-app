@@ -13,11 +13,10 @@ import { WalletMoney } from "solar-icon-set";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useAuth } from "@/hooks/useAuthorization";
 
-const WalletStatus = () => {
-  const authInfo = useAuth();
+const WalletStatus = ({ signedIn }: { signedIn: boolean }) => {
   return (
     <Badge
-      variant={!!authInfo ? "green" : "red"}
+      variant={signedIn ? "green" : "red"}
       size="xs"
       position="absolute"
       left="0"
@@ -28,7 +27,7 @@ const WalletStatus = () => {
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
-  const health = 3;
+  const authInfo = useAuth();
 
   const { connect, connectors } = useWalletConnection();
 
@@ -55,19 +54,25 @@ export const TopNavbar = () => {
         w="full"
         justifyContent="space-between"
         px="12px"
-        pt="4px"
+        pt={isLarge ? "20px" : "4px"}
       >
-        <VStack>
+        <VStack w="82px">
           <HStack gap="2px">
             {/* <Neuron size={24} /> */}
 
-            <Badge size="sm" variant="glass">
+            {/* <Badge size="sm" variant="glass">
               {"x "}
               {health}
-            </Badge>
+            </Badge> */}
+            <Image
+              src="/assets/images/home/Neuron.svg"
+              alt="neuron"
+              width={22}
+              height={23}
+            />
           </HStack>
           <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            Health
+            {`${authInfo?.neurons} Neuorans`}
           </Text>
         </VStack>
 
@@ -75,7 +80,7 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack mr="4px">
+        <VStack w="82px" pl="12px">
           <Box
             cursor="pointer"
             onClick={() =>
@@ -92,7 +97,7 @@ export const TopNavbar = () => {
               color="var(--chakra-colors-blue)"
               size={24}
             />
-            <WalletStatus />
+            <WalletStatus signedIn={!!authInfo} />
           </Box>
           <Text color="gray.40" fontSize="sm" fontWeight="bold">
             Wallet

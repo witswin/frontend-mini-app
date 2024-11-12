@@ -75,4 +75,5 @@ export type UserProfile = {
   walletAddress: Address
   wallets: UserWallet[]
   username: string
+  neurons: number
 }
