@@ -1,3 +1,5 @@
+import { choice } from "@/globalTypes";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import { useHints, useQuestionData } from "@/modules/question/hooks";
 import { HINTS, QUESTION_STATE } from "@/types";
 import { Button, ButtonProps, HStack, Text } from "@chakra-ui/react";
@@ -5,14 +7,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { Dispatch, SetStateAction, useMemo } from "react";
 
 interface ChoiceButtonProps extends ButtonProps {
-  buttonInfo: {
-    title: string;
-    id: string;
-    stats: string;
-  };
-  selectedChoice: string;
+  choice: choice;
+  selectedChoice: number;
   disabledFiftyFiftyHint?: boolean;
-  setSelectedChoice: Dispatch<SetStateAction<string>>;
+  setSelectedChoice: Dispatch<SetStateAction<number>>;
 }
 
 const animate = {
@@ -26,21 +24,33 @@ const animate = {
 };
 
 export const ChoiceButton = ({
-  buttonInfo,
+  choice,
   selectedChoice,
   setSelectedChoice,
   disabledFiftyFiftyHint,
   ...buttonProps
 }: ChoiceButtonProps) => {
-  const { questions, activeQuestionId } = useQuestionData();
+  const { question } = useQuestionData();
 
-  const { state, correct } = questions.find(
-    (item) => item.id === activeQuestionId
-  );
+  const { socket } = useWebSocket();
 
   const handleClick = () => {
-    if (state === QUESTION_STATE.default || state === QUESTION_STATE.alert) {
-      setSelectedChoice(buttonInfo.id);
+    if (
+      (question?.state === QUESTION_STATE.default ||
+        question?.state === QUESTION_STATE.alert) &&
+      question.isEligible
+    ) {
+      setSelectedChoice(choice?.id);
+
+      socket.current.client?.send(
+        JSON.stringify({
+          command: "ANSWER",
+          args: {
+            questionId: question.id,
+            selectedChoiceId: choice.id,
+          },
+        })
+      );
     }
   };
   const hints = useHints();
@@ -49,27 +59,29 @@ export const ChoiceButton = ({
     () =>
       hints.usedHints.find(
         (item) =>
-          item.hintType === HINTS.stats && item.questionId === activeQuestionId
+          item.hintType === HINTS.stats && item.questionId === question?.id
       ),
-    [activeQuestionId, hints.usedHints]
+    [question, hints.usedHints]
   );
   const variant = useMemo(
     () => ({
       [QUESTION_STATE.default]:
-        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+        +selectedChoice === +choice?.id ? "pressed" : "default",
       [QUESTION_STATE.freeze]: "default",
       [QUESTION_STATE.answered]:
-        +selectedChoice === +buttonInfo.id && +selectedChoice === correct
+        +selectedChoice === +choice?.id &&
+        +selectedChoice === question?.correct?.answerId
           ? "rightAnswer"
-          : +selectedChoice === +buttonInfo.id && +selectedChoice !== correct
+          : +selectedChoice === +choice?.id &&
+            +selectedChoice !== question?.correct?.answerId
           ? "wrongAnswer"
-          : +correct === +buttonInfo.id
+          : +question?.correct?.answerId === +choice?.id
           ? "rightAnswer"
           : "default",
       [QUESTION_STATE.alert]:
-        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+        +selectedChoice === +choice?.id ? "pressed" : "default",
     }),
-    [correct, selectedChoice]
+    [question?.correct, selectedChoice]
   );
 
   return (
@@ -79,36 +91,36 @@ export const ChoiceButton = ({
       position="relative"
       width="full"
     >
-      {state !== QUESTION_STATE.rest && (
+      {question?.state !== QUESTION_STATE.rest && (
         <Button
-          variant={variant[state]}
+          variant={variant[question?.state]}
           color="gray.0"
           size="md"
           height="54px"
           width="full"
           onClick={handleClick}
           isDisabled={
-            (state === QUESTION_STATE.freeze &&
-              +selectedChoice !== +buttonInfo.id) ||
-            (state === QUESTION_STATE.answered &&
-              +buttonInfo.id !== correct &&
-              +selectedChoice !== +buttonInfo.id) ||
+            (question?.state === QUESTION_STATE.freeze &&
+              +selectedChoice !== +choice?.id) ||
+            (question?.state === QUESTION_STATE.answered &&
+              +choice?.id !== question?.correct?.answerId &&
+              +selectedChoice !== +choice?.id) ||
             disabledFiftyFiftyHint
           }
           as={motion.button}
-          key={state}
+          key={question?.state}
           {...buttonProps}
-          {...(+selectedChoice === +buttonInfo.id &&
-            state === QUESTION_STATE.freeze && {
+          {...(+selectedChoice === +choice?.id &&
+            question?.state === QUESTION_STATE.freeze && {
               animate,
             })}
         >
-          {buttonInfo.title}
+          {choice?.text}
         </Button>
       )}
       <AnimatePresence>
-        {state !== QUESTION_STATE.freeze &&
-          state !== QUESTION_STATE.answered &&
+        {question?.state !== QUESTION_STATE.freeze &&
+          question?.state !== QUESTION_STATE.answered &&
           showStatsHint && (
             <>
               <motion.div
@@ -117,18 +129,17 @@ export const ChoiceButton = ({
                   left: "0",
                   borderTopLeftRadius: "8px",
                   borderBottomLeftRadius: "8px",
-                  borderTopRightRadius: +buttonInfo.stats === 100 ? "8px" : "0",
-                  borderBottomRightRadius:
-                    +buttonInfo.stats === 100 ? "8px" : "0",
+                  // borderTopRightRadius: +choice?.stats === 100 ? "8px" : "0",
+                  // borderBottomRightRadius: +choice?.stats === 100 ? "8px" : "0",
                   zIndex: -1,
                   height: "100% ",
                   width: 0,
-                  background:
-                    selectedChoice === buttonInfo.id
-                      ? "rgba(256, 256, 256, 0.2)"
-                      : "#6E81EE5C",
+                  // background:
+                  //   selectedChoice === choice?.id
+                  //     ? "rgba(256, 256, 256, 0.2)"
+                  //     : "#6E81EE5C",
                 }}
-                animate={{ width: `${buttonInfo.stats}%` }}
+                // animate={{ width: `${choice?.stats}%` }}
               />
               <Text
                 fontSize="md"
@@ -136,7 +147,7 @@ export const ChoiceButton = ({
                 position="absolute"
                 right="12px"
               >
-                {buttonInfo.stats}%
+                {/* {choice?.stats}% */}
               </Text>
             </>
           )}

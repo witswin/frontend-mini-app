@@ -1,12 +1,8 @@
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Text, VStack } from "@chakra-ui/react";
 import { QuestionCard } from "../components/QuestionCard";
-import { Card } from "@/components/Card";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
-import { QuestionBanner } from "../components/QuestionBanner";
 import { QUESTION_STATE } from "@/types";
-import { ChoiceButton } from "@/components/ChoiceButton";
-import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
 import { selectedHint } from "../types";
 
@@ -22,13 +18,13 @@ const HintContent = ({ hint }: HintContentProps) => {
 };
 
 export const QuizPage = () => {
-  const { questions, activeQuestionId } = useQuestionData();
-  const activeQuestion = questions.find((item) => item.id === activeQuestionId);
+  const { question } = useQuestionData();
+  console.log(question.isEligible);
 
   const selectedHints = useHints().selectedHints;
   return (
     <VStack height="full" position="relative" width="full">
-      {questions.map((item, index, array) => (
+      {/* {questions.map((item, index, array) => (
         <Box
           zIndex={-1}
           position="absolute"
@@ -40,7 +36,7 @@ export const QuizPage = () => {
         >
           <Card height="full" minH="200px">
             <Box filter="blur(4px)" width="full">
-              <QuestionBanner content={activeQuestion.title} />
+              <QuestionBanner content={activeQuestion.title} /> 
               <ProgressTimer
                 timer={0}
                 state={QUESTION_STATE.default}
@@ -61,12 +57,12 @@ export const QuizPage = () => {
             </Box>
           </Card>
         </Box>
-      ))}
+      ))} */}
       <AnimatePresence mode="popLayout">
         <motion.div
-          key={activeQuestion.id}
+          key={question?.id}
           style={{
-            paddingTop: `${questions.length * 8}px`,
+            paddingTop: `${question?.number * 8}px`,
             width: "100%",
             paddingBottom: "36px",
           }}
@@ -85,28 +81,30 @@ export const QuizPage = () => {
           transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
-          <Text
-            mt="8px !important"
-            backgroundClip="text"
-            background="glassBackground"
-            sx={{
-              WebkitTextFillColor: "transparent",
-              WebkitBackgroundClip: "text",
-            }}
-            textAlign="center"
-            fontSize="24px"
-            fontWeight="700"
-            fontFamily="Kanit"
-            width="full"
-          >
-            Spectator Mode
-          </Text>
+          {!question.isEligible && (
+            <Text
+              mt="8px !important"
+              backgroundClip="text"
+              background="glassBackground"
+              sx={{
+                WebkitTextFillColor: "transparent",
+                WebkitBackgroundClip: "text",
+              }}
+              textAlign="center"
+              fontSize="24px"
+              fontWeight="700"
+              fontFamily="Kanit"
+              width="full"
+            >
+              Spectator Mode
+            </Text>
+          )}
         </motion.div>
       </AnimatePresence>
       <AnimatePresence>
-        {activeQuestion.state !== QUESTION_STATE.freeze &&
-          activeQuestion.state !== QUESTION_STATE.rest &&
-          activeQuestion.state !== QUESTION_STATE.answered && (
+        {question?.state !== QUESTION_STATE.freeze &&
+          question?.state !== QUESTION_STATE.rest &&
+          question?.state !== QUESTION_STATE.answered && (
             <motion.div
               initial={{
                 y: 200,

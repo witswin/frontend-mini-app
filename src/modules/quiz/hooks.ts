@@ -24,7 +24,7 @@ export const useGetCardState = (competition: quizType) => {
   const isEnrolled = enrolledChecker(competition?.id);
 
   // const leftTimeCalculator = useCalculateStartUTCTime();
-  const convertedStartAt = new Date(competition.startAt).getTime();
+  const convertedStartAt = new Date(competition?.startAt).getTime();
 
   useEffect(() => {
     const interval = setInterval(() => {

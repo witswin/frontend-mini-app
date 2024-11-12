@@ -28,8 +28,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   }>({ message: null, nonce: "" });
 
   const {} = useWalletConnection();
-  const { signMessageAsync, ...props } = useSignMessage();
-  console.log({ props });
+  const { signMessageAsync } = useSignMessage();
 
   const { isConnected, address } = useAccount();
   const [state, setState] = useState(auth);

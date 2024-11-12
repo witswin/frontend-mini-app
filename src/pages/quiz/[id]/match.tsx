@@ -1,4 +1,8 @@
-import { Index } from "@/modules/quiz/pdp/page";
+import {
+  CounterProvider,
+  HintProvider,
+  QuestionDataProvider,
+} from "@/modules/question/context";
 import { prefetchSSRData } from "@/utils";
 import { Box, Container } from "@chakra-ui/react";
 import {
@@ -8,25 +12,48 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next";
+import dynamic from "next/dynamic";
 import { ReactElement } from "react";
 
-interface QuizPDPProps {
+const Question = dynamic(
+  () => import("@/modules/question/page").then((modules) => modules.Question),
+  { ssr: false }
+);
+
+interface IndexProps {
   dehydratedState: DehydratedState;
 }
-const QuizPDP = ({ dehydratedState }: QuizPDPProps) => {
+const Index = ({ dehydratedState }: IndexProps) => {
+  // @ts-expect-error as unknown
+  const timer = dehydratedState.queries[0].state.data.questionTimeSeconds!;
   return (
     <HydrationBoundary state={dehydratedState}>
-      <Index />
+      <CounterProvider timer={timer}>
+        <HintProvider>
+          <QuestionDataProvider timer={timer}>
+            <Question />
+          </QuestionDataProvider>
+        </HintProvider>
+      </CounterProvider>
     </HydrationBoundary>
   );
 };
 
-export default QuizPDP;
+export default Index;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
   const quizId = query?.id as string;
   const queryClient = new QueryClient();
+  // const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
+  // if (!accessToken) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: `/quiz/${quizId}`,
+  //     },
+  //   };
+  // }
 
   await prefetchSSRData(
     ["quiz", quizId],
@@ -41,7 +68,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   };
 };
 
-QuizPDP.getLayout = function getLayout(page: ReactElement) {
+Index.getLayout = function getLayout(page: ReactElement) {
   return (
     <Container
       py="8px"
@@ -50,7 +77,7 @@ QuizPDP.getLayout = function getLayout(page: ReactElement) {
       gap="16px"
       display="flex"
       height="full"
-      px="16px"
+      px="0"
       minH="calc(100vh - 122px)"
       justifyContent="stretch"
       alignItems="stretch"

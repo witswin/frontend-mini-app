@@ -275,6 +275,7 @@ export const QuizInfo = () => {
         transform="translateX(-50%)"
         width="full"
         maxW="538px"
+        px="16px"
       >
         {CTAButton[cardState]}
       </Box>

@@ -1,7 +1,13 @@
 import { ResultBottomNavbar } from "@/modules/quiz/pdp/result/components/ResultBottomNavbar";
-import { Result } from "@/modules/quiz/pdp/result/page";
 import { Box, Container } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
 import React, { ReactElement } from "react";
+
+const Result = dynamic(
+  () =>
+    import("@/modules/quiz/pdp/result/page").then((modules) => modules.Result),
+  { ssr: false }
+);
 
 const Index = () => {
   return <Result />;

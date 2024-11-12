@@ -7,14 +7,16 @@ import { BoxShadow } from "./BoxShadow";
 
 export const WinnerCard = ({
   name,
-  publicKey,
+  walletAddress,
   profileAvatar,
   isSelfUser,
+  username,
 }: {
   name: string;
-  publicKey: string;
+  walletAddress: string;
   profileAvatar?: string;
   isSelfUser: boolean;
+  username: string;
 }) => {
   return (
     <HStack
@@ -44,7 +46,7 @@ export const WinnerCard = ({
       </HStack>
 
       <Text color="gray.60" fontSize="sm" fontWeight={500}>
-        {textTruncator(publicKey)}
+        {walletAddress ? textTruncator(walletAddress) : username}
       </Text>
     </HStack>
   );

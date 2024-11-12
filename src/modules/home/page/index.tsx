@@ -19,8 +19,6 @@ export const Home = () => {
 
   const cardState = useGetHomeCardState(closeCompetition);
 
-  console.log({ cardState });
-
   const infoCard = useMemo(() => {
     return {
       [INFO_CARD_STATE.welcome]: <InfoCard state={INFO_CARD_STATE.welcome} />,

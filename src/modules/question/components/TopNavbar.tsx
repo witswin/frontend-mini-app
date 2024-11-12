@@ -1,25 +1,13 @@
 import { Box, HStack, Text, useMediaQuery, VStack } from "@chakra-ui/react";
 import HeaderBg from "@/assets/QuestionHeaderBg.svg";
 import Image from "next/image";
-import { useState } from "react";
 import { ColorFullText } from "@/components/ColorFullText";
+import { useQuestionData } from "../hooks";
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
-  const questionCount = 10;
-  const [
-    activeQuestion,
-    //  setActiveQuestion
-  ] = useState(4);
-  const participantCount = 150;
-  const [
-    survivorsCount,
-    // , setSurvivorsCount
-  ] = useState(100);
-  const [
-    prize,
-    // , setPrize
-  ] = useState("1200.00");
+
+  const { question, quiz } = useQuestionData();
 
   return (
     <HStack
@@ -54,16 +42,24 @@ export const TopNavbar = () => {
           </Text>
           <HStack gap="4px">
             <Text color="gray.0" fontSize="lg" fontWeight={700}>
-              {activeQuestion}
+              {question.number || 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
-              / {questionCount}
+              / {quiz.questions.length}
             </Text>
           </HStack>
         </VStack>
 
         <HStack gap="6px" alignItems="center" mt="30px">
-          <ColorFullText fontSize="4xl" fontWeight={700} textContent={prize} />
+          <ColorFullText
+            fontSize="4xl"
+            fontWeight={700}
+            textContent={
+              question.amountWonPerUser
+                ? String(question.amountWonPerUser / 1e18)
+                : "0"
+            }
+          />
           <ColorFullText fontSize="xs" fontWeight={700} textContent={"USDT"} />
         </HStack>
 
@@ -73,10 +69,10 @@ export const TopNavbar = () => {
           </Text>
           <HStack gap="4px">
             <Text color="gray.0" fontSize="lg" fontWeight={700}>
-              {survivorsCount}
+              {question.remainParticipantsCount || 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
-              / {participantCount}
+              / {question.totalParticipantsCount || 0}
             </Text>
           </HStack>
         </VStack>

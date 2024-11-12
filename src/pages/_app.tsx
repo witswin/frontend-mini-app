@@ -19,6 +19,9 @@ import { AuthProvider } from "@/context/auth";
 import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
 import { axiosClient } from "@/configs/axios";
 import { auth } from "@/globalTypes";
+import { TelegramAuthProvider } from "@/context/TelegramAuthProvider";
+import { AxiosAuthProvider } from "@/components/AxiosAuthProvider";
+import { WebSocketProvider } from "@/context/WebSocket";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -63,7 +66,13 @@ export default function App({
           <QueryClientProvider client={queryClient}>
             <SelectedQuizProvider>
               <AuthProvider auth={auth}>
-                {getLayout(<Component {...pageProps} />)}
+                <TelegramAuthProvider>
+                  <WebSocketProvider>
+                    {getLayout(<Component {...pageProps} />)}
+
+                    <AxiosAuthProvider />
+                  </WebSocketProvider>
+                </TelegramAuthProvider>
               </AuthProvider>
             </SelectedQuizProvider>
           </QueryClientProvider>
