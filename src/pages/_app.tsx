@@ -19,6 +19,7 @@ import { AuthProvider } from "@/context/auth";
 import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
 import { axiosClient } from "@/configs/axios";
 import { auth } from "@/globalTypes";
+import { WebSocketProvider } from "@/context/WebSocket";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -63,7 +64,9 @@ export default function App({
           <QueryClientProvider client={queryClient}>
             <SelectedQuizProvider>
               <AuthProvider auth={auth}>
-                {getLayout(<Component {...pageProps} />)}
+                <WebSocketProvider>
+                  {getLayout(<Component {...pageProps} />)}
+                </WebSocketProvider>
               </AuthProvider>
             </SelectedQuizProvider>
           </QueryClientProvider>
