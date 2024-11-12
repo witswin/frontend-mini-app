@@ -2,55 +2,22 @@ import { VStack } from "@chakra-ui/react";
 import React from "react";
 import { WinnerCard } from "./WinnerCard";
 import { useAuth } from "@/hooks/useAuthorization";
+import { quizFinishedData } from "@/globalTypes";
 
-export const winnerUsers = [
-  {
-    id: 0,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-  {
-    id: 1,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-  {
-    id: 2,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-  {
-    id: 3,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-  {
-    id: 4,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-  {
-    id: 5,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-  {
-    id: 6,
-    name: "Ali",
-    publicKey: "0xA380074488374295f9344645E9219b8c6060D3C2",
-  },
-];
-
-export const QuizWinners = () => {
+interface QuizWinnersProps {
+  finishedData: quizFinishedData[];
+}
+export const QuizWinners = ({ finishedData }: QuizWinnersProps) => {
   const authInfo = useAuth();
   return (
     <VStack w="full" gap={{ base: "8px", sm: "16px" }} pb="128px">
-      {winnerUsers.map((user) => (
+      {finishedData?.map((user) => (
         <WinnerCard
-          key={user.id}
-          name={user.name}
-          publicKey={user.publicKey}
-          isSelfUser={user.id === authInfo?.pk}
+          key={user.pk}
+          name={user.firstName}
+          walletAddress={user.wallets[0].walletAddress}
+          isSelfUser={user.pk === authInfo?.pk}
+          username={user.username}
         />
       ))}
     </VStack>

@@ -1,4 +1,3 @@
-import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
 import {
   CounterProvider,
   HintProvider,
@@ -25,15 +24,13 @@ interface IndexProps {
   dehydratedState: DehydratedState;
 }
 const Index = ({ dehydratedState }: IndexProps) => {
+  // @ts-expect-error as unknown
+  const timer = dehydratedState.queries[0].state.data.questionTimeSeconds!;
   return (
     <HydrationBoundary state={dehydratedState}>
-      <CounterProvider
-        timer={dehydratedState.queries[0].state.data.questionTimeSeconds}
-      >
+      <CounterProvider timer={timer}>
         <HintProvider>
-          <QuestionDataProvider
-            timer={dehydratedState.queries[0].state.data.questionTimeSeconds}
-          >
+          <QuestionDataProvider timer={timer}>
             <Question />
           </QuestionDataProvider>
         </HintProvider>
