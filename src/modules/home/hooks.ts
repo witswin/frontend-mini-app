@@ -29,7 +29,6 @@ export const useCheckEnrolled = () => {
   if (!authInfo?.token) {
     return () => {};
   }
-  console.log(enrolledCompetitions);
 
   return (competitionId: number) =>
     enrolledCompetitions?.find(
@@ -44,13 +43,12 @@ export const useGetHomeCardState = (competition: quizType) => {
     useState<INFO_CARD_STATE>(undefined);
   const [timeState, setTimeState] = useState(undefined);
 
-  const convertedStartAt = new Date(competition.startAt).getTime();
+  const convertedStartAt = new Date(competition?.startAt).getTime();
 
   const isEnrolled = enrolledChecker(competition?.id);
 
   // const leftTimeCalculator = useCalculateStartUTCTime();
 
-  console.log({ timeState });
 
   useEffect(() => {
     const interval = setInterval(() => {

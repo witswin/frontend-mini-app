@@ -36,7 +36,11 @@ export const EnrolledCard = () => {
   const checkIsEnrolled = useCheckEnrolled();
 
   useEffect(() => {
-    setEnrollCardState(ENROLL_STATUS.quizInfo);
+    if (checkIsEnrolled(selectedQuiz?.id)) {
+      setEnrollCardState(ENROLL_STATUS.enrolled);
+    } else {
+      setEnrollCardState(ENROLL_STATUS.quizInfo);
+    }
   }, [checkIsEnrolled(selectedQuiz?.id)]);
 
   const hints = useHints();
@@ -89,6 +93,9 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.enrolled]: "You're Enrolled! Get Ready for the Quiz",
     };
   }, []);
+
+  console.log(enrollCardState);
+
   const button = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: {

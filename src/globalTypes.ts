@@ -1,4 +1,5 @@
 import { HINTS } from "./types";
+import { QUESTION_STATE } from "./types";
 
 export declare type sponsorType = {
   id: number;
@@ -40,11 +41,61 @@ export declare type quizType = {
   splitPrize: boolean;
   txHash: string;
   isActive: boolean;
+  isFinished: boolean;
   hintCount: number;
   userProfile: number;
   questionTimeSeconds: number;
   maxParticipants: number;
-  builtInHints: {id: number; count: number; hint: hintType}[]
+  restTimeSeconds: number;
+  builtInHints: {
+    count: number;
+    id: number;
+    hint: {
+      description: string;
+      hintType: "stats" | "time" | "fifty";
+      icon: string;
+      id: number;
+      isActive: boolean;
+      title: string;
+    };
+  }[];
+};
+
+export declare type question = {
+  amountWonPerUser: number;
+  choices: choice[];
+  competition: number;
+  id: number;
+  isEligible: boolean;
+  number: number;
+  remainParticipantsCount: number;
+  state: QUESTION_STATE;
+  text: string;
+  timer: number;
+  totalParticipantsCount: number;
+  correct: correctChoice | null;
+};
+
+export declare type quizStats = {
+  usersParticipating: number;
+  prizeToWin: number;
+  totalParticipantsCount: number;
+  questionsCount: number;
+  hintCount: number;
+  previousRoundLosses: number;
+};
+
+export declare type correctChoice = {
+  answerId: number;
+  questionNumber: number;
+  questionId: number;
+};
+
+export declare type choice = {
+  id: number;
+  isCorrect: boolean | null;
+  text: string;
+  question: number;
 };
 
 export declare type auth = {
@@ -63,4 +114,12 @@ export declare type enrolledCompetition = {
   tx_hash: string;
   user_profile: number;
   competition: number;
+};
+
+export declare type quizFinishedData = {
+  firstName: string;
+  lastName: string;
+  pk: number;
+  username: string;
+  wallets: [{ createdAt: string; walletAddress: string }];
 };

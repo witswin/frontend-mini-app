@@ -1,57 +1,68 @@
 import { Card } from "@/components/Card";
 import { QuestionBanner } from "./QuestionBanner";
 import { ProgressTimer } from "@/components/ProgressTimer";
-import { useHints, useQuestionData } from "../hooks";
+import { useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Text } from "@chakra-ui/react";
-import { HINTS, QUESTION_STATE } from "@/types";
-import { getUniqueRandomNumbers } from "@/utils";
+import { QUESTION_STATE } from "@/types";
 import { Rest } from "./Rest";
 
 export const QuestionCard = () => {
-  const { questions, activeQuestionId } = useQuestionData();
-  const { choices, state, timer, title } = questions.find(
-    (item) => item.id === activeQuestionId
-  );
-  const activeQuestion = questions.find((item) => item.id === activeQuestionId);
+  const { question, quiz } = useQuestionData();
 
-  const [selectedChoice, setSelectedChoice] = useState<string>(undefined);
+  const [selectedChoice, setSelectedChoice] = useState<number>(undefined);
 
-  const hints = useHints();
+  // const hints = useHints();
 
-  const usedHints = hints.usedHints;
-  const questionHintInfo = usedHints.find(
-    (item) =>
-      item.hintType === HINTS.fifty && +item.questionId === +activeQuestionId
-  );
+  // const usedHints = hints.usedHints;
+  // const questionHintInfo = usedHints.find(
+  //   (item) =>
+  //     item.hintType === HINTS.fifty && +item.questionId === +activeQuestionId
+  // );
+  // const usedHints = hints.usedHints;
+  // const questionHintInfo = usedHints.find(
+  //   (item) =>
+  //     item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
+  // );
+  console.log(quiz);
 
-  const disabledChoices = useMemo(() => {
-    if (questionHintInfo) {
-      const randomButtonId = getUniqueRandomNumbers(activeQuestion.correct);
+  // const disabledChoices = useMemo(() => {
+  //   if (questionHintInfo) {
+  //     const randomButtonId = getUniqueRandomNumbers(question.correct);
 
-      return randomButtonId;
-    }
-  }, [hints.usedHints, activeQuestionId]);
+  //     return randomButtonId;
+  //   }
+  // }, [hints.usedHints, question]);
 
-  console.log({ disabledChoices });
+  // console.log({ disabledChoices });
 
-  return activeQuestion.state === QUESTION_STATE.rest ? (
-    <Rest losers={20} seconds={5} isSpectator />
+  return question?.state === QUESTION_STATE.rest ? (
+    <Rest
+      seconds={quiz.restTimeSeconds - 3}
+      isSpectator={
+        !question.isEligible || selectedChoice !== question.correct.answerId
+      }
+    />
   ) : (
     <Card>
-      <QuestionBanner content={title} />
-      <ProgressTimer timer={timer} state={state} hasCounter hasIcon />
-      {choices.map((choice) => (
+      <QuestionBanner content={question?.text} />
+      <ProgressTimer
+        timer={question?.timer}
+        state={question?.state}
+        hasCounter
+        hasIcon
+      />
+      {question?.choices?.map((choice) => (
         <ChoiceButton
           setSelectedChoice={setSelectedChoice}
           selectedChoice={selectedChoice}
           key={choice.id}
-          buttonInfo={choice}
-          disabledFiftyFiftyHint={
-            +questionHintInfo?.questionId === +activeQuestionId &&
-            disabledChoices?.includes(+choice.id)
-          }
+          choice={choice}
+          // disabledFiftyFiftyHint={
+          //   +questionHintInfo?.questionId === +question.id &&
+          //   disabledChoices?.includes(+choice.id)
+          // }
         />
       ))}
       <Text color="gray.200" fontSize="xs">
