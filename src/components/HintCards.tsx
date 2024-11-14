@@ -91,7 +91,7 @@ export const HintCard = ({
               setHints((prevState) => ({
                 ...prevState,
                 selectedHints: prevState.selectedHints.filter(
-                  (h) => h.id !== hint.id
+                  (h) => h.localId !== hint.localId
                 ),
               }));
               setSelectedQuiz((prevState) => ({
