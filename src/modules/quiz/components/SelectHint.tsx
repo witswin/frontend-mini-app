@@ -5,6 +5,7 @@ import { Box, Button, HStack, Tag, Text, VStack } from "@chakra-ui/react";
 import React, { Dispatch, SetStateAction, useId, useMemo } from "react";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useSelectedQuiz, useSelectedQuizDispatch } from "../hooks";
+import { builtInHint } from "@/globalTypes";
 
 interface HintProps {
   headline: string;
@@ -19,6 +20,7 @@ interface HintBoxProps {
   headline: string;
   subHeadline: string;
   count: number;
+  hint: builtInHint;
   icon: React.JSX.Element;
 }
 const HintBox = ({
@@ -28,6 +30,7 @@ const HintBox = ({
   headline,
   icon,
   subHeadline,
+  hint,
 }: HintBoxProps) => {
   const setHints = useHintsDispatch();
   const setSelectedQuiz = useSelectedQuizDispatch();
@@ -46,7 +49,7 @@ const HintBox = ({
             ...prevState,
             selectedHints: [
               ...prevState.selectedHints,
-              { type: HINTS[type], id: id },
+              { type: HINTS[type], localId: id, id: hint.hint.id },
             ],
           };
         });
@@ -115,8 +118,9 @@ export const SelectHint = ({
 
   const allHints = useMemo(
     () => ({
-      [HINTS.fifty]: (
+      [HINTS.fifty]: (hint: builtInHint) => (
         <HintBox
+          hint={hint}
           headline="50/50"
           subHeadline="Remove 2 Answers"
           count={
@@ -136,8 +140,9 @@ export const SelectHint = ({
           key={1}
         />
       ),
-      [HINTS.time]: (
+      [HINTS.time]: (hint: builtInHint) => (
         <HintBox
+          hint={hint}
           headline="Extra Time"
           subHeadline="3 More Seconds"
           count={
@@ -157,8 +162,9 @@ export const SelectHint = ({
           key={2}
         />
       ),
-      [HINTS.stats]: (
+      [HINTS.stats]: (hint: builtInHint) => (
         <HintBox
+          hint={hint}
           headline="Audience Poll"
           subHeadline="See Others Answers"
           count={
@@ -189,8 +195,8 @@ export const SelectHint = ({
       isOpen={isOpen}
     >
       <VStack w="full" gap="12px">
-        {selectedQuiz.builtInHints.map(
-          (h) => allHints[h.hint.hintType as HINTS]
+        {selectedQuiz.builtInHints.map((h) =>
+          allHints[h.hint.hintType as HINTS](h)
         )}
       </VStack>
     </BottomModal>
