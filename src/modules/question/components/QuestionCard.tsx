@@ -17,14 +17,9 @@ export const QuestionCard = () => {
 
   // const usedHints = hints.usedHints;
   // const questionHintInfo = usedHints.find(
-  //   (item) =>
-  //     item.hintType === HINTS.fifty && +item.questionId === +activeQuestionId
+  //   (item) => item.hintType === HINTS.fifty && +item.questionId === +question?.id
   // );
-  // const usedHints = hints.usedHints;
-  // const questionHintInfo = usedHints.find(
-  //   (item) =>
-  //     item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
-  // );
+
   console.log(quiz);
 
   // const disabledChoices = useMemo(() => {
