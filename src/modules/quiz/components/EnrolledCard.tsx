@@ -53,8 +53,7 @@ export const EnrolledCard = () => {
           "/quiz/competitions/enroll/",
           {
             user_hints: userHints,
-            hint_count: userHints.length,
-            competition: 3,
+            competition: selectedQuiz?.id,
           },
           {
             headers: {
@@ -93,8 +92,6 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.enrolled]: "You're Enrolled! Get Ready for the Quiz",
     };
   }, []);
-
-  console.log(enrollCardState);
 
   const button = useMemo(() => {
     return {
