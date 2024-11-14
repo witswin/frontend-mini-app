@@ -47,18 +47,20 @@ export declare type quizType = {
   questionTimeSeconds: number;
   maxParticipants: number;
   restTimeSeconds: number;
-  builtInHints: {
-    count: number;
+  builtInHints: builtInHint[];
+};
+
+export declare type builtInHint = {
+  count: number;
+  id: number;
+  hint: {
+    description: string;
+    hintType: "stats" | "time" | "fifty";
+    icon: string;
     id: number;
-    hint: {
-      description: string;
-      hintType: "stats" | "time" | "fifty";
-      icon: string;
-      id: number;
-      isActive: boolean;
-      title: string;
-    };
-  }[];
+    isActive: boolean;
+    title: string;
+  };
 };
 
 export declare type question = {
