@@ -113,7 +113,7 @@ export const HintButton = ({
               ...prev.usedHints,
               {
                 hintType: hint.type,
-                hintId: hint.id,
+                hintId: hint.localId  ,
                 questionId: question.id,
               },
             ],
