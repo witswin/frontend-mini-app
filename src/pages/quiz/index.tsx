@@ -1,4 +1,3 @@
-import { HintProvider } from "@/modules/question/context";
 import { EnrolledModalProvider } from "@/modules/quiz/context";
 import { QuizPLP } from "@/modules/quiz/page";
 import { prefetchSSRData } from "@/utils";
@@ -8,7 +7,15 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 
+const HintProvider = dynamic(
+  () =>
+    import("@/modules/question/context").then(
+      (modules) => modules.HintProvider
+    ),
+  { ssr: false }
+);
 interface IndexProps {
   dehydratedState: DehydratedState;
 }
