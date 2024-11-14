@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuthorization";
 import { AxiosError } from "axios";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useCheckEnrolled } from "@/modules/home/hooks";
+import { useHints } from "@/modules/question/hooks";
 
 export const EnrolledCard = () => {
   const { onClose, isOpen } = useEnrolledModalProps();
@@ -42,15 +43,17 @@ export const EnrolledCard = () => {
     }
   }, [checkIsEnrolled(selectedQuiz?.id)]);
 
+  const hints = useHints();
+  const userHints = hints.selectedHints.map((hint) => hint.id);
+
   const { mutate } = useMutation({
     mutationFn: async () => {
       return await axiosClient
         .post(
           "/quiz/competitions/enroll/",
           {
-            user_hints: [],
-            hint_count: 1,
-            competition: 3,
+            user_hints: userHints,
+            competition: selectedQuiz?.id,
           },
           {
             headers: {
@@ -89,8 +92,6 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.enrolled]: "You're Enrolled! Get Ready for the Quiz",
     };
   }, []);
-
-  console.log(enrollCardState);
 
   const button = useMemo(() => {
     return {

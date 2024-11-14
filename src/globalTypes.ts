@@ -1,3 +1,4 @@
+import { HINTS } from "./types";
 import { QUESTION_STATE } from "./types";
 
 export declare type sponsorType = {
@@ -7,6 +8,15 @@ export declare type sponsorType = {
   description: string;
   image: string;
 };
+
+export declare type hintType = {
+  title: string;
+  description: string;
+  hintType: HINTS;
+  id: number;
+  isActive: boolean;
+};
+
 export declare type quizType = {
   id: number;
   questions: Record<"pk" | "number", number>[];
@@ -37,18 +47,20 @@ export declare type quizType = {
   questionTimeSeconds: number;
   maxParticipants: number;
   restTimeSeconds: number;
-  builtInHints: {
-    count: number;
+  builtInHints: builtInHint[];
+};
+
+export declare type builtInHint = {
+  count: number;
+  id: number;
+  hint: {
+    description: string;
+    hintType: "stats" | "time" | "fifty";
+    icon: string;
     id: number;
-    hint: {
-      description: string;
-      hintType: "stats" | "time" | "fifty";
-      icon: string;
-      id: number;
-      isActive: boolean;
-      title: string;
-    };
-  }[];
+    isActive: boolean;
+    title: string;
+  };
 };
 
 export declare type question = {

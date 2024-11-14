@@ -11,7 +11,7 @@ interface HintContentProps {
 }
 const HintContent = ({ hint }: HintContentProps) => {
   const isDisabled = useHints().usedHints.find(
-    (item) => item.hintId === hint.id
+    (item) => item.hintId === hint.localId
   );
 
   return <HintButton hint={hint} isDisabled={!!isDisabled} />;
@@ -19,7 +19,6 @@ const HintContent = ({ hint }: HintContentProps) => {
 
 export const QuizPage = () => {
   const { question } = useQuestionData();
-  console.log(question.isEligible);
 
   const selectedHints = useHints().selectedHints;
   return (

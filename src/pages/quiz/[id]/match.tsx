@@ -1,6 +1,5 @@
 import {
   CounterProvider,
-  HintProvider,
   QuestionDataProvider,
 } from "@/modules/question/context";
 import { prefetchSSRData } from "@/utils";
@@ -17,6 +16,14 @@ import { ReactElement } from "react";
 
 const Question = dynamic(
   () => import("@/modules/question/page").then((modules) => modules.Question),
+  { ssr: false }
+);
+
+const HintProvider = dynamic(
+  () =>
+    import("@/modules/question/context").then(
+      (modules) => modules.HintProvider
+    ),
   { ssr: false }
 );
 

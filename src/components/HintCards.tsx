@@ -5,6 +5,7 @@ import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { useHintsDispatch } from "@/modules/question/hooks";
 import { selectedHint } from "@/modules/question/types";
+import { useSelectedQuizDispatch } from "@/modules/quiz/hooks";
 
 export const HintCard = ({
   hint,
@@ -14,13 +15,14 @@ export const HintCard = ({
   setHintModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const setHints = useHintsDispatch();
+  const setSelectedQuiz = useSelectedQuizDispatch();
   const [isSmall] = useMediaQuery("(min-width: 415px)");
 
   const isHintCardEmpty = hint === undefined;
 
   const selectedHint = useMemo(
     () => ({
-      [HINTS.fiftyFifty]: {
+      [HINTS.fifty]: {
         headline: "50/50",
         subHeadline: "Remove 2 Answers",
         icon: (
@@ -31,7 +33,7 @@ export const HintCard = ({
           />
         ),
       },
-      [HINTS.extraTime]: {
+      [HINTS.time]: {
         headline: "Extra Time",
         subHeadline: "3 More Seconds",
         icon: (
@@ -89,7 +91,18 @@ export const HintCard = ({
               setHints((prevState) => ({
                 ...prevState,
                 selectedHints: prevState.selectedHints.filter(
-                  (h) => h.id !== hint.id
+                  (h) => h.localId !== hint.localId
+                ),
+              }));
+              setSelectedQuiz((prevState) => ({
+                ...prevState,
+                builtInHints: prevState.builtInHints.map((hints) =>
+                  hints.hint.hintType === hint.type
+                    ? {
+                        ...hints,
+                        count: hints.count + 1,
+                      }
+                    : hints
                 ),
               }));
             }}
