@@ -173,6 +173,16 @@ export const HintProvider = ({ children }: HintProviderProps) => {
     selectedHints: [],
   });
 
+  // const { data } = useQuery<quizType>({
+  //   queryKey: ["userHints"],
+  //   queryFn: async () =>
+  //     await axiosClient.get(`/quiz/user-hints/`).then((res) => res.data),
+  // });
+
+  // useEffect(() => {
+  //   setState((prev) => ({ ...prev, selectedHints: data }));
+  // }, [data]);
+
   return (
     <Hint.Provider value={state}>
       <HintDispatch.Provider value={setState}>{children}</HintDispatch.Provider>
