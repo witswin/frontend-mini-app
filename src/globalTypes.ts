@@ -48,6 +48,17 @@ export declare type quizType = {
   maxParticipants: number;
   restTimeSeconds: number;
   builtInHints: builtInHint[];
+  resources: resource[];
+};
+
+export declare type resource = {
+  id: number;
+  title: string;
+  content: string;
+  image: string;
+  created_at: string;
+  isActive: boolean;
+  competition: quizType;
 };
 
 export declare type builtInHint = {
