@@ -43,8 +43,8 @@ export const Learn = () => {
               articleTitle={article.title}
               banner={article.image}
               content={article.content}
-              link={""}
-              linkText={""}
+              link={article.link}
+              linkText={article.linkText}
               header={{
                 img: article.competition.image,
                 CTAText: "Enter Quiz",

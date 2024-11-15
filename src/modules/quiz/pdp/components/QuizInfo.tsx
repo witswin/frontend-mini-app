@@ -296,8 +296,8 @@ export const QuizInfo = () => {
               articleTitle={article.title}
               banner={article.image}
               content={article.content}
-              link={""}
-              linkText={""}
+              link={article.link}
+              linkText={article.linkText}
             />
           ))}
       </VStack>

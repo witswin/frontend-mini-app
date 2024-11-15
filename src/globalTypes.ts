@@ -59,6 +59,8 @@ export declare type resource = {
   created_at: string;
   isActive: boolean;
   competition: quizType;
+  link: string;
+  linkText: string;
 };
 
 export declare type builtInHint = {

@@ -8,7 +8,7 @@ import { axiosClient } from "@/configs/axios";
 import { useMemo } from "react";
 
 export const Resources = () => {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
@@ -43,9 +43,16 @@ export const Resources = () => {
             articleTitle={article.title}
             banner={article.image}
             content={article.content}
-            link={""}
-            linkText={"article.linkText"}
-            // header={{title:""}}
+            link={article.link}
+            linkText={article.linkText}
+            header={{
+              img: article.competition.image,
+              CTAText: "Enter Quiz",
+              title: article.competition.title,
+              CTAAction: () => {
+                push(`/quiz/${article.competition.id}`);
+              },
+            }}
           />
         ))}
       </VStack>
