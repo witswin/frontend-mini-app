@@ -48,6 +48,8 @@ export const QuizInfo = () => {
   });
   const router = useRouter();
 
+  console.log({ data });
+
   const checkIsEnrolledQuiz = useCheckEnrolled();
   const isEnrolled = checkIsEnrolledQuiz(data?.id);
   const cardState = useGetCardState(data);
@@ -286,15 +288,18 @@ export const QuizInfo = () => {
             </ChakraSwiper>
           )}
         </VStack>
-        <ArticleCard
-          articleTitle="salam"
-          content={`asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash
-          dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh
-          asidhiasofhcjxzcvb`}
-          banner=""
-          link="www.google.com"
-          linkText="google"
-        />
+        {data?.resources
+          ?.filter((article) => article.isActive)
+          .map((article) => (
+            <ArticleCard
+              key={article.id}
+              articleTitle={article.title}
+              banner={article.image}
+              content={article.content}
+              link={""}
+              linkText={""}
+            />
+          ))}
       </VStack>
 
       <Box
