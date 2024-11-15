@@ -14,8 +14,10 @@ import { AxiosError } from "axios";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useCheckEnrolled } from "@/modules/home/hooks";
 import { useHints } from "@/modules/question/hooks";
+import { useRouter } from "next/router";
 
 export const EnrolledCard = () => {
+  const router = useRouter();
   const { onClose, isOpen } = useEnrolledModalProps();
   const selectedQuiz = useSelectedQuiz();
   const [showHintModal, setShowHintModal] = useState(false);
@@ -118,7 +120,9 @@ export const EnrolledCard = () => {
       },
       [ENROLL_STATUS.enrolled]: {
         title: "Dive into Resources",
-        onClick: () => {},
+        onClick: () => {
+          router.push(`/quiz/${selectedQuiz.id}/resources`);
+        },
       },
     };
   }, []);

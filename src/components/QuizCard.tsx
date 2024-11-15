@@ -107,7 +107,9 @@ const QuizCard = forwardRef(
         [CARD_STATE.resource]: {
           variant: "solid",
           text: "Dive into Resources",
-          onClick: () => {},
+          onClick: () => {
+            router.push(`/quiz/${quiz.id}/resources`);
+          },
         },
         [CARD_STATE.watch]: {
           variant: "outline",
