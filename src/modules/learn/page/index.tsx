@@ -1,52 +1,22 @@
 import { ColorFullText } from "@/components/ColorFullText";
+import { axiosClient } from "@/configs/axios";
+import { resource } from "@/globalTypes";
 import { ArticleCard } from "@/modules/quiz/components/ArticleCard";
 import { Text, VStack } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
 export const Learn = () => {
-  const Articles = [
-    {
-      id: 0,
-      articleTitle: "salam",
-      content: "asdjkhasjdhas dasidh",
-      banner: "",
-      link: "www.google.com",
-      linkText: "google",
-      header: {
-        title: "Optimism Quiz Tap",
-        img: "",
-        CTAText: "Enter Quiz",
-        CTAAction: () => {},
-      },
-    },
-    {
-      id: 1,
-      articleTitle: "salam",
-      content: "asdjkhasjdhas dasidh",
-      banner: "",
-      link: "www.google.com",
-      linkText: "google",
-      header: {
-        title: "Optimism Quiz Tap",
-        img: "",
-        CTAText: "Enter Quiz",
-        CTAAction: () => {},
-      },
-    },
-    {
-      id: 2,
-      articleTitle: "salam",
-      content: "asdjkhasjdhas dasidh",
-      banner: "",
-      link: "www.google.com",
-      linkText: "google",
-      header: {
-        title: "Optimism Quiz Tap",
-        img: "",
-        CTAText: "Enter Quiz",
-        CTAAction: () => {},
-      },
-    },
-  ];
+  const { data } = useQuery<resource[]>({
+    queryKey: ["resources"],
+    queryFn: async () =>
+      await axiosClient.get(`/quiz/resources/`).then((res) => res.data),
+  });
+
+  console.log({ data });
+
+  const router = useRouter();
+
   return (
     <VStack width="full" mb="8px">
       <VStack w="full" justify="center">
@@ -65,17 +35,26 @@ export const Learn = () => {
       </VStack>
 
       <VStack w="full" gap="16px" p="2px">
-        {Articles.map((article) => (
-          <ArticleCard
-            key={article.id}
-            articleTitle={article.articleTitle}
-            banner={article.banner}
-            content={article.content}
-            link={article.link}
-            linkText={article.linkText}
-            header={article?.header}
-          />
-        ))}
+        {data
+          ?.filter((article) => article.isActive)
+          .map((article) => (
+            <ArticleCard
+              key={article.id}
+              articleTitle={article.title}
+              banner={article.image}
+              content={article.content}
+              link={""}
+              linkText={""}
+              header={{
+                img: article.competition.image,
+                CTAText: "Enter Quiz",
+                title: article.competition.title,
+                CTAAction: () => {
+                  router.push(`/quiz/${article.competition.id}`);
+                },
+              }}
+            />
+          ))}
       </VStack>
     </VStack>
   );

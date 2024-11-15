@@ -1,5 +1,4 @@
-import { EnrolledModalProvider } from "@/modules/quiz/context";
-import { Index } from "@/modules/quiz/pdp/page";
+import { Resources } from "@/modules/quiz/resources/page";
 import { prefetchSSRData } from "@/utils";
 import { Box, Container } from "@chakra-ui/react";
 import {
@@ -9,32 +8,20 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next";
-import dynamic from "next/dynamic";
-import { ReactElement } from "react";
+import { ReactElement } from "react-markdown/lib/react-markdown";
 
-const HintProvider = dynamic(
-  () =>
-    import("@/modules/question/context").then(
-      (modules) => modules.HintProvider
-    ),
-  { ssr: false }
-);
-interface QuizPDPProps {
+interface QuizResourcesProps {
   dehydratedState: DehydratedState;
 }
-const QuizPDP = ({ dehydratedState }: QuizPDPProps) => {
+const Index = ({ dehydratedState }: QuizResourcesProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
-      <EnrolledModalProvider>
-        <HintProvider>
-          <Index />
-        </HintProvider>
-      </EnrolledModalProvider>
+      <Resources />
     </HydrationBoundary>
   );
 };
 
-export default QuizPDP;
+export default Index;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
@@ -54,7 +41,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   };
 };
 
-QuizPDP.getLayout = function getLayout(page: ReactElement) {
+Index.getLayout = function getLayout(page: ReactElement) {
   return (
     <Container
       py="8px"
