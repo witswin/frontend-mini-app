@@ -43,7 +43,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   await prefetchSSRData(
     ["quiz", quizId],
-    `quiz/competitions/${quizId}/`,
+    `/quiz/competitions/${quizId}/`,
     queryClient
   );
 
