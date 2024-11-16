@@ -18,6 +18,8 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   const quizId = query?.id;
   const socket = useRef({ client: null as WebSocket | null });
   const authInfo = useAuth();
+  console.log("re-render");
+
   useEffect(() => {
     let isMounted = !!quizId;
 
@@ -54,15 +56,15 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         setPing(-1);
       };
 
-      // socket.current.client.onmessage = (e) => {
-      //   if (e.data === "PONG") {
-      //     const now = new Date();
-      //     const timePassed = previousPing
-      //       ? now.getTime() - previousPing.getTime()
-      //       : -1;
-      //     setPing(timePassed);
-      //   }
-      // };
+      socket.current.client.onmessage = (e) => {
+        if (e.data === "PONG") {
+          const now = new Date();
+          const timePassed = previousPing
+            ? now.getTime() - previousPing.getTime()
+            : -1;
+          setPing(timePassed);
+        }
+      };
     };
 
     const reconnect = () => {
@@ -96,7 +98,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   }, [authInfo, quizId]);
 
   return (
-    <WebSocketContext.Provider value={{ socket: socket, ping }}>
+    <WebSocketContext.Provider value={{ socket: socket }}>
       {children}
     </WebSocketContext.Provider>
   );

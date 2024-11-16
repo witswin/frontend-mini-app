@@ -21,8 +21,13 @@ import { axiosClient } from "@/configs/axios";
 import { auth } from "@/globalTypes";
 import { TelegramAuthProvider } from "@/context/TelegramAuthProvider";
 import { AxiosAuthProvider } from "@/components/AxiosAuthProvider";
-import { WebSocketProvider } from "@/context/WebSocket";
+import dynamic from "next/dynamic";
 
+const WebSocketProvider = dynamic(
+  () =>
+    import("@/context/WebSocket").then((modules) => modules.WebSocketProvider),
+  { ssr: false }
+);
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };

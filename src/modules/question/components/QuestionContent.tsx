@@ -1,10 +1,16 @@
 import { Text, VStack } from "@chakra-ui/react";
 import { QuestionCard } from "../components/QuestionCard";
 import { AnimatePresence, motion } from "framer-motion";
-import { useHints, useQuestionData } from "../hooks";
-import { QUESTION_STATE } from "@/types";
+import { useHints, useHintsDispatch, useQuestionData } from "../hooks";
+import { HINTS, QUESTION_STATE } from "@/types";
 import { selectedHint } from "../types";
 import dynamic from "next/dynamic";
+import { useAuth } from "@/hooks/useAuthorization";
+import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
+import { enrolledCompetition } from "@/globalTypes";
+import { axiosClient } from "@/configs/axios";
 
 const HintButton = dynamic(
   import("@/components/HintButtons").then((modules) => modules.HintButton),
@@ -25,6 +31,24 @@ export const QuizPage = () => {
   const { question } = useQuestionData();
 
   const selectedHints = useHints().selectedHints;
+
+
+
+  // useEffect(() => {
+  //   if (enrolledCompetitions) {
+  //     hintDispatch((prev) => ({
+  //       ...prev,
+  //       selectedHints: enrolledCompetitions?.registeredHints.map(
+  //         (hint, index) => ({
+  //           id: hint.id,
+  //           type: hint.hintType as HINTS,
+  //           localId: String(index),
+  //         })
+  //       ),
+  //     }));
+  //   }
+  // }, [enrolledCompetitions]);
+
   return (
     <VStack height="full" position="relative" width="full">
       {/* {questions.map((item, index, array) => (
