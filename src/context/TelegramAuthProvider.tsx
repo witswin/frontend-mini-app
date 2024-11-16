@@ -60,7 +60,17 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {children}
-      <Script src="https://telegram.org/js/telegram-web-app.js" />
+      <Script
+        onLoad={() => {
+          if (!window.Telegram?.WebApp) return
+
+          setIsWebApp(true)
+
+          if (auth) return
+          loginWithTelegramWebApp()
+        }}
+        src="https://telegram.org/js/telegram-web-app.js"
+      />
     </TelegramAuthContext.Provider>
   )
 }
