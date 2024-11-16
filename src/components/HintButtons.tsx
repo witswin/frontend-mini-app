@@ -122,7 +122,7 @@ export const HintButton = ({
     //     },
     //   ],
     // }));
-  }, []);
+  }, [socket]);
 
   return (
     <>

@@ -1,5 +1,6 @@
 import {
   CounterProvider,
+  HintProvider,
   QuestionDataProvider,
 } from "@/modules/question/context";
 import { prefetchSSRData } from "@/utils";
@@ -19,13 +20,6 @@ const Question = dynamic(
   { ssr: false }
 );
 
-const HintProvider = dynamic(
-  () =>
-    import("@/modules/question/context").then(
-      (modules) => modules.HintProvider
-    ),
-  { ssr: false }
-);
 
 interface IndexProps {
   dehydratedState: DehydratedState;
@@ -36,11 +30,11 @@ const Index = ({ dehydratedState }: IndexProps) => {
   return (
     <HydrationBoundary state={dehydratedState}>
       <CounterProvider timer={timer}>
-        <HintProvider>
-          <QuestionDataProvider timer={timer}>
+        <QuestionDataProvider timer={timer}>
+          <HintProvider>
             <Question />
-          </QuestionDataProvider>
-        </HintProvider>
+          </HintProvider>
+        </QuestionDataProvider>
       </CounterProvider>
     </HydrationBoundary>
   );

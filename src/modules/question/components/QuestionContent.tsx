@@ -3,9 +3,13 @@ import { QuestionCard } from "../components/QuestionCard";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
 import { QUESTION_STATE } from "@/types";
-import { HintButton } from "@/components/HintButtons";
 import { selectedHint } from "../types";
+import dynamic from "next/dynamic";
 
+const HintButton = dynamic(
+  import("@/components/HintButtons").then((modules) => modules.HintButton),
+  { ssr: false }
+);
 interface HintContentProps {
   hint: selectedHint;
 }

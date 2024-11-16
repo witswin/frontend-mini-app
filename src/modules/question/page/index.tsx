@@ -1,16 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { VStack } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CARD_STATE, QUESTION_STATE } from "@/types";
+import { CARD_STATE, HINTS, QUESTION_STATE } from "@/types";
 import { useEffect, useMemo, useState } from "react";
 import { QuizTimerScreen } from "../components/QuizTimerScreen ";
 import { TopNavbar } from "../components/TopNavbar";
 import { QuizPage } from "../components/QuestionContent";
-import { useQuestionData, useQuestionDataDispatch } from "../hooks";
+import {
+  useHints,
+  useHintsDispatch,
+  useQuestionData,
+  useQuestionDataDispatch,
+} from "../hooks";
 import { useWebSocket } from "@/hooks/useWebSocket";
-import { choice } from "@/globalTypes";
+import { choice, enrolledCompetition } from "@/globalTypes";
 import { shuffleArray } from "@/utils";
 import dynamic from "next/dynamic";
+import { useAuth } from "@/hooks/useAuthorization";
+import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
+import { axiosClient } from "@/configs/axios";
 
 const Lobby = dynamic(
   () => import("../components/Lobby").then((modules) => modules.Lobby),
@@ -24,17 +34,64 @@ export const Question = () => {
 
   const [quizContentMode, setQuizContentMode] = useState("timer");
 
+  const hintDispatch = useHintsDispatch();
+  const hints = useHints();
+
   const { quiz, question } = useQuestionData();
   const dispatch = useQuestionDataDispatch();
 
   const { socket } = useWebSocket();
 
+  const authInfo = useAuth();
+  const { query } = useRouter();
+  const { data: enrolledCompetitions, isSuccess } = useQuery({
+    queryKey: ["enrolledCompetition", authInfo?.token, , query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get<string, AxiosResponse<enrolledCompetition[]>>(
+          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          }
+        )
+        .then((res) => {
+          hintDispatch((prev) => ({
+            ...prev,
+            selectedHints: res.data[0]?.registeredHints.map((hint, index) => ({
+              id: hint.id,
+              type: hint.hintType as HINTS,
+              localId: String(index),
+            })),
+          }));
+        }),
+    enabled: !!authInfo?.token,
+  });
+
+  // useEffect(() => {
+  //   if (enrolledCompetitions) {
+  //     hintDispatch((prev) => ({
+  //       ...prev,
+  //       selectedHints: enrolledCompetitions?.registeredHints.map(
+  //         (hint, index) => ({
+  //           id: hint.id,
+  //           type: hint.hintType as HINTS,
+  //           localId: String(index),
+  //         })
+  //       ),
+  //     }));
+  //   }
+  // }, [enrolledCompetitions]);
+
+  console.log({ enrolledCompetitions });
+
   useEffect(() => {
-    if (socket) {
+    if (isSuccess) {
       socket.current.client.onmessage = (e: any) => {
+        console.log({ e: e.data });
         if (e.data !== "PONG") {
           const data = JSON.parse(e.data);
-          console.log({ e: data.type });
 
           if (data.type === "new_question") {
             dispatch((prev) => {
@@ -128,7 +185,15 @@ export const Question = () => {
         }
       };
     }
-  }, [socket]);
+  }, [
+    dispatch,
+    quiz.questionTimeSeconds,
+    quiz.shuffleAnswers,
+    socket,
+    isSuccess,
+  ]);
+
+  console.log({ socket: question });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -142,8 +207,12 @@ export const Question = () => {
         setPageState(CARD_STATE.join);
         setQuizContentMode("timer");
       }
-      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
+      if (
+        new Date(quiz.startAt).getTime() - new Date().getTime() <= -2 &&
+        quizContentMode !== "quiz"
+      ) {
         setQuizContentMode("quiz");
+        clearInterval(interval);
       }
     }, 300);
     return () => clearInterval(interval);

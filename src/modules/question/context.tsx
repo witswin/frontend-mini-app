@@ -174,36 +174,6 @@ export const HintProvider = ({ children }: HintProviderProps) => {
     selectedHints: [],
   });
 
-  const authInfo = useAuth();
-  const { query } = useRouter();
-  const { data: enrolledCompetitions } = useQuery({
-    queryKey: ["enrolledCompetition", authInfo?.token, , query?.id],
-    queryFn: async () =>
-      await axiosClient
-        .get<string, AxiosResponse<enrolledCompetition[]>>(
-          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
-          {
-            headers: {
-              Authorization: `TOKEN ${authInfo?.token}`,
-            },
-          }
-        )
-        .then((res) => res.data[0]),
-    enabled: !!authInfo?.token,
-  });
-
-  useEffect(() => {
-    setState((prev) => ({
-      ...prev,
-      selectedHints:
-        enrolledCompetitions?.registeredHints.map((hint, index) => ({
-          id: hint.id,
-          type: hint.hintType as HINTS,
-          localId: String(index),
-        })) ?? [],
-    }));
-  }, [enrolledCompetitions]);
-
   return (
     <Hint.Provider value={state}>
       <HintDispatch.Provider value={setState}>{children}</HintDispatch.Provider>
