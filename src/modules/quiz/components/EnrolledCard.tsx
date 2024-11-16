@@ -46,7 +46,7 @@ export const EnrolledCard = () => {
   }, [checkIsEnrolled(selectedQuiz?.id)]);
 
   const hints = useHints();
-  const userHints = hints.selectedHints.map((hint) => hint.id);
+  const userHints = hints?.selectedHints?.map((hint) => hint.id);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -125,7 +125,7 @@ export const EnrolledCard = () => {
         },
       },
     };
-  }, []);
+  }, [authInfo]);
 
   return (
     <BottomModal

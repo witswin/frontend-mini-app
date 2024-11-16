@@ -69,10 +69,15 @@ export const TopNavbar = () => {
           </Text>
           <HStack gap="4px">
             <Text color="gray.0" fontSize="lg" fontWeight={700}>
-              {question.remainParticipantsCount || 0}
+              {!!question.remainParticipantsCount
+                ? question.remainParticipantsCount
+                : 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
-              / {question.totalParticipantsCount || 0}
+              /{" "}
+              {!!question.totalParticipantsCount
+                ? question.totalParticipantsCount
+                : 0}
             </Text>
           </HStack>
         </VStack>

@@ -1,4 +1,4 @@
-import { QUESTION_STATE } from "@/types";
+import { HINTS, QUESTION_STATE } from "@/types";
 import {
   createContext,
   Dispatch,
@@ -11,8 +11,12 @@ import { hint, questionData } from "./types";
 import { useCounter, useCounterDispatch } from "./hooks";
 import { axiosClient } from "@/configs/axios";
 import { useRouter } from "next/router";
-import { quizType } from "@/globalTypes";
+import { enrolledCompetition, quizType } from "@/globalTypes";
 import { useQuery } from "@tanstack/react-query";
+import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
+import { getCookie } from "cookies-next";
+import { AxiosResponse } from "axios";
+import { useAuth } from "@/hooks/useAuthorization";
 
 export const QuestionData = createContext<questionData>(undefined);
 export const QuestionDataDispatch =
@@ -41,8 +45,6 @@ export const QuestionDataProvider = ({
     question: null,
     quizStats: null,
   });
-
-  console.log({ counter });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -116,7 +118,6 @@ export const QuestionDataProvider = ({
 
   useEffect(() => {
     counterDispatch(timer);
-    console.log("render");
   }, [state?.question?.id]);
 
   useEffect(() => {
@@ -173,15 +174,35 @@ export const HintProvider = ({ children }: HintProviderProps) => {
     selectedHints: [],
   });
 
-  // const { data } = useQuery<quizType>({
-  //   queryKey: ["userHints"],
-  //   queryFn: async () =>
-  //     await axiosClient.get(`/quiz/user-hints/`).then((res) => res.data),
-  // });
+  const authInfo = useAuth();
+  const { query } = useRouter();
+  const { data: enrolledCompetitions } = useQuery({
+    queryKey: ["enrolledCompetition", authInfo?.token, , query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get<string, AxiosResponse<enrolledCompetition[]>>(
+          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          }
+        )
+        .then((res) => res.data[0]),
+    enabled: !!authInfo?.token,
+  });
 
-  // useEffect(() => {
-  //   setState((prev) => ({ ...prev, selectedHints: data }));
-  // }, [data]);
+  useEffect(() => {
+    setState((prev) => ({
+      ...prev,
+      selectedHints:
+        enrolledCompetitions?.registeredHints.map((hint, index) => ({
+          id: hint.id,
+          type: hint.hintType as HINTS,
+          localId: String(index),
+        })) ?? [],
+    }));
+  }, [enrolledCompetitions]);
 
   return (
     <Hint.Provider value={state}>

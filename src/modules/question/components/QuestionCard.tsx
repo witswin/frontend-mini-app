@@ -20,8 +20,6 @@ export const QuestionCard = () => {
   //   (item) => item.hintType === HINTS.fifty && +item.questionId === +question?.id
   // );
 
-  console.log(quiz);
-
   // const disabledChoices = useMemo(() => {
   //   if (questionHintInfo) {
   //     const randomButtonId = getUniqueRandomNumbers(question.correct);

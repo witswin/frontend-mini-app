@@ -24,13 +24,10 @@ export const Question = () => {
 
   const [quizContentMode, setQuizContentMode] = useState("timer");
 
-  const { quiz, question,quizStats } = useQuestionData();
+  const { quiz, question } = useQuestionData();
   const dispatch = useQuestionDataDispatch();
 
   const { socket } = useWebSocket();
-
-console.log({quizStats});
-
 
   useEffect(() => {
     if (socket) {
@@ -79,7 +76,6 @@ console.log({quizStats});
                 correct: answerData,
               },
             }));
-            console.log({ answerData });
           }
           //  else if (data.type === "add_answer") {
           //   const answerData = data.data;
@@ -137,19 +133,19 @@ console.log({quizStats});
   useEffect(() => {
     const interval = setInterval(() => {
       if (
-        new Date(quiz.startAt).getTime() - new Date().getTime() >= 7000 &&
+        new Date(quiz.startAt).getTime() - new Date().getTime() >= 6000 &&
         pageState !== CARD_STATE.lobby
       ) {
         setPageState(CARD_STATE.lobby);
       }
-      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= 6000) {
+      if (new Date(quiz.startAt).getTime() - new Date().getTime() < 6000) {
         setPageState(CARD_STATE.join);
         setQuizContentMode("timer");
       }
       if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
         setQuizContentMode("quiz");
       }
-    }, 1000);
+    }, 300);
     return () => clearInterval(interval);
   }, []);
 

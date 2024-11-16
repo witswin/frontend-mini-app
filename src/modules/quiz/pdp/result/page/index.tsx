@@ -4,12 +4,18 @@ import React, { useEffect, useState } from "react";
 import { PrizeCard } from "../components/PrizeCard";
 import { QuizWinners } from "../components/QuizWinners";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { quizFinishedData } from "@/globalTypes";
+import { useAuth } from "@/hooks/useAuthorization";
 
 export const Result = () => {
   const { socket } = useWebSocket();
-  const isSpectator = false;
-  const [finishedData, setFinishedData] = useState(null);
+
+  const authInfo = useAuth();
+  const [finishedData, setFinishedData] = useState<quizFinishedData[]>(null);
+  const isWinner = finishedData?.find((user) => user.pk === authInfo?.pk);
   const [quizStats, setQuizStats] = useState(null);
+
+  console.log({ finishedData });
 
   useEffect(() => {
     socket.current.client.onmessage = (e: any) => {
@@ -25,8 +31,6 @@ export const Result = () => {
     };
   }, []);
 
-  console.log({ finishedData, quizStats });
-
   return (
     <VStack
       flexDir="column"
@@ -39,12 +43,12 @@ export const Result = () => {
     >
       <Grid
         rowGap={{ base: "8px", sm: "16px" }}
-        gridTemplateRows={!isSpectator ? "fit-content 1fr" : "1fr"}
+        gridTemplateRows={!!isWinner ? "fit-content 1fr" : "1fr"}
         w="full"
         h="full"
         mb="16px"
       >
-        {!isSpectator && (
+        {!!isWinner && (
           <GridItem>
             <PrizeCard
               prizeCount={

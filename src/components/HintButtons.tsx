@@ -10,6 +10,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { selectedHint } from "@/modules/question/types";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const HintButton = ({
   hint,
@@ -84,6 +85,45 @@ export const HintButton = ({
     }
   }, [showExtraTime]);
 
+  const { socket } = useWebSocket();
+
+  useEffect(() => {
+    if (socket) {
+      console.log("rebderkdlashodihasoidhq");
+      socket.current.client.onmessage = (e: any) => {
+        if (e.data !== "PONG") {
+          const data = JSON.parse(e.data);
+          
+          if(data.type==="hint_question"){
+            console.log(data);
+            
+          }
+        }
+      };
+    }
+    // {
+    //   "type": "hint_question",
+    //   "data": [14, 15],
+    //   "questionId": 4,
+    //   "hintType": "fifty"
+    // }
+    // if (hint.type === HINTS.time) {
+    //   setShowExtraTime(true);
+    //   counterDispatch((prev) => prev + 3);
+    // }
+    // hintDispatch((prev) => ({
+    //   ...prev,
+    //   usedHints: [
+    //     ...prev.usedHints,
+    //     {
+    //       hintType: hint.type,
+    //       hintId: hint.localId  ,
+    //       questionId: question.id,
+    //     },
+    //   ],
+    // }));
+  }, []);
+
   return (
     <>
       <VStack
@@ -103,21 +143,32 @@ export const HintButton = ({
         h="52px"
         w="full"
         onClick={() => {
-          if (hint.type === HINTS.time) {
-            setShowExtraTime(true);
-            counterDispatch((prev) => prev + 3);
-          }
-          hintDispatch((prev) => ({
-            ...prev,
-            usedHints: [
-              ...prev.usedHints,
-              {
+          socket.current.client?.send(
+            JSON.stringify({
+              command: "GET_HINT",
+              args: {
+                questionId: question?.id,
                 hintType: hint.type,
-                hintId: hint.localId  ,
-                questionId: question.id,
+                hintId: String(hint.id),
               },
-            ],
-          }));
+            })
+          );
+
+          // if (hint.type === HINTS.time) {
+          //   setShowExtraTime(true);
+          //   counterDispatch((prev) => prev + 3);
+          // }
+          // hintDispatch((prev) => ({
+          //   ...prev,
+          //   usedHints: [
+          //     ...prev.usedHints,
+          //     {
+          //       hintType: hint.type,
+          //       hintId: hint.localId  ,
+          //       questionId: question.id,
+          //     },
+          //   ],
+          // }));
         }}
       >
         <HStack

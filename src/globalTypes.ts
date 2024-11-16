@@ -122,7 +122,16 @@ export declare type auth = {
 
 export declare type enrolledCompetition = {
   id: number;
-  registered_hints: string;
+  registeredHints: [
+    {
+      description: string;
+      hintType: string;
+      icon: unknown;
+      id: number;
+      isActive: boolean;
+      title: string;
+    }
+  ];
   is_winner: boolean;
   amount_won: string;
   hint_count: number;

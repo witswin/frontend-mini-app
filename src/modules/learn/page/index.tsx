@@ -13,8 +13,6 @@ export const Learn = () => {
       await axiosClient.get(`/quiz/resources/`).then((res) => res.data),
   });
 
-  console.log({ data });
-
   const router = useRouter();
 
   return (

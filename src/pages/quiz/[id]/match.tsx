@@ -72,8 +72,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     // @ts-expect-error as unknown
     dehydrate(queryClient).queries[0].state.data.isFinished;
 
-  console.log({ isQuizFinished });
-
   if (isQuizFinished) {
     return {
       redirect: {

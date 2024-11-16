@@ -59,25 +59,25 @@ export const QuizPage = () => {
       ))} */}
       <AnimatePresence mode="popLayout">
         <motion.div
-          key={question?.id}
+          // key={question?.id}
           style={{
             paddingTop: `${question?.number * 8}px`,
             width: "100%",
             paddingBottom: "36px",
           }}
-          initial={{
-            opacity: 0,
-            scale: 0,
-          }}
-          animate={{
-            scale: 1,
-            opacity: 1,
-          }}
-          exit={{
-            y: 500,
-            opacity: 0,
-          }}
-          transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
+          // initial={{
+          //   opacity: 0,
+          //   scale: 0,
+          // }}
+          // animate={{
+          //   scale: 1,
+          //   opacity: 1,
+          // }}
+          // exit={{
+          //   scale: 0,
+          //   opacity: 0,
+          // }}
+          // transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
           {!question.isEligible && (
