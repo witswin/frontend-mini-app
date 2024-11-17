@@ -103,7 +103,8 @@ export const QuizPage = () => {
       <AnimatePresence>
         {question?.state !== QUESTION_STATE.freeze &&
           question?.state !== QUESTION_STATE.rest &&
-          question?.state !== QUESTION_STATE.answered && (
+          question?.state !== QUESTION_STATE.answered &&
+          question?.isEligible && (
             <motion.div
               initial={{
                 y: 200,
