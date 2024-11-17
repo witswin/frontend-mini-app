@@ -1,20 +1,20 @@
-import { Box, VStack } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import { Box, VStack } from "@chakra-ui/react"
+import { AnimatePresence, motion } from "framer-motion"
+import React, { useEffect, useState } from "react"
 
 export const QuizTimerScreen = ({ count }: { count: number }) => {
-  const [state, setSate] = useState(count);
+  const [state, setSate] = useState(count)
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (state > 0) {
-        setSate((prev) => prev - 1);
+        setSate((prev) => prev - 1)
       }
-    }, 1000);
+    }, 1000)
     return () => {
-      clearInterval(interval);
-    };
-  }, []);
+      clearInterval(interval)
+    }
+  }, [])
 
   return (
     <VStack w="full" h="full" justifyContent="center" alignItems="center">
@@ -77,5 +77,5 @@ export const QuizTimerScreen = ({ count }: { count: number }) => {
         </VStack>
       </Box>
     </VStack>
-  );
-};
+  )
+}
