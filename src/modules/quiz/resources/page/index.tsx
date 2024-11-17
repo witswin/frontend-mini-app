@@ -46,11 +46,11 @@ export const Resources = () => {
             link={article.link}
             linkText={article.linkText}
             header={{
-              img: article.competition.image,
+              img: data.image,
               CTAText: "Enter Quiz",
-              title: article.competition.title,
+              title: data.title,
               CTAAction: () => {
-                push(`/quiz/${article.competition.id}`);
+                push(`/quiz/${article.competition}`);
               },
             }}
           />

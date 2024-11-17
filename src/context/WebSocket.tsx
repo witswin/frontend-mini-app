@@ -54,15 +54,15 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         setPing(-1);
       };
 
-      // socket.current.client.onmessage = (e) => {
-      //   if (e.data === "PONG") {
-      //     const now = new Date();
-      //     const timePassed = previousPing
-      //       ? now.getTime() - previousPing.getTime()
-      //       : -1;
-      //     setPing(timePassed);
-      //   }
-      // };
+      socket.current.client.onmessage = (e) => {
+        if (e.data === "PONG") {
+          const now = new Date();
+          const timePassed = previousPing
+            ? now.getTime() - previousPing.getTime()
+            : -1;
+          setPing(timePassed);
+        }
+      };
     };
 
     const reconnect = () => {

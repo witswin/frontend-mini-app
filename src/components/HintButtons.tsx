@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { HINTS } from "@/types";
 import {
   useCounterDispatch,
+  useHints,
   useHintsDispatch,
   useQuestionData,
 } from "@/modules/question/hooks";
@@ -21,7 +22,14 @@ export const HintButton = ({
 }) => {
   const hintDispatch = useHintsDispatch();
   const counterDispatch = useCounterDispatch();
-  const { question } = useQuestionData();
+  const { question, quiz } = useQuestionData();
+
+  const isUsedTimeHint = useHints().usedHints.find(
+    (item) =>
+      item.hintType === HINTS.time &&
+      item.questionId === question.id &&
+      item.hintId === hint.localId
+  );
 
   const selectedHint: {
     [key in HINTS]: {
@@ -88,41 +96,27 @@ export const HintButton = ({
   const { socket } = useWebSocket();
 
   useEffect(() => {
-    if (socket) {
-      console.log("rebderkdlashodihasoidhq");
-      socket.current.client.onmessage = (e: any) => {
-        if (e.data !== "PONG") {
-          const data = JSON.parse(e.data);
-          
-          if(data.type==="hint_question"){
-            console.log(data);
-            
-          }
-        }
-      };
+    if (question?.selectedChoice && isUsedTimeHint) {
+      socket.current.client?.send(
+        JSON.stringify({
+          command: "GET_HINT",
+          args: {
+            questionId: question?.id,
+            hintType: hint.type,
+            hintId: String(hint.id),
+            selectedChoiceId: question?.selectedChoice,
+          },
+        })
+      );
     }
-    // {
-    //   "type": "hint_question",
-    //   "data": [14, 15],
-    //   "questionId": 4,
-    //   "hintType": "fifty"
-    // }
-    // if (hint.type === HINTS.time) {
-    //   setShowExtraTime(true);
-    //   counterDispatch((prev) => prev + 3);
-    // }
-    // hintDispatch((prev) => ({
-    //   ...prev,
-    //   usedHints: [
-    //     ...prev.usedHints,
-    //     {
-    //       hintType: hint.type,
-    //       hintId: hint.localId  ,
-    //       questionId: question.id,
-    //     },
-    //   ],
-    // }));
-  }, []);
+  }, [
+    hint.id,
+    hint.type,
+    isUsedTimeHint,
+    question?.id,
+    question?.selectedChoice,
+    socket,
+  ]);
 
   return (
     <>
@@ -154,21 +148,23 @@ export const HintButton = ({
             })
           );
 
-          // if (hint.type === HINTS.time) {
-          //   setShowExtraTime(true);
-          //   counterDispatch((prev) => prev + 3);
-          // }
-          // hintDispatch((prev) => ({
-          //   ...prev,
-          //   usedHints: [
-          //     ...prev.usedHints,
-          //     {
-          //       hintType: hint.type,
-          //       hintId: hint.localId  ,
-          //       questionId: question.id,
-          //     },
-          //   ],
-          // }));
+          hintDispatch((prev) => ({
+            ...prev,
+            usedHints: [
+              ...prev.usedHints,
+              {
+                hintType: hint.type,
+                hintId: hint.localId,
+                questionId: question.id,
+                dbId: hint.id,
+              },
+            ],
+          }));
+
+          if (hint.type === HINTS.time) {
+            setShowExtraTime(true);
+            counterDispatch((prev) => prev + quiz?.questionHintTimeSeconds);
+          }
         }}
       >
         <HStack
@@ -206,6 +202,7 @@ export const HintButton = ({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              zIndex: 10,
             }}
             initial={{ opacity: 0 }}
             animate={{

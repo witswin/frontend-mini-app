@@ -121,7 +121,7 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.enrolled]: {
         title: "Dive into Resources",
         onClick: () => {
-          router.push(`/quiz/${selectedQuiz.id}/resources`);
+          router.push(`/quiz/${router.query?.id}/resources`);
         },
       },
     };

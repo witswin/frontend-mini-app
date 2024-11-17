@@ -13,6 +13,11 @@ export type selectedHint = {
   localId: string;
 };
 export type hint = {
-  usedHints: { questionId: number; hintType: HINTS; hintId: string }[];
+  usedHints: {
+    questionId: number;
+    hintType: HINTS;
+    hintId: string;
+    dbId: number;
+  }[];
   selectedHints: selectedHint[];
 };
