@@ -30,104 +30,107 @@ export const Question = () => {
   const { socket } = useWebSocket();
 
   useEffect(() => {
-    if (socket) {
-      socket.current.client.onmessage = (e: any) => {
-        if (e.data !== "PONG") {
-          const data = JSON.parse(e.data);
-          console.log({ e: data.type });
+    if (!socket.current.client) return;
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
 
-          if (data.type === "new_question") {
-            dispatch((prev) => {
-              if (prev?.question?.id === data?.question) return prev;
+        if (data.type === "new_question") {
+          dispatch((prev) => {
+            if (prev?.question?.id === data?.question) return prev;
 
-              if (quiz.shuffleAnswers) {
-                data.question.choices = shuffleArray(data.question.choices);
-              }
-              console.log("render");
-
-              return {
-                ...prev,
-                question: {
-                  ...data.question,
-                  state: QUESTION_STATE.default,
-                  timer: quiz.questionTimeSeconds,
-                  correct: null,
-                },
-              };
-            });
-
-            const correctAnswer = data.question.choices.find(
-              (item: choice) => item.isCorrect
-            );
-
-            if (correctAnswer) {
-              dispatch((prev) => ({
-                ...prev,
-                question: { ...prev.question, correct: correctAnswer.id },
-              }));
+            if (quiz.shuffleAnswers) {
+              data.question.choices = shuffleArray(data.question.choices);
             }
-          } else if (data.type === "correct_answer") {
-            const answerData = data.data;
+            console.log("render");
 
-            dispatch((prev) => ({
+            return {
               ...prev,
               question: {
-                ...prev.question,
-                correct: answerData,
+                ...data.question,
+                state: QUESTION_STATE.default,
+                timer: quiz.questionTimeSeconds,
+                correct: null,
               },
-            }));
-          }
-          //  else if (data.type === "add_answer") {
-          //   const answerData = data.data;
-          //   setAnswersHistory((answerHistory) => {
-          //     answerHistory[answerData.questionNumber - 1] =
-          //       answerData.correctChoice;
-          //     return [...answerHistory];
-          //   });
-          // }
-          else if (data.type === "quiz_stats") {
-            const stats = data.data;
+            };
+          });
 
+          const correctAnswer = data.question.choices.find(
+            (item: choice) => item.isCorrect
+          );
+
+          if (correctAnswer) {
             dispatch((prev) => ({
               ...prev,
-              quizStats: stats,
+              question: { ...prev.question, correct: correctAnswer.id },
             }));
           }
-          // else if (data.type === "quiz_finish") {
-          //   setWinnersList(data.winnersList);
-          // } else if (data.type === "hint_question") {
-          //   setHint((prev) => prev - 1);
-          //   setHintData({
-          //     data: data.data,
-          //     questionId: data.questionId,
-          //     hintType: data.hintType,
-          //   });
-          //   const hint = userCompetition.registeredHints.findIndex(
-          //     (item) => item.id === data.hintId
-          //   );
+        } else if (data.type === "correct_answer") {
+          const answerData = data.data;
 
-          //   if (hint !== -1) {
-          //     userCompetition.registeredHints.splice(hint, 1);
-          //     setUserCompetition({ ...userCompetition });
-          //   }
-          // } else if (data.type === "answers_history") {
-          //   const answers =
-          //     typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-
-          //   setAnswersHistory(
-          //     answers.map((item: any) =>
-          //       item.selectedChoice?.isCorrect ? item.selectedChoice.id : -1
-          //     )
-          //   );
-          //   setUserAnswersHistory(
-          //     answers.map(
-          //       (item: { selectedChoice: Choice }) => item.selectedChoice?.id
-          //     )
-          //   );
-          // }
+          dispatch((prev) => ({
+            ...prev,
+            question: {
+              ...prev.question,
+              correct: answerData,
+            },
+          }));
         }
-      };
-    }
+        //  else if (data.type === "add_answer") {
+        //   const answerData = data.data;
+        //   setAnswersHistory((answerHistory) => {
+        //     answerHistory[answerData.questionNumber - 1] =
+        //       answerData.correctChoice;
+        //     return [...answerHistory];
+        //   });
+        // }
+        else if (data.type === "quiz_stats") {
+          const stats = data.data;
+
+          dispatch((prev) => ({
+            ...prev,
+            quizStats: stats,
+          }));
+        }
+        // else if (data.type === "quiz_finish") {
+        //   setWinnersList(data.winnersList);
+        // } else if (data.type === "hint_question") {
+        //   setHint((prev) => prev - 1);
+        //   setHintData({
+        //     data: data.data,
+        //     questionId: data.questionId,
+        //     hintType: data.hintType,
+        //   });
+        //   const hint = userCompetition.registeredHints.findIndex(
+        //     (item) => item.id === data.hintId
+        //   );
+
+        //   if (hint !== -1) {
+        //     userCompetition.registeredHints.splice(hint, 1);
+        //     setUserCompetition({ ...userCompetition });
+        //   }
+        // } else if (data.type === "answers_history") {
+        //   const answers =
+        //     typeof data.data === "string" ? JSON.parse(data.data) : data.data;
+
+        //   setAnswersHistory(
+        //     answers.map((item: any) =>
+        //       item.selectedChoice?.isCorrect ? item.selectedChoice.id : -1
+        //     )
+        //   );
+        //   setUserAnswersHistory(
+        //     answers.map(
+        //       (item: { selectedChoice: Choice }) => item.selectedChoice?.id
+        //     )
+        //   );
+        // }
+      }
+    };
+    socket.current.client.addEventListener("message", handleMessage);
+
+    return () => {
+      socket.current.client?.removeEventListener("message", handleMessage);
+    };
   }, [socket]);
 
   useEffect(() => {
