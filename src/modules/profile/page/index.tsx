@@ -4,6 +4,7 @@ import { Stat } from "../components/Stat";
 import { WalletConnectedModal } from "../components/WalletConnectedModal";
 import { RewardsClaimedModal } from "../components/RewardsClaimedModal";
 import { Info } from "../components/Info";
+import { Quizzes } from "../components/Quizzes";
 
 export const Profile = () => {
   const [isWalletConnectedModalOpen, setIsWalletConnectedModalOpen] =
@@ -23,6 +24,8 @@ export const Profile = () => {
     <VStack w="full" h="full" gap="16px" p="16px">
       <Info userInfo={userInfo} />
       <Stat rank={1} quizzes={28} winRate={2} />
+      <Quizzes />
+
       <WalletConnectedModal
         isOpen={isWalletConnectedModalOpen}
         onClose={() => setIsWalletConnectedModalOpen(false)}
