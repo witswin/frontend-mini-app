@@ -13,8 +13,6 @@ import { axiosClient } from "@/configs/axios";
 import { useRouter } from "next/router";
 import { enrolledCompetition, quizType } from "@/globalTypes";
 import { useQuery } from "@tanstack/react-query";
-import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants";
-import { getCookie } from "cookies-next";
 import { AxiosResponse } from "axios";
 import { useAuth } from "@/hooks/useAuthorization";
 
@@ -103,18 +101,6 @@ export const QuestionDataProvider = ({
     return () => clearTimeout(timeout);
   }, [counter, state.question]);
 
-  // useEffect(() => {
-  //   let timeout: NodeJS.Timeout;
-  //   if (
-  //     state.question.state === QUESTION_STATE.rest &&
-  //     state.question.id !== state.quiz.questions.length - 1
-  //   ) {
-  //     timeout = setTimeout(() => {
-
-  //     }, 5000);
-  //   }
-  //   return () => clearTimeout(timeout);
-  // }, [counter, state.question]);
 
   useEffect(() => {
     counterDispatch(timer);
