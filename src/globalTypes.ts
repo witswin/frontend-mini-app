@@ -49,6 +49,7 @@ export declare type quizType = {
   restTimeSeconds: number;
   builtInHints: builtInHint[];
   resources: resource[];
+  questionHintTimeSeconds: number;
 };
 
 export declare type resource = {
@@ -89,6 +90,7 @@ export declare type question = {
   timer: number;
   totalParticipantsCount: number;
   correct: correctChoice | null;
+  selectedChoice: number;
 };
 
 export declare type quizStats = {
