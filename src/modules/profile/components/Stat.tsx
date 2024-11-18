@@ -2,14 +2,15 @@ import { Divider, Flex, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import { Card } from "./Card";
 import { CheckCircle, Notes, Ranking } from "solar-icon-set";
+import { profileStats } from "@/globalTypes";
 
-interface StatProps {
-  rank: number;
-  quizzes: number;
-  winRate: number;
+interface Props {
+  userStats: profileStats;
 }
 
-export const Stat = ({ rank, quizzes, winRate }: StatProps) => {
+export const Stat = ({ userStats }: Props) => {
+  const { rank, quizCount, winrate } = userStats;
+
   return (
     <Card>
       <Flex w="full" h="full" gap="8px" p="0px">
@@ -51,7 +52,7 @@ export const Stat = ({ rank, quizzes, winRate }: StatProps) => {
               bgGradient="var(--chakra-colors-primaryRadial)"
               bgClip="text"
             >
-              {quizzes}
+              {quizCount}
             </Text>
             <Text
               textAlign="center"
@@ -80,7 +81,7 @@ export const Stat = ({ rank, quizzes, winRate }: StatProps) => {
               bgGradient="var(--chakra-colors-primaryRadial)"
               bgClip="text"
             >
-              {`${winRate}%`}
+              {`${winrate}%`}
             </Text>
             <Text
               textAlign="center"

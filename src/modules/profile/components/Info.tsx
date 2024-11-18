@@ -5,59 +5,60 @@ import { SettingsMinimalistic, WalletMoney } from "solar-icon-set";
 import Link from "next/link";
 import Image from "next/image";
 import { textTruncator } from "@/utils";
+import { profileInfo } from "@/globalTypes";
 
-interface InfoProps {
-  userName: string;
-  telegramId: string;
-  walletAddress: string;
-  imgAddress: string;
-  isOwnProfile: boolean;
-  neuronsCount: number;
-}
-
+// pk: number;
+//   userName: string;
+//   wallets: {
+//     walletAddress: string;
+//     createdAt: string;
+//   }[];
+//   image: string;
+//   neuron: number;
 interface Props {
-  userInfo: InfoProps;
+  userInfo: profileInfo;
 }
 
 export const Info = ({ userInfo }: Props) => {
-  const {
-    userName,
-    telegramId,
-    walletAddress,
-    imgAddress,
-    isOwnProfile,
-    neuronsCount,
-  } = userInfo;
+  console.log(userInfo);
+
+  // const {  image: imgAddress, neuron, pk } = userInfo;
+  //
+  // const { username = "" } = userInfo;
+
+  // console.log(username);
+
+  const isOwnProfile = true;
   return (
     <Card>
       <Image
         alt="avatar"
-        src={imgAddress || "/assets/images/profile/Avatar.svg"}
+        src={userInfo?.image || "/assets/images/profile/Avatar.svg"}
         width={88}
         height={88}
       />
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
-          {userName}
+          {userInfo?.username || `user_${userInfo?.pk}`}
         </Text>
-        {isOwnProfile && (
+        {/* {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
             {telegramId}
           </Text>
-        )}
+        )} */}
       </VStack>
 
       <HStack bg="transparent">
-        <Text>{neuronsCount}</Text>
+        <Text>{userInfo?.neuron}</Text>
         <Text>Neurons</Text>
       </HStack>
 
       {/* social Links */}
-      {!!walletAddress && (
+      {!!userInfo?.wallets[0] && (
         <HStack>
           <Badge variant="glass" size="md">
             <Text fontSize="md" fontWeight={600} color="gray.0" mx="4px">
-              {textTruncator(walletAddress)}
+              {textTruncator(userInfo?.wallets[0].walletAddress)}
             </Text>
           </Badge>
         </HStack>
