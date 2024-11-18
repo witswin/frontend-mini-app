@@ -1,61 +1,61 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VStack } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import { CARD_STATE, QUESTION_STATE } from "@/types";
-import { useEffect, useMemo, useState } from "react";
-import { QuizTimerScreen } from "../components/QuizTimerScreen ";
-import { TopNavbar } from "../components/TopNavbar";
-import { QuizPage } from "../components/QuestionContent";
+import { VStack } from "@chakra-ui/react"
+import { AnimatePresence, motion } from "framer-motion"
+import { CARD_STATE, QUESTION_STATE } from "@/types"
+import { useEffect, useMemo, useState } from "react"
+import { QuizTimerScreen } from "../components/QuizTimerScreen "
+import { TopNavbar } from "../components/TopNavbar"
+import { QuizPage } from "../components/QuestionContent"
 import {
   useCounterDispatch,
   useQuestionData,
   useQuestionDataDispatch,
-} from "../hooks";
-import { useWebSocket } from "@/hooks/useWebSocket";
-import { choice } from "@/globalTypes";
-import { shuffleArray } from "@/utils";
-import dynamic from "next/dynamic";
-import { calculatePreTimer } from "../context";
+} from "../hooks"
+import { useWebSocket } from "@/hooks/useWebSocket"
+import { choice } from "@/globalTypes"
+import { shuffleArray } from "@/utils"
+import dynamic from "next/dynamic"
+import { calculatePreTimer } from "../context"
 
 const Lobby = dynamic(
   () => import("../components/Lobby").then((modules) => modules.Lobby),
   { ssr: false }
-);
+)
 
 export const Question = () => {
   const [pageState, setPageState] = useState<
     CARD_STATE.join | CARD_STATE.lobby
-  >(CARD_STATE.lobby);
+  >(CARD_STATE.lobby)
 
-  const [quizContentMode, setQuizContentMode] = useState("timer");
+  const [quizContentMode, setQuizContentMode] = useState("timer")
 
-  const { quiz, question } = useQuestionData();
-  const setCounter = useCounterDispatch();
-  const dispatch = useQuestionDataDispatch();
+  const { quiz, question } = useQuestionData()
+  const setCounter = useCounterDispatch()
+  const dispatch = useQuestionDataDispatch()
 
-  const { socket } = useWebSocket();
+  const { socket } = useWebSocket()
 
   useEffect(() => {
-    if (!socket.current.client) return;
+    if (!socket.current.client) return
     const handleMessage = (e: MessageEvent) => {
       if (e.data !== "PONG") {
-        const data = JSON.parse(e.data);
+        const data = JSON.parse(e.data)
 
         if (data.type === "new_question") {
           const secondsRemaining = calculatePreTimer(
             new Date(quiz.startAt),
             quiz.questionTimeSeconds,
             quiz.restTimeSeconds,
-            question?.number
-          );
-          setCounter(secondsRemaining);
-          console.log({ reset: secondsRemaining });
+            data.question.number
+          )
+          setCounter(secondsRemaining)
+          console.log({ reset: secondsRemaining })
 
           dispatch((prev) => {
-            if (prev?.question?.id === data?.question) return prev;
+            if (prev?.question?.id === data?.question) return prev
 
             if (quiz.shuffleAnswers) {
-              data.question.choices = shuffleArray(data.question.choices);
+              data.question.choices = shuffleArray(data.question.choices)
             }
 
             return {
@@ -65,21 +65,21 @@ export const Question = () => {
                 state: QUESTION_STATE.default,
                 correct: null,
               },
-            };
-          });
+            }
+          })
 
           const correctAnswer = data.question.choices.find(
             (item: choice) => item.isCorrect
-          );
+          )
 
           if (correctAnswer) {
             dispatch((prev) => ({
               ...prev,
               question: { ...prev.question, correct: correctAnswer.id },
-            }));
+            }))
           }
         } else if (data.type === "correct_answer") {
-          const answerData = data.data;
+          const answerData = data.data
 
           dispatch((prev) => ({
             ...prev,
@@ -87,7 +87,7 @@ export const Question = () => {
               ...prev.question,
               correct: answerData,
             },
-          }));
+          }))
         }
         //  else if (data.type === "add_answer") {
         //   const answerData = data.data;
@@ -98,12 +98,12 @@ export const Question = () => {
         //   });
         // }
         else if (data.type === "quiz_stats") {
-          const stats = data.data;
+          const stats = data.data
 
           dispatch((prev) => ({
             ...prev,
             quizStats: stats,
-          }));
+          }))
         }
         // else if (data.type === "quiz_finish") {
         //   setWinnersList(data.winnersList);
@@ -138,13 +138,13 @@ export const Question = () => {
         //   );
         // }
       }
-    };
-    socket.current.client.addEventListener("message", handleMessage);
+    }
+    socket.current.client.addEventListener("message", handleMessage)
 
     return () => {
-      socket.current.client?.removeEventListener("message", handleMessage);
-    };
-  }, [socket]);
+      socket.current.client?.removeEventListener("message", handleMessage)
+    }
+  }, [socket])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -152,18 +152,18 @@ export const Question = () => {
         new Date(quiz.startAt).getTime() - new Date().getTime() >= 6000 &&
         pageState !== CARD_STATE.lobby
       ) {
-        setPageState(CARD_STATE.lobby);
+        setPageState(CARD_STATE.lobby)
       }
       if (new Date(quiz.startAt).getTime() - new Date().getTime() < 6000) {
-        setPageState(CARD_STATE.join);
-        setQuizContentMode("timer");
+        setPageState(CARD_STATE.join)
+        setQuizContentMode("timer")
       }
       if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
-        setQuizContentMode("quiz");
+        setQuizContentMode("quiz")
       }
-    }, 300);
-    return () => clearInterval(interval);
-  }, []);
+    }, 300)
+    return () => clearInterval(interval)
+  }, [])
 
   const content = useMemo(
     () => ({
@@ -207,7 +207,7 @@ export const Question = () => {
       ),
     }),
     [quiz.startAt, quizContentMode]
-  );
+  )
 
   return (
     <>
@@ -232,5 +232,5 @@ export const Question = () => {
         </AnimatePresence>
       </VStack>
     </>
-  );
-};
+  )
+}
