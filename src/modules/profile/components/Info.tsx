@@ -6,29 +6,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { textTruncator } from "@/utils";
 import { profileInfo } from "@/globalTypes";
+import { useAuth } from "@/hooks/useAuthorization";
 
-// pk: number;
-//   userName: string;
-//   wallets: {
-//     walletAddress: string;
-//     createdAt: string;
-//   }[];
-//   image: string;
-//   neuron: number;
 interface Props {
   userInfo: profileInfo;
 }
 
 export const Info = ({ userInfo }: Props) => {
-  console.log(userInfo);
+  const ownUser = useAuth();
 
-  // const {  image: imgAddress, neuron, pk } = userInfo;
-  //
-  // const { username = "" } = userInfo;
+  const isOwnProfile = userInfo.pk === ownUser.pk;
 
-  // console.log(username);
-
-  const isOwnProfile = true;
   return (
     <Card>
       <Image

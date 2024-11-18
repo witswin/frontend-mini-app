@@ -1,14 +1,22 @@
 import { userQuiz } from "@/globalTypes";
-import { Button, HStack, Text, VStack } from "@chakra-ui/react";
+import { HStack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { Confetti } from "solar-icon-set";
 import { CompletedQuizCard } from "./CompletedQuizCard";
 import Sleepy from "@/assets/sleepy.svg";
+import { useAuth } from "@/hooks/useAuthorization";
+import { useRouter } from "next/router";
 
 export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
   const isEmpty = quizzes.length === 0;
   const unClaimedRewards =
     quizzes.filter((quiz) => quiz.isClaimTriggered === false).length === 0;
+  const selfUser = useAuth();
+  const router = useRouter();
+
+  const isSelfUser = router.query.id === selfUser.pk.toString();
+
+  const showClaim = isSelfUser && unClaimedRewards;
 
   return (
     <VStack w="full" gap="16px" py={isEmpty ? "24px" : "0"}>
@@ -21,7 +29,8 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
         </>
       ) : (
         <>
-          {unClaimedRewards && (
+          {/* Claim All for we don't use it cause it adds complexity in claim reward proccess*/}
+          {showClaim && (
             <HStack
               w="full"
               borderRadius="10px"
@@ -45,13 +54,13 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
               <HStack>
                 <Confetti iconStyle="Bold" color="gray.0" size={24} />
                 <Text fontSize="sm" fontWeight="600" color="gray.0">
-                  Unclaimed prizes available!
+                  You have unclaimed prizes!
                 </Text>
               </HStack>
 
-              <Button size="mini" onClick={() => {}}>
+              {/* <Button size="mini" onClick={() => {}}>
                 Claim All
-              </Button>
+              </Button> */}
             </HStack>
           )}
           {quizzes.map((quiz) => {
@@ -64,6 +73,7 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
                 date={new Date(quiz.competition?.startAt).getTime()}
                 imgAddress={quiz.competition.image}
                 isWinner={quiz.isWinner}
+                isSelfUser
               />
             );
           })}

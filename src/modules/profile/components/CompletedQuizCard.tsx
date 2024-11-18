@@ -19,17 +19,21 @@ export const CompletedQuizCard = ({
   date,
   imgAddress,
   isWinner,
+  isSelfUser,
 }: {
   amountWon: number;
   title: string;
   date: Date | number;
   imgAddress: string;
   isWinner: boolean;
+  isSelfUser: boolean;
 }) => {
   const [isLarge] = useMediaQuery("(min-width: 480px)");
   // token and chain are hard coded for this phase, for next phases of the project they are likely to change
   const token = "USDC";
   const chain = "Arbitrum";
+
+  const showClaim = isSelfUser && isWinner;
 
   const dateString = new Date(date)
     .toLocaleString("default", {
@@ -93,14 +97,14 @@ export const CompletedQuizCard = ({
           </HStack>
         </HStack>
 
-        {isLarge && isWinner && (
+        {isLarge && showClaim && (
           <Button variant="outline" size="mini">
             {true ? "Claim" : "Claimed"}
           </Button>
         )}
       </HStack>
 
-      {!isLarge && isWinner && (
+      {!isLarge && showClaim && (
         <Button variant="outline" size="mini" w="full">
           {true ? "Claim" : "Claimed"}
         </Button>
