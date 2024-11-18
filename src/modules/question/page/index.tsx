@@ -6,11 +6,16 @@ import { useEffect, useMemo, useState } from "react";
 import { QuizTimerScreen } from "../components/QuizTimerScreen ";
 import { TopNavbar } from "../components/TopNavbar";
 import { QuizPage } from "../components/QuestionContent";
-import { useQuestionData, useQuestionDataDispatch } from "../hooks";
+import {
+  useCounterDispatch,
+  useQuestionData,
+  useQuestionDataDispatch,
+} from "../hooks";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { choice } from "@/globalTypes";
 import { shuffleArray } from "@/utils";
 import dynamic from "next/dynamic";
+import { calculatePreTimer } from "../context";
 
 const Lobby = dynamic(
   () => import("../components/Lobby").then((modules) => modules.Lobby),
@@ -24,134 +29,139 @@ export const Question = () => {
 
   const [quizContentMode, setQuizContentMode] = useState("timer");
 
-  const { quiz, question,quizStats } = useQuestionData();
+  const { quiz, question } = useQuestionData();
+  const setCounter = useCounterDispatch();
   const dispatch = useQuestionDataDispatch();
 
   const { socket } = useWebSocket();
 
-console.log({quizStats});
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     if (
+  //       question === null &&
+  //       new Date(quiz.startAt).getTime() <= new Date().getTime()
+  //     ) {
+  //       const secondsRemaining = calculatePreTimer(
+  //         new Date(quiz.startAt),
+  //         quiz.questionTimeSeconds,
+  //         quiz.restTimeSeconds,
+  //         question.number
+  //       );
+  //       setCounter(secondsRemaining);
+  //       console.log({ reset: secondsRemaining });
+  //     }
+  //   }, 1000);
+  // }, [question]);
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (question?.number !== 1) {
+  //       const secondsRemaining = calculatePreTimer(
+  //         new Date(quiz.startAt),
+  //         quiz.questionTimeSeconds,
+  //         quiz.restTimeSeconds,
+  //         question.number
+  //       );
+  //       setCounter(secondsRemaining);
+  //       console.log({ reset: secondsRemaining });
+  //     }
+  //   }, 1000);
+  // }, [question]);
 
   useEffect(() => {
-    if (socket) {
-      socket.current.client.onmessage = (e: any) => {
-        if (e.data !== "PONG") {
-          const data = JSON.parse(e.data);
-          console.log({ e: data.type });
+    if (!socket.current.client) return;
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
 
-          if (data.type === "new_question") {
-            dispatch((prev) => {
-              if (prev?.question?.id === data?.question) return prev;
+        if (data.type === "new_question") {
+          const secondsRemaining = calculatePreTimer(
+            new Date(quiz.startAt),
+            quiz.questionTimeSeconds,
+            quiz.restTimeSeconds,
+            question.number
+          );
+          if (secondsRemaining >= quiz.questionHintTimeSeconds) {
+            setCounter(secondsRemaining + 1);
+          } else {
+            setCounter(secondsRemaining);
+          }
+          dispatch((prev) => {
+            if (prev?.question?.id === data?.question) return prev;
 
-              if (quiz.shuffleAnswers) {
-                data.question.choices = shuffleArray(data.question.choices);
-              }
-              console.log("render");
-
-              return {
-                ...prev,
-                question: {
-                  ...data.question,
-                  state: QUESTION_STATE.default,
-                  timer: quiz.questionTimeSeconds,
-                  correct: null,
-                },
-              };
-            });
-
-            const correctAnswer = data.question.choices.find(
-              (item: choice) => item.isCorrect
-            );
-
-            if (correctAnswer) {
-              dispatch((prev) => ({
-                ...prev,
-                question: { ...prev.question, correct: correctAnswer.id },
-              }));
+            if (quiz.shuffleAnswers) {
+              data.question.choices = shuffleArray(data.question.choices);
             }
-          } else if (data.type === "correct_answer") {
-            const answerData = data.data;
 
-            dispatch((prev) => ({
+            return {
               ...prev,
               question: {
-                ...prev.question,
-                correct: answerData,
+                ...data.question,
+                state: QUESTION_STATE.default,
+                correct: null,
               },
-            }));
-            console.log({ answerData });
-          }
-          //  else if (data.type === "add_answer") {
-          //   const answerData = data.data;
-          //   setAnswersHistory((answerHistory) => {
-          //     answerHistory[answerData.questionNumber - 1] =
-          //       answerData.correctChoice;
-          //     return [...answerHistory];
-          //   });
-          // }
-          else if (data.type === "quiz_stats") {
-            const stats = data.data;
+            };
+          });
 
+          const correctAnswer = data.question.choices.find(
+            (item: choice) => item.isCorrect
+          );
+
+          if (correctAnswer) {
             dispatch((prev) => ({
               ...prev,
-              quizStats: stats,
+              question: { ...prev.question, correct: correctAnswer.id },
             }));
           }
-          // else if (data.type === "quiz_finish") {
-          //   setWinnersList(data.winnersList);
-          // } else if (data.type === "hint_question") {
-          //   setHint((prev) => prev - 1);
-          //   setHintData({
-          //     data: data.data,
-          //     questionId: data.questionId,
-          //     hintType: data.hintType,
-          //   });
-          //   const hint = userCompetition.registeredHints.findIndex(
-          //     (item) => item.id === data.hintId
-          //   );
+        } else if (data.type === "correct_answer") {
+          const answerData = data.data;
 
-          //   if (hint !== -1) {
-          //     userCompetition.registeredHints.splice(hint, 1);
-          //     setUserCompetition({ ...userCompetition });
-          //   }
-          // } else if (data.type === "answers_history") {
-          //   const answers =
-          //     typeof data.data === "string" ? JSON.parse(data.data) : data.data;
+          dispatch((prev) => ({
+            ...prev,
+            question: {
+              ...prev.question,
+              correct: answerData,
+            },
+          }));
+        } else if (data.type === "quiz_stats") {
+          const stats = data.data;
 
-          //   setAnswersHistory(
-          //     answers.map((item: any) =>
-          //       item.selectedChoice?.isCorrect ? item.selectedChoice.id : -1
-          //     )
-          //   );
-          //   setUserAnswersHistory(
-          //     answers.map(
-          //       (item: { selectedChoice: Choice }) => item.selectedChoice?.id
-          //     )
-          //   );
-          // }
+          dispatch((prev) => ({
+            ...prev,
+            quizStats: stats,
+          }));
         }
-      };
-    }
+      }
+    };
+    socket.current.client.addEventListener("message", handleMessage);
+
+    return () => {
+      socket.current.client?.removeEventListener("message", handleMessage);
+    };
   }, [socket]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (
-        new Date(quiz.startAt).getTime() - new Date().getTime() >= 7000 &&
+        new Date(quiz.startAt).getTime() - new Date().getTime() >= 6000 &&
         pageState !== CARD_STATE.lobby
       ) {
         setPageState(CARD_STATE.lobby);
-      }
-      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= 6000) {
+      } else if (
+        new Date(quiz.startAt).getTime() - new Date().getTime() < 6000 &&
+        pageState !== CARD_STATE.join
+      ) {
         setPageState(CARD_STATE.join);
-        setQuizContentMode("timer");
       }
-      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
+      if (
+        new Date(quiz.startAt).getTime() < new Date().getTime() &&
+        quizContentMode !== "quiz"
+      ) {
         setQuizContentMode("quiz");
       }
-    }, 1000);
+    }, 500);
     return () => clearInterval(interval);
-  }, []);
+  }, [pageState, quiz.startAt, quizContentMode]);
 
   const content = useMemo(
     () => ({

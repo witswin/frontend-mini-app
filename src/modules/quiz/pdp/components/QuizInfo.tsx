@@ -5,27 +5,32 @@ import {
   Button,
   chakra,
   HStack,
+  Img,
   Tag,
   Text,
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ArticleCard } from "../../components/ArticleCard";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { axiosClient } from "@/configs/axios";
-import { quizType } from "@/globalTypes";
+import { enrolledCompetition, quizType } from "@/globalTypes";
 import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
 import { useCheckEnrolled } from "@/modules/home/hooks";
-import { useGetCardState } from "../../hooks";
+import {
+  useEnrolledModalProps,
+  useGetCardState,
+  useSelectedQuizDispatch,
+} from "../../hooks";
 import { CARD_STATE } from "@/types";
 import { useAuth } from "@/hooks/useAuthorization";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { AxiosError } from "axios";
+import { EnrolledCard } from "../../components/EnrolledCard";
+import { AxiosError, AxiosResponse } from "axios";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -52,26 +57,36 @@ export const QuizInfo = () => {
   const queryClient = useQueryClient();
 
   const authInfo = useAuth();
-  const toast = useToast({
-    position: "bottom",
-  });
 
-  const { mutate } = useMutation({
-    mutationFn: async () => {
-      return await axiosClient
-        .post(
-          "/quiz/competitions/enroll/",
-          {
-            user_hints: [],
-            hint_count: 1,
-            competition: 3,
-          },
+  const { data: enrolledCompetitions } = useQuery({
+    queryKey: ["enrolledCompetition", authInfo?.token, query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get<string, AxiosResponse<enrolledCompetition[]>>(
+          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
           {
             headers: {
               Authorization: `TOKEN ${authInfo?.token}`,
             },
           }
         )
+        .then((res) => res.data),
+    enabled: !!authInfo?.token,
+  });
+
+  const toast = useToast({
+    position: "bottom",
+  });
+
+  const selectedQuizDispatch = useSelectedQuizDispatch();
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      return await axiosClient
+        .delete(`/quiz/competitions/enroll/${enrolledCompetitions[0].id}/`, {
+          headers: {
+            Authorization: `TOKEN ${authInfo?.token}`,
+          },
+        })
         .then((res) => console.log(res.data));
     },
     onError: (data: AxiosError<{ detail: string }>) => {
@@ -89,15 +104,31 @@ export const QuizInfo = () => {
     },
   });
 
+  const { onOpen } = useEnrolledModalProps();
+
+  useEffect(() => {
+    selectedQuizDispatch(data);
+  }, []);
+
   const CTAButton = useMemo(
     () => ({
       [CARD_STATE.join]: isEnrolled ? null : (
-        <Button width="full" size="lg" variant="solid">
-          Enroll Quiz
+        <Button
+          onClick={() => {
+            router.push(`/quiz/${data.id}/match`);
+          }}
+          width="full"
+          size="lg"
+          variant="solid"
+        >
+          Join Now
         </Button>
       ),
       [CARD_STATE.lobby]: (
         <Button
+          onClick={() => {
+            router.push(`/quiz/${data.id}/match`);
+          }}
           rightIcon={
             <DoubleAltArrowRight
               color="var(--chakra-colors-gray-0)"
@@ -138,7 +169,7 @@ export const QuizInfo = () => {
                 )!,
               });
             } else {
-              mutate();
+              onOpen();
             }
           }}
           width="full"
@@ -149,7 +180,7 @@ export const QuizInfo = () => {
         </Button>
       ),
     }),
-    []
+    [authInfo]
   );
 
   return (
@@ -164,12 +195,12 @@ export const QuizInfo = () => {
         >
           <HStack justifyContent="space-between" width="full">
             <Box position="relative">
-              <Image
+              <Img
                 style={{ borderRadius: "50%" }}
                 src={data?.image}
                 alt={data?.title}
-                width={80}
-                height={80}
+                width="80px"
+                height="80px"
               />
               {isEnrolled && (
                 <Badge
@@ -186,7 +217,10 @@ export const QuizInfo = () => {
               )}
             </Box>
             <VStack alignItems="flex-end" rowGap="0">
-              <QuizPrize prize={data?.prizeAmount} unitPrize={data?.token} />
+              <QuizPrize
+                prize={data?.prizeAmount ? data?.prizeAmount / 1e18 : 0}
+                unitPrize={data?.token}
+              />
               <Text
                 fontSize="sm"
                 lineHeight="20px"
@@ -235,6 +269,7 @@ export const QuizInfo = () => {
           {isEnrolled ? (
             <Box width="full" position="relative" zIndex={0}>
               <Button
+                onClick={() => mutate()}
                 variant="gray"
                 width="full"
                 leftIcon={
@@ -266,15 +301,18 @@ export const QuizInfo = () => {
             </ChakraSwiper>
           )}
         </VStack>
-        <ArticleCard
-          articleTitle="salam"
-          content={`asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash
-          dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh
-          asidhiasofhcjxzcvb`}
-          banner=""
-          link="www.google.com"
-          linkText="google"
-        />
+        {data?.resources
+          ?.filter((article) => article.isActive)
+          .map((article) => (
+            <ArticleCard
+              key={article.id}
+              articleTitle={article.title}
+              banner={article.image}
+              content={article.content}
+              link={article.link}
+              linkText={article.linkText}
+            />
+          ))}
       </VStack>
 
       <Box
@@ -291,6 +329,8 @@ export const QuizInfo = () => {
       >
         {CTAButton[cardState]}
       </Box>
+
+      <EnrolledCard />
     </>
   );
 };

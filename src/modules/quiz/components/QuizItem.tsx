@@ -20,8 +20,6 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
 
   const cardState = useGetCardState(quiz);
 
-  console.log({ cardState }, quiz.id, quiz.title);
-
   return (
     <VStack onClick={() => router.push(`/quiz/${quiz?.id}`)} width="full">
       <QuizCard

@@ -8,10 +8,16 @@ export type questionData = {
 };
 
 export type selectedHint = {
-  id: string;
+  id: number;
   type: HINTS;
+  localId: string;
 };
 export type hint = {
-  usedHints: { questionId: number; hintType: HINTS; hintId: string }[];
+  usedHints: {
+    questionId: number;
+    hintType: HINTS;
+    hintId: string;
+    dbId: number;
+  }[];
   selectedHints: selectedHint[];
 };

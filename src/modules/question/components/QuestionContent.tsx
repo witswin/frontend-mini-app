@@ -11,7 +11,7 @@ interface HintContentProps {
 }
 const HintContent = ({ hint }: HintContentProps) => {
   const isDisabled = useHints().usedHints.find(
-    (item) => item.hintId === hint.id
+    (item) => item.hintId === hint.localId
   );
 
   return <HintButton hint={hint} isDisabled={!!isDisabled} />;
@@ -19,7 +19,6 @@ const HintContent = ({ hint }: HintContentProps) => {
 
 export const QuizPage = () => {
   const { question } = useQuestionData();
-  console.log(question.isEligible);
 
   const selectedHints = useHints().selectedHints;
   return (
@@ -60,25 +59,25 @@ export const QuizPage = () => {
       ))} */}
       <AnimatePresence mode="popLayout">
         <motion.div
-          key={question?.id}
+          // key={question?.id}
           style={{
             paddingTop: `${question?.number * 8}px`,
             width: "100%",
             paddingBottom: "36px",
           }}
-          initial={{
-            opacity: 0,
-            scale: 0,
-          }}
-          animate={{
-            scale: 1,
-            opacity: 1,
-          }}
-          exit={{
-            y: 500,
-            opacity: 0,
-          }}
-          transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
+          // initial={{
+          //   opacity: 0,
+          //   scale: 0,
+          // }}
+          // animate={{
+          //   scale: 1,
+          //   opacity: 1,
+          // }}
+          // exit={{
+          //   scale: 0,
+          //   opacity: 0,
+          // }}
+          // transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
           {!question.isEligible && (
@@ -104,7 +103,8 @@ export const QuizPage = () => {
       <AnimatePresence>
         {question?.state !== QUESTION_STATE.freeze &&
           question?.state !== QUESTION_STATE.rest &&
-          question?.state !== QUESTION_STATE.answered && (
+          question?.state !== QUESTION_STATE.answered &&
+          question?.isEligible && (
             <motion.div
               initial={{
                 y: 200,

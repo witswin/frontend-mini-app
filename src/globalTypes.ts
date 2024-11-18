@@ -1,3 +1,4 @@
+import { HINTS } from "./types";
 import { QUESTION_STATE } from "./types";
 
 export declare type userQuiz = {
@@ -37,17 +38,12 @@ export declare type sponsorType = {
 };
 
 export declare type hintType = {
-  count: number;
+  title: string;
+  description: string;
+  hintType: HINTS;
   id: number;
-  hint: {
-    description: string;
-    hintType: "stats" | "time" | "fifty";
-    icon: string;
-    id: number;
-    isActive: boolean;
-    title: string;
-  };
-}
+  isActive: boolean;
+};
 
 export declare type quizType = {
   id: number;
@@ -79,7 +75,34 @@ export declare type quizType = {
   questionTimeSeconds: number;
   maxParticipants: number;
   restTimeSeconds: number;
-  builtInHints: hintType[];
+  builtInHints: builtInHint[];
+  resources: resource[];
+  questionHintTimeSeconds: number;
+};
+
+export declare type resource = {
+  id: number;
+  title: string;
+  content: string;
+  image: string;
+  created_at: string;
+  isActive: boolean;
+  competition: quizType;
+  link: string;
+  linkText: string;
+};
+
+export declare type builtInHint = {
+  count: number;
+  id: number;
+  hint: {
+    description: string;
+    hintType: "stats" | "time" | "fifty";
+    icon: string;
+    id: number;
+    isActive: boolean;
+    title: string;
+  };
 };
 
 export declare type question = {
@@ -92,9 +115,9 @@ export declare type question = {
   remainParticipantsCount: number;
   state: QUESTION_STATE;
   text: string;
-  timer: number;
   totalParticipantsCount: number;
   correct: correctChoice | null;
+  selectedChoice: number;
 };
 
 export declare type quizStats = {
@@ -128,7 +151,16 @@ export declare type auth = {
 
 export declare type enrolledCompetition = {
   id: number;
-  registered_hints: string;
+  registeredHints: [
+    {
+      description: string;
+      hintType: string;
+      icon: unknown;
+      id: number;
+      isActive: boolean;
+      title: string;
+    }
+  ];
   is_winner: boolean;
   amount_won: string;
   hint_count: number;

@@ -1,63 +1,79 @@
 import { Card } from "@/components/Card";
 import { QuestionBanner } from "./QuestionBanner";
 import { ProgressTimer } from "@/components/ProgressTimer";
-import { useQuestionData } from "../hooks";
+import { useCounter, useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "@chakra-ui/react";
-import { QUESTION_STATE } from "@/types";
+import { HINTS, QUESTION_STATE } from "@/types";
 import { Rest } from "./Rest";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const QuestionCard = () => {
   const { question, quiz } = useQuestionData();
+  const counter = useCounter();
 
-  const [selectedChoice, setSelectedChoice] = useState<number>(undefined);
+  const isUsedExtraTimeHint = useHints().usedHints.find(
+    (item) => item.hintType === HINTS.time && question.id === item.questionId
+  );
+  const hints = useHints();
 
-  // const hints = useHints();
+  const [disabledChoices, setDisabledChoices] = useState<number[]>(undefined);
 
-  // const usedHints = hints.usedHints;
-  // const questionHintInfo = usedHints.find(
-  //   (item) =>
-  //     item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
-  // );
-  console.log(quiz);
+  const usedHints = hints.usedHints;
+  const questionFiftyHintInfo = usedHints.find(
+    (item) =>
+      item.hintType === HINTS.fifty && +item.questionId === +question?.id
+  );
 
-  // const disabledChoices = useMemo(() => {
-  //   if (questionHintInfo) {
-  //     const randomButtonId = getUniqueRandomNumbers(question.correct);
+  const { socket } = useWebSocket();
 
-  //     return randomButtonId;
-  //   }
-  // }, [hints.usedHints, question]);
-
-  // console.log({ disabledChoices });
+  useEffect(() => {
+    if (!socket.current.client) return;
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
+        if (
+          data.questionId === question.id &&
+          data.hintType === HINTS.fifty &&
+          questionFiftyHintInfo
+        ) {
+          setDisabledChoices(data.data);
+        }
+      }
+    };
+    socket.current.client.addEventListener("message", handleMessage);
+    return () => {
+      socket.current.client?.removeEventListener("message", handleMessage);
+    };
+  }, [hints.usedHints, question, socket]);
 
   return question?.state === QUESTION_STATE.rest ? (
     <Rest
-      seconds={quiz.restTimeSeconds - 3}
+      seconds={
+        isUsedExtraTimeHint
+          ? quiz.restTimeSeconds - 3 - quiz.questionHintTimeSeconds
+          : quiz.restTimeSeconds - 3
+      }
       isSpectator={
-        !question.isEligible || selectedChoice !== question.correct.answerId
+        !question?.isEligible ||
+        question?.selectedChoice !== question?.correct?.answerId
       }
     />
   ) : (
-    <Card>
+    <Card sx={{ "&>div": { zIndex: 0 } }}>
       <QuestionBanner content={question?.text} />
       <ProgressTimer
-        timer={question?.timer}
+        timer={counter}
         state={question?.state}
         hasCounter
         hasIcon
       />
       {question?.choices?.map((choice) => (
         <ChoiceButton
-          setSelectedChoice={setSelectedChoice}
-          selectedChoice={selectedChoice}
           key={choice.id}
           choice={choice}
-          // disabledFiftyFiftyHint={
-          //   +questionHintInfo?.questionId === +question.id &&
-          //   disabledChoices?.includes(+choice.id)
-          // }
+          disabledFiftyFiftyHint={disabledChoices?.includes(+choice.id)}
         />
       ))}
       <Text color="gray.200" fontSize="xs">

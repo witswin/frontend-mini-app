@@ -4,12 +4,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { HINTS } from "@/types";
 import {
   useCounterDispatch,
+  useHints,
   useHintsDispatch,
   useQuestionData,
 } from "@/modules/question/hooks";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
 import { selectedHint } from "@/modules/question/types";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const HintButton = ({
   hint,
@@ -20,7 +22,14 @@ export const HintButton = ({
 }) => {
   const hintDispatch = useHintsDispatch();
   const counterDispatch = useCounterDispatch();
-  const { question } = useQuestionData();
+  const { question, quiz } = useQuestionData();
+
+  const isUsedTimeHint = useHints().usedHints.find(
+    (item) =>
+      item.hintType === HINTS.time &&
+      item.questionId === question.id &&
+      item.hintId === hint.localId
+  );
 
   const selectedHint: {
     [key in HINTS]: {
@@ -29,7 +38,7 @@ export const HintButton = ({
     };
   } = useMemo(
     () => ({
-      [HINTS.fiftyFifty]: {
+      [HINTS.fifty]: {
         headline: "50/50",
         icon: (
           <Widget
@@ -43,7 +52,7 @@ export const HintButton = ({
           />
         ),
       },
-      [HINTS.extraTime]: {
+      [HINTS.time]: {
         headline: "Extra Time",
         icon: (
           <AlarmAdd
@@ -84,6 +93,31 @@ export const HintButton = ({
     }
   }, [showExtraTime]);
 
+  const { socket } = useWebSocket();
+
+  useEffect(() => {
+    if (question?.selectedChoice && isUsedTimeHint) {
+      socket.current.client?.send(
+        JSON.stringify({
+          command: "GET_HINT",
+          args: {
+            questionId: question?.id,
+            hintType: hint.type,
+            hintId: String(hint.id),
+            selectedChoiceId: question?.selectedChoice,
+          },
+        })
+      );
+    }
+  }, [
+    hint.id,
+    hint.type,
+    isUsedTimeHint,
+    question?.id,
+    question?.selectedChoice,
+    socket,
+  ]);
+
   return (
     <>
       <VStack
@@ -103,21 +137,34 @@ export const HintButton = ({
         h="52px"
         w="full"
         onClick={() => {
-          if (hint.type === HINTS.extraTime) {
-            setShowExtraTime(true);
-            counterDispatch((prev) => prev + 3);
-          }
+          socket.current.client?.send(
+            JSON.stringify({
+              command: "GET_HINT",
+              args: {
+                questionId: question?.id,
+                hintType: hint.type,
+                hintId: String(hint.id),
+              },
+            })
+          );
+
           hintDispatch((prev) => ({
             ...prev,
             usedHints: [
               ...prev.usedHints,
               {
                 hintType: hint.type,
-                hintId: hint.id,
+                hintId: hint.localId,
                 questionId: question.id,
+                dbId: hint.id,
               },
             ],
           }));
+
+          if (hint.type === HINTS.time) {
+            setShowExtraTime(true);
+            counterDispatch((prev) => prev + quiz?.questionHintTimeSeconds);
+          }
         }}
       >
         <HStack
@@ -142,7 +189,7 @@ export const HintButton = ({
         </HStack>
       </VStack>
       <AnimatePresence>
-        {hint.type === HINTS.extraTime && showExtraTime && (
+        {hint.type === HINTS.time && showExtraTime && (
           <motion.div
             style={{
               position: "absolute",
@@ -155,6 +202,7 @@ export const HintButton = ({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              zIndex: 10,
             }}
             initial={{ opacity: 0 }}
             animate={{
