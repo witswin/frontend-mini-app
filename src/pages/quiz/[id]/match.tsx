@@ -1,3 +1,4 @@
+import { quizType } from "@/globalTypes";
 import {
   CounterProvider,
   QuestionDataProvider,
@@ -31,13 +32,21 @@ interface IndexProps {
   dehydratedState: DehydratedState;
 }
 const Index = ({ dehydratedState }: IndexProps) => {
-  // @ts-expect-error as unknown
-  const timer = dehydratedState.queries[0].state.data.questionTimeSeconds;
+  const quiz = dehydratedState.queries[0].state.data as quizType;
+
+  const timer = quiz.questionTimeSeconds;
+
+  const restTimeSeconds = quiz.restTimeSeconds;
+
   return (
     <HydrationBoundary state={dehydratedState}>
-      <CounterProvider timer={timer}>
+      <CounterProvider
+        timer={timer}
+        startAt={quiz.startAt}
+        restTimeSeconds={restTimeSeconds}
+      >
         <HintProvider>
-          <QuestionDataProvider timer={timer}>
+          <QuestionDataProvider>
             <Question />
           </QuestionDataProvider>
         </HintProvider>

@@ -1,7 +1,7 @@
 import { Card } from "@/components/Card";
 import { QuestionBanner } from "./QuestionBanner";
 import { ProgressTimer } from "@/components/ProgressTimer";
-import { useHints, useQuestionData } from "../hooks";
+import { useCounter, useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { useEffect, useState } from "react";
 import { Text } from "@chakra-ui/react";
@@ -11,6 +11,7 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const QuestionCard = () => {
   const { question, quiz } = useQuestionData();
+  const counter = useCounter();
 
   const isUsedExtraTimeHint = useHints().usedHints.find(
     (item) => item.hintType === HINTS.time && question.id === item.questionId
@@ -47,8 +48,6 @@ export const QuestionCard = () => {
     };
   }, [hints.usedHints, question, socket]);
 
-  console.log({ disabledChoices });
-
   return question?.state === QUESTION_STATE.rest ? (
     <Rest
       seconds={
@@ -57,15 +56,15 @@ export const QuestionCard = () => {
           : quiz.restTimeSeconds - 3
       }
       isSpectator={
-        !question.isEligible ||
-        question?.selectedChoice !== question.correct.answerId
+        !question?.isEligible ||
+        question?.selectedChoice !== question?.correct?.answerId
       }
     />
   ) : (
     <Card sx={{ "&>div": { zIndex: 0 } }}>
       <QuestionBanner content={question?.text} />
       <ProgressTimer
-        timer={question?.timer}
+        timer={counter}
         state={question?.state}
         hasCounter
         hasIcon

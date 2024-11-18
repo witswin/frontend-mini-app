@@ -15,7 +15,7 @@ const TimerCounter = ({ count, ...cssProps }: TimeCounterProps) => {
       <AnimatePresence>
         <motion.p
           key={count}
-          initial={{ y: 30 }}
+          initial={{ y: 30, backgroundClip: "text" }}
           animate={{ y: 0 }}
           exit={{ y: -30, opacity: 0 }}
           style={{
