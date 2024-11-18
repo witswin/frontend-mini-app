@@ -87,7 +87,6 @@ export declare type question = {
   remainParticipantsCount: number;
   state: QUESTION_STATE;
   text: string;
-  timer: number;
   totalParticipantsCount: number;
   correct: correctChoice | null;
   selectedChoice: number;
