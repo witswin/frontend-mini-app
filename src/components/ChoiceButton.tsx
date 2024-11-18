@@ -133,7 +133,6 @@ export const ChoiceButton = ({
     [question?.correct, question.selectedChoice]
   );
 
-  console.log({ statsHint, choice });
 
   return (
     <HStack
