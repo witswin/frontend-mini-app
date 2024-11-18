@@ -5,16 +5,16 @@ import {
   Text,
   useMediaQuery,
   VStack,
-} from "@chakra-ui/react";
-import HeaderBg from "@/assets/HeaderBgImage.svg";
-import Logo from "@/assets/Logo.svg";
-import Image from "next/image";
-import { WalletMoney } from "solar-icon-set";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { useAuth } from "@/hooks/useAuthorization";
+} from "@chakra-ui/react"
+import HeaderBg from "@/assets/HeaderBgImage.svg"
+import Logo from "@/assets/Logo.svg"
+import Image from "next/image"
+import { WalletMoney } from "solar-icon-set"
+import { useWalletConnection } from "@/hooks/useWalletConnection"
+import { useAuth } from "@/hooks/useAuthorization"
 
 const WalletStatus = () => {
-  const authInfo = useAuth();
+  const authInfo = useAuth()
   return (
     <Badge
       variant={!!authInfo ? "green" : "red"}
@@ -23,14 +23,14 @@ const WalletStatus = () => {
       left="0"
       bottom="0"
     />
-  );
-};
+  )
+}
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)");
-  const health = 3;
+  const [isLarge] = useMediaQuery("(min-width: 500px)")
+  const health = 3
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect, connectors } = useWalletConnection()
 
   return (
     <HStack
@@ -81,7 +81,7 @@ export const TopNavbar = () => {
             onClick={() =>
               connect({
                 connector: connectors.find(
-                  (connector) => connector.id === "injected"
+                  (connector) => connector.id === "walletConnect"
                 )!,
               })
             }
@@ -100,5 +100,5 @@ export const TopNavbar = () => {
         </VStack>
       </HStack>
     </HStack>
-  );
-};
+  )
+}

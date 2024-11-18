@@ -1,4 +1,4 @@
-import { QuizPrize } from "@/components/QuizCard";
+import { QuizPrize } from "@/components/QuizCard"
 import {
   Badge,
   Box,
@@ -10,53 +10,53 @@ import {
   Text,
   useToast,
   VStack,
-} from "@chakra-ui/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { ArticleCard } from "../../components/ArticleCard";
-import dynamic from "next/dynamic";
-import { useEffect, useMemo } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { axiosClient } from "@/configs/axios";
-import { enrolledCompetition, quizType } from "@/globalTypes";
-import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
-import { useCheckEnrolled } from "@/modules/home/hooks";
+} from "@chakra-ui/react"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { ArticleCard } from "../../components/ArticleCard"
+import dynamic from "next/dynamic"
+import { useEffect, useMemo } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/router"
+import { axiosClient } from "@/configs/axios"
+import { enrolledCompetition, quizType } from "@/globalTypes"
+import { DoubleAltArrowRight, Logout3 } from "solar-icon-set"
+import { useCheckEnrolled } from "@/modules/home/hooks"
 import {
   useEnrolledModalProps,
   useGetCardState,
   useSelectedQuizDispatch,
-} from "../../hooks";
-import { CARD_STATE } from "@/types";
-import { useAuth } from "@/hooks/useAuthorization";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { EnrolledCard } from "../../components/EnrolledCard";
-import { AxiosError, AxiosResponse } from "axios";
+} from "../../hooks"
+import { CARD_STATE } from "@/types"
+import { useAuth } from "@/hooks/useAuthorization"
+import { useWalletConnection } from "@/hooks/useWalletConnection"
+import { EnrolledCard } from "../../components/EnrolledCard"
+import { AxiosError, AxiosResponse } from "axios"
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
   { ssr: false }
-);
-const ChakraSwiper = chakra(Swiper);
+)
+const ChakraSwiper = chakra(Swiper)
 export const QuizInfo = () => {
-  const { query } = useRouter();
+  const { query } = useRouter()
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  });
-  const router = useRouter();
+  })
+  const router = useRouter()
 
-  const checkIsEnrolledQuiz = useCheckEnrolled();
-  const isEnrolled = checkIsEnrolledQuiz(data?.id);
-  const cardState = useGetCardState(data);
+  const checkIsEnrolledQuiz = useCheckEnrolled()
+  const isEnrolled = checkIsEnrolledQuiz(data?.id)
+  const cardState = useGetCardState(data)
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect, connectors } = useWalletConnection()
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-  const authInfo = useAuth();
+  const authInfo = useAuth()
 
   const { data: enrolledCompetitions } = useQuery({
     queryKey: ["enrolledCompetition", authInfo?.token, query?.id],
@@ -72,15 +72,15 @@ export const QuizInfo = () => {
         )
         .then((res) => res.data),
     enabled: !!authInfo?.token,
-  });
+  })
 
   const toast = useToast({
     position: "bottom",
-  });
+  })
 
-  console.log({ data });
+  console.log({ data })
 
-  const selectedQuizDispatch = useSelectedQuizDispatch();
+  const selectedQuizDispatch = useSelectedQuizDispatch()
   const { mutate } = useMutation({
     mutationFn: async () => {
       return await axiosClient
@@ -89,37 +89,37 @@ export const QuizInfo = () => {
             Authorization: `TOKEN ${authInfo?.token}`,
           },
         })
-        .then((res) => console.log(res.data));
+        .then((res) => console.log(res.data))
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({
         description: data.response.data.detail,
         status: "error",
-      });
+      })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
+      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] })
       toast({
         description: `You have enrolled ${data?.title}`,
         status: "success",
-      });
+      })
     },
-  });
+  })
 
-  const { onOpen, isOpen } = useEnrolledModalProps();
+  const { onOpen, isOpen } = useEnrolledModalProps()
 
-  console.log({ isOpen });
+  console.log({ isOpen })
 
   useEffect(() => {
-    selectedQuizDispatch(data);
-  }, []);
+    selectedQuizDispatch(data)
+  }, [])
 
   const CTAButton = useMemo(
     () => ({
       [CARD_STATE.join]: isEnrolled ? null : (
         <Button
           onClick={() => {
-            router.push(`/quiz/${data.id}/match`);
+            router.push(`/quiz/${data.id}/match`)
           }}
           width="full"
           size="lg"
@@ -131,7 +131,7 @@ export const QuizInfo = () => {
       [CARD_STATE.lobby]: (
         <Button
           onClick={() => {
-            router.push(`/quiz/${data.id}/match`);
+            router.push(`/quiz/${data.id}/match`)
           }}
           rightIcon={
             <DoubleAltArrowRight
@@ -151,9 +151,9 @@ export const QuizInfo = () => {
         <Button
           onClick={() => {
             if (data?.isFinished) {
-              router.push(`/quiz/${data.id}/result`);
+              router.push(`/quiz/${data.id}/result`)
             } else {
-              router.push(`/quiz/${data.id}/match`);
+              router.push(`/quiz/${data.id}/match`)
             }
           }}
           width="full"
@@ -169,11 +169,11 @@ export const QuizInfo = () => {
             if (!authInfo?.token) {
               connect({
                 connector: connectors.find(
-                  (connector) => connector.id === "injected"
+                  (connector) => connector.id === "walletConnect"
                 )!,
-              });
+              })
             } else {
-              onOpen();
+              onOpen()
             }
           }}
           width="full"
@@ -185,7 +185,7 @@ export const QuizInfo = () => {
       ),
     }),
     [authInfo]
-  );
+  )
 
   return (
     <>
@@ -336,5 +336,5 @@ export const QuizInfo = () => {
 
       <EnrolledCard />
     </>
-  );
-};
+  )
+}

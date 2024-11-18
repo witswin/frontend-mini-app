@@ -1,12 +1,12 @@
-import { Box, HStack, Text, VStack } from "@chakra-ui/react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { Box, HStack, Text, VStack } from "@chakra-ui/react"
+import Link from "next/link"
+import { useRouter } from "next/router"
 import {
   HomeAngle2,
   NotebookMinimalistic,
   SliderVertical,
   User,
-} from "solar-icon-set";
+} from "solar-icon-set"
 
 const routes = [
   {
@@ -73,15 +73,15 @@ const routes = [
       />
     ),
   },
-];
+]
 
 export const BottomNavbar = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <Box
       position="fixed"
-      zIndex="sticky"
+      zIndex="docked"
       bottom="0"
       maxWidth="538px"
       left="50%"
@@ -103,7 +103,7 @@ export const BottomNavbar = () => {
         mx="auto"
       >
         {routes.map((route) => {
-          const isActive = router.pathname === route.href;
+          const isActive = router.pathname === route.href
 
           return (
             <Link href={route.href} key={route.id}>
@@ -138,9 +138,9 @@ export const BottomNavbar = () => {
                 )}
               </VStack>
             </Link>
-          );
+          )
         })}
       </HStack>
     </Box>
-  );
-};
+  )
+}

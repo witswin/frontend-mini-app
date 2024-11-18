@@ -1,52 +1,50 @@
-import { Button, Img, Text, useToast, VStack } from "@chakra-ui/react";
-import { useEnrolledModalProps, useSelectedQuiz } from "../hooks";
-import { useEffect, useMemo, useState } from "react";
-import { ENROLL_STATUS } from "../types";
-import { QuizInfo } from "./state/QuizInfo";
-import { QuizTask } from "./state/QuizTask";
-import { QuizEnrolled } from "./state/QuizEnrolled";
-import { BottomModal } from "@/components/BottomModal";
-import { SelectHint } from "./SelectHint";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosClient } from "@/configs/axios";
-import { useAuth } from "@/hooks/useAuthorization";
-import { AxiosError } from "axios";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { useCheckEnrolled } from "@/modules/home/hooks";
-import { useHints } from "@/modules/question/hooks";
-import { useRouter } from "next/router";
+import { Button, Img, Text, useToast, VStack } from "@chakra-ui/react"
+import { useEnrolledModalProps, useSelectedQuiz } from "../hooks"
+import { useEffect, useMemo, useState } from "react"
+import { ENROLL_STATUS } from "../types"
+import { QuizInfo } from "./state/QuizInfo"
+import { QuizTask } from "./state/QuizTask"
+import { QuizEnrolled } from "./state/QuizEnrolled"
+import { BottomModal } from "@/components/BottomModal"
+import { SelectHint } from "./SelectHint"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { axiosClient } from "@/configs/axios"
+import { useAuth } from "@/hooks/useAuthorization"
+import { AxiosError } from "axios"
+import { useWalletConnection } from "@/hooks/useWalletConnection"
+import { useCheckEnrolled } from "@/modules/home/hooks"
+import { useHints } from "@/modules/question/hooks"
+import { useRouter } from "next/router"
 
 export const EnrolledCard = () => {
-  const router = useRouter();
-  const { onClose, isOpen } = useEnrolledModalProps();
-  const selectedQuiz = useSelectedQuiz();
-  const [showHintModal, setShowHintModal] = useState(false);
+  const router = useRouter()
+  const { onClose, isOpen } = useEnrolledModalProps()
+  const selectedQuiz = useSelectedQuiz()
+  const [showHintModal, setShowHintModal] = useState(false)
 
-  const authInfo = useAuth();
+  const authInfo = useAuth()
   const toast = useToast({
     position: "bottom",
-  });
+  })
 
-  const [enrollCardState, setEnrollCardState] = useState(
-    ENROLL_STATUS.quizInfo
-  );
+  const [enrollCardState, setEnrollCardState] = useState(ENROLL_STATUS.quizInfo)
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect, connectors } = useWalletConnection()
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-  const checkIsEnrolled = useCheckEnrolled();
+  const checkIsEnrolled = useCheckEnrolled()
 
   useEffect(() => {
     if (checkIsEnrolled(selectedQuiz?.id)) {
-      setEnrollCardState(ENROLL_STATUS.enrolled);
+      setEnrollCardState(ENROLL_STATUS.enrolled)
     } else {
-      setEnrollCardState(ENROLL_STATUS.quizInfo);
+      setEnrollCardState(ENROLL_STATUS.quizInfo)
     }
-  }, [checkIsEnrolled(selectedQuiz?.id)]);
+  }, [checkIsEnrolled(selectedQuiz?.id)])
 
-  const hints = useHints();
-  const userHints = hints?.selectedHints?.map((hint) => hint.id);
+  const hints = useHints()
+  const userHints = hints?.selectedHints?.map((hint) => hint.id)
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -63,37 +61,37 @@ export const EnrolledCard = () => {
             },
           }
         )
-        .then((res) => console.log(res.data));
+        .then((res) => console.log(res.data))
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({
         description: data.response.data.detail,
         status: "error",
-      });
+      })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
+      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] })
       toast({
         description: `You have enrolled ${selectedQuiz.title}`,
         status: "success",
-      });
+      })
     },
-  });
+  })
 
   const stateComponents = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: <QuizInfo setHintModal={setShowHintModal} />,
       [ENROLL_STATUS.task]: <QuizTask />,
       [ENROLL_STATUS.enrolled]: <QuizEnrolled />,
-    };
-  }, []);
+    }
+  }, [])
   const stateTitle = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: "Enroll Quiz",
       [ENROLL_STATUS.task]: "Check Requirements",
       [ENROLL_STATUS.enrolled]: "You're Enrolled! Get Ready for the Quiz",
-    };
-  }, []);
+    }
+  }, [])
 
   const button = useMemo(() => {
     return {
@@ -103,11 +101,11 @@ export const EnrolledCard = () => {
           if (!authInfo?.token) {
             connect({
               connector: connectors.find(
-                (connector) => connector.id === "injected"
+                (connector) => connector.id === "walletConnect"
               )!,
-            });
+            })
           } else {
-            mutate();
+            mutate()
           }
           // setEnrollCardState(ENROLL_STATUS.task);
         },
@@ -115,17 +113,17 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.task]: {
         title: "Submit Enrollment",
         onClick: () => {
-          setEnrollCardState(ENROLL_STATUS.enrolled);
+          setEnrollCardState(ENROLL_STATUS.enrolled)
         },
       },
       [ENROLL_STATUS.enrolled]: {
         title: "Dive into Resources",
         onClick: () => {
-          router.push(`/quiz/${router.query?.id}/resources`);
+          router.push(`/quiz/${router.query?.id}/resources`)
         },
       },
-    };
-  }, [authInfo]);
+    }
+  }, [authInfo])
 
   return (
     <BottomModal
@@ -170,5 +168,5 @@ export const EnrolledCard = () => {
 
       <SelectHint isOpen={showHintModal} setIsOpen={setShowHintModal} />
     </BottomModal>
-  );
-};
+  )
+}
