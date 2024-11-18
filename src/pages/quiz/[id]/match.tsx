@@ -1,24 +1,24 @@
-import { quizType } from "@/globalTypes"
+import { quizType } from "@/globalTypes";
 import {
   CounterProvider,
   QuestionDataProvider,
-} from "@/modules/question/context"
-import { prefetchSSRData } from "@/utils"
-import { Box, Container } from "@chakra-ui/react"
+} from "@/modules/question/context";
+import { prefetchSSRData } from "@/utils";
+import { Box, Container } from "@chakra-ui/react";
 import {
   dehydrate,
   DehydratedState,
   HydrationBoundary,
   QueryClient,
-} from "@tanstack/react-query"
-import { GetServerSidePropsContext } from "next"
-import dynamic from "next/dynamic"
-import { ReactElement } from "react"
+} from "@tanstack/react-query";
+import { GetServerSidePropsContext } from "next";
+import dynamic from "next/dynamic";
+import { ReactElement } from "react";
 
 const Question = dynamic(
   () => import("@/modules/question/page").then((modules) => modules.Question),
   { ssr: false }
-)
+);
 
 const HintProvider = dynamic(
   () =>
@@ -26,17 +26,17 @@ const HintProvider = dynamic(
       (modules) => modules.HintProvider
     ),
   { ssr: false }
-)
+);
 
 interface IndexProps {
-  dehydratedState: DehydratedState
+  dehydratedState: DehydratedState;
 }
 const Index = ({ dehydratedState }: IndexProps) => {
-  const quiz = dehydratedState.queries[0].state.data as quizType
+  const quiz = dehydratedState.queries[0].state.data as quizType;
 
-  const timer = quiz.questionTimeSeconds
+  const timer = quiz.questionTimeSeconds;
 
-  const restTimeSeconds = quiz.restTimeSeconds
+  const restTimeSeconds = quiz.restTimeSeconds;
 
   return (
     <HydrationBoundary state={dehydratedState}>
@@ -46,21 +46,21 @@ const Index = ({ dehydratedState }: IndexProps) => {
         restTimeSeconds={restTimeSeconds}
       >
         <HintProvider>
-          <QuestionDataProvider timer={timer}>
+          <QuestionDataProvider>
             <Question />
           </QuestionDataProvider>
         </HintProvider>
       </CounterProvider>
     </HydrationBoundary>
-  )
-}
+  );
+};
 
-export default Index
+export default Index;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { query } = ctx
-  const quizId = query?.id as string
-  const queryClient = new QueryClient()
+  const { query } = ctx;
+  const quizId = query?.id as string;
+  const queryClient = new QueryClient();
   // const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
   // if (!accessToken) {
   //   return {
@@ -75,11 +75,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     ["quiz", quizId],
     `quiz/competitions/${quizId}/`,
     queryClient
-  )
+  );
 
   const isQuizFinished =
     // @ts-expect-error as unknown
-    dehydrate(queryClient).queries[0].state.data.isFinished
+    dehydrate(queryClient).queries[0].state.data.isFinished;
 
   if (isQuizFinished) {
     return {
@@ -87,14 +87,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         permanent: false,
         destination: `/quiz/${quizId}/result`,
       },
-    }
+    };
   }
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
     },
-  }
-}
+  };
+};
 
 Index.getLayout = function getLayout(page: ReactElement) {
   return (
@@ -112,5 +112,5 @@ Index.getLayout = function getLayout(page: ReactElement) {
     >
       <Box width="full">{page}</Box>
     </Container>
-  )
-}
+  );
+};
