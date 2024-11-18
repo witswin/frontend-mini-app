@@ -9,8 +9,18 @@ const Result = dynamic(
   { ssr: false }
 );
 
+const WebSocketProvider = dynamic(
+  () =>
+    import("@/context/WebSocket").then((modules) => modules.WebSocketProvider),
+  { ssr: false }
+);
+
 const Index = () => {
-  return <Result />;
+  return (
+    <WebSocketProvider>
+      <Result />
+    </WebSocketProvider>
+  );
 };
 
 export default Index;

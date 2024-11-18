@@ -27,6 +27,11 @@ const HintProvider = dynamic(
     ),
   { ssr: false }
 );
+const WebSocketProvider = dynamic(
+  () =>
+    import("@/context/WebSocket").then((modules) => modules.WebSocketProvider),
+  { ssr: false }
+);
 
 interface IndexProps {
   dehydratedState: DehydratedState;
@@ -39,19 +44,21 @@ const Index = ({ dehydratedState }: IndexProps) => {
   const restTimeSeconds = quiz.restTimeSeconds;
 
   return (
-    <HydrationBoundary state={dehydratedState}>
-      <CounterProvider
-        timer={timer}
-        startAt={quiz.startAt}
-        restTimeSeconds={restTimeSeconds}
-      >
-        <HintProvider>
-          <QuestionDataProvider>
-            <Question />
-          </QuestionDataProvider>
-        </HintProvider>
-      </CounterProvider>
-    </HydrationBoundary>
+    <WebSocketProvider>
+      <HydrationBoundary state={dehydratedState}>
+        <CounterProvider
+          timer={timer}
+          startAt={quiz.startAt}
+          restTimeSeconds={restTimeSeconds}
+        >
+          <HintProvider>
+            <QuestionDataProvider>
+              <Question />
+            </QuestionDataProvider>
+          </HintProvider>
+        </CounterProvider>
+      </HydrationBoundary>
+    </WebSocketProvider>
   );
 };
 
