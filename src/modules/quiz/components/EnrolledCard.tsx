@@ -46,7 +46,7 @@ export const EnrolledCard = () => {
   }, [checkIsEnrolled(selectedQuiz?.id)]);
 
   const hints = useHints();
-  const userHints = hints.selectedHints.map((hint) => hint.id);
+  const userHints = hints?.selectedHints?.map((hint) => hint.id);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -121,11 +121,11 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.enrolled]: {
         title: "Dive into Resources",
         onClick: () => {
-          router.push(`/quiz/${selectedQuiz.id}/resources`);
+          router.push(`/quiz/${router.query?.id}/resources`);
         },
       },
     };
-  }, []);
+  }, [authInfo]);
 
   return (
     <BottomModal

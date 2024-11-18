@@ -48,7 +48,7 @@ const HintBox = ({
           return {
             ...prevState,
             selectedHints: [
-              ...prevState.selectedHints,
+              ...prevState?.selectedHints,
               { type: HINTS[type], localId: id, id: hint.hint.id },
             ],
           };

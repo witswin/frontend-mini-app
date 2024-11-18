@@ -49,6 +49,7 @@ export declare type quizType = {
   restTimeSeconds: number;
   builtInHints: builtInHint[];
   resources: resource[];
+  questionHintTimeSeconds: number;
 };
 
 export declare type resource = {
@@ -59,6 +60,8 @@ export declare type resource = {
   created_at: string;
   isActive: boolean;
   competition: quizType;
+  link: string;
+  linkText: string;
 };
 
 export declare type builtInHint = {
@@ -87,6 +90,7 @@ export declare type question = {
   timer: number;
   totalParticipantsCount: number;
   correct: correctChoice | null;
+  selectedChoice: number;
 };
 
 export declare type quizStats = {
@@ -120,7 +124,16 @@ export declare type auth = {
 
 export declare type enrolledCompetition = {
   id: number;
-  registered_hints: string;
+  registeredHints: [
+    {
+      description: string;
+      hintType: string;
+      icon: unknown;
+      id: number;
+      isActive: boolean;
+      title: string;
+    }
+  ];
   is_winner: boolean;
   amount_won: string;
   hint_count: number;

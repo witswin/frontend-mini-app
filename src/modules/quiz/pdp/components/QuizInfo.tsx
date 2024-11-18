@@ -18,7 +18,7 @@ import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { axiosClient } from "@/configs/axios";
-import { quizType } from "@/globalTypes";
+import { enrolledCompetition, quizType } from "@/globalTypes";
 import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
 import { useCheckEnrolled } from "@/modules/home/hooks";
 import {
@@ -30,7 +30,7 @@ import { CARD_STATE } from "@/types";
 import { useAuth } from "@/hooks/useAuthorization";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { EnrolledCard } from "../../components/EnrolledCard";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -48,8 +48,6 @@ export const QuizInfo = () => {
   });
   const router = useRouter();
 
-  console.log({ data });
-
   const checkIsEnrolledQuiz = useCheckEnrolled();
   const isEnrolled = checkIsEnrolledQuiz(data?.id);
   const cardState = useGetCardState(data);
@@ -59,15 +57,34 @@ export const QuizInfo = () => {
   const queryClient = useQueryClient();
 
   const authInfo = useAuth();
+
+  const { data: enrolledCompetitions } = useQuery({
+    queryKey: ["enrolledCompetition", authInfo?.token, query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get<string, AxiosResponse<enrolledCompetition[]>>(
+          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          }
+        )
+        .then((res) => res.data),
+    enabled: !!authInfo?.token,
+  });
+
   const toast = useToast({
     position: "bottom",
   });
+
+  console.log({ data });
 
   const selectedQuizDispatch = useSelectedQuizDispatch();
   const { mutate } = useMutation({
     mutationFn: async () => {
       return await axiosClient
-        .delete(`/quiz/competitions/enroll/${data.id}/`, {
+        .delete(`/quiz/competitions/enroll/${enrolledCompetitions[0].id}/`, {
           headers: {
             Authorization: `TOKEN ${authInfo?.token}`,
           },
@@ -167,7 +184,7 @@ export const QuizInfo = () => {
         </Button>
       ),
     }),
-    []
+    [authInfo]
   );
 
   return (
@@ -296,8 +313,8 @@ export const QuizInfo = () => {
               articleTitle={article.title}
               banner={article.image}
               content={article.content}
-              link={""}
-              linkText={""}
+              link={article.link}
+              linkText={article.linkText}
             />
           ))}
       </VStack>
