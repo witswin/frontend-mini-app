@@ -13,6 +13,7 @@ import React from "react";
 
 interface ModalProps extends UseDisclosureProps {
   title?: string;
+  haveHeader?: boolean;
 }
 
 export const BottomModal = ({
@@ -20,6 +21,7 @@ export const BottomModal = ({
   onClose,
   title,
   isOpen,
+  haveHeader = true,
 }: ModalProps & BoxProps) => {
   return (
     <Drawer
@@ -43,22 +45,26 @@ export const BottomModal = ({
         p="16px"
         gap="16px"
       >
-        <DrawerCloseButton color="gray.100" />
-        <HStack width="full">
-          <Text
-            fontFamily="kanit"
-            fontSize="2xl"
-            fontWeight="600"
-            textAlign="center"
-            width="full"
-            color="gray.0"
-            lineHeight="28px"
-            maxWidth="199px"
-            mx="auto"
-          >
-            {title}
-          </Text>
-        </HStack>
+        {haveHeader && (
+          <>
+            <DrawerCloseButton color="gray.100" />
+            <HStack width="full">
+              <Text
+                fontFamily="kanit"
+                fontSize="2xl"
+                fontWeight="600"
+                textAlign="center"
+                width="full"
+                color="gray.0"
+                lineHeight="28px"
+                maxWidth="199px"
+                mx="auto"
+              >
+                {title}
+              </Text>
+            </HStack>
+          </>
+        )}
 
         <DrawerBody>{children}</DrawerBody>
       </DrawerContent>
