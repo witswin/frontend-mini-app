@@ -21,7 +21,6 @@ import { axiosClient } from "@/configs/axios";
 import { auth } from "@/globalTypes";
 import { TelegramAuthProvider } from "@/context/TelegramAuthProvider";
 import { AxiosAuthProvider } from "@/components/AxiosAuthProvider";
-import { WebSocketProvider } from "@/context/WebSocket";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -67,11 +66,9 @@ export default function App({
             <SelectedQuizProvider>
               <AuthProvider auth={auth}>
                 <TelegramAuthProvider>
-                  <WebSocketProvider>
                     {getLayout(<Component {...pageProps} />)}
 
                     <AxiosAuthProvider />
-                  </WebSocketProvider>
                 </TelegramAuthProvider>
               </AuthProvider>
             </SelectedQuizProvider>

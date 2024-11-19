@@ -17,7 +17,6 @@ export const Result = () => {
 
   const [isLoading, setLoading] = useState(true);
 
-  console.log({ finishedData });
 
   useEffect(() => {
     if (quizStats && finishedData && isLoading) {

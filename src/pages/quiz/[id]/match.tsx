@@ -1,3 +1,4 @@
+import { quizType } from "@/globalTypes";
 import {
   CounterProvider,
   QuestionDataProvider,
@@ -26,23 +27,38 @@ const HintProvider = dynamic(
     ),
   { ssr: false }
 );
+const WebSocketProvider = dynamic(
+  () =>
+    import("@/context/WebSocket").then((modules) => modules.WebSocketProvider),
+  { ssr: false }
+);
 
 interface IndexProps {
   dehydratedState: DehydratedState;
 }
 const Index = ({ dehydratedState }: IndexProps) => {
-  // @ts-expect-error as unknown
-  const timer = dehydratedState.queries[0].state.data.questionTimeSeconds;
+  const quiz = dehydratedState.queries[0].state.data as quizType;
+
+  const timer = quiz.questionTimeSeconds;
+
+  const restTimeSeconds = quiz.restTimeSeconds;
+
   return (
-    <HydrationBoundary state={dehydratedState}>
-      <CounterProvider timer={timer}>
-        <HintProvider>
-          <QuestionDataProvider timer={timer}>
-            <Question />
-          </QuestionDataProvider>
-        </HintProvider>
-      </CounterProvider>
-    </HydrationBoundary>
+    <WebSocketProvider>
+      <HydrationBoundary state={dehydratedState}>
+        <CounterProvider
+          timer={timer}
+          startAt={quiz.startAt}
+          restTimeSeconds={restTimeSeconds}
+        >
+          <HintProvider>
+            <QuestionDataProvider>
+              <Question />
+            </QuestionDataProvider>
+          </HintProvider>
+        </CounterProvider>
+      </HydrationBoundary>
+    </WebSocketProvider>
   );
 };
 

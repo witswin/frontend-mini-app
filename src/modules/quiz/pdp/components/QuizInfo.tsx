@@ -78,8 +78,6 @@ export const QuizInfo = () => {
     position: "bottom",
   });
 
-  console.log({ data });
-
   const selectedQuizDispatch = useSelectedQuizDispatch();
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -106,9 +104,7 @@ export const QuizInfo = () => {
     },
   });
 
-  const { onOpen, isOpen } = useEnrolledModalProps();
-
-  console.log({ isOpen });
+  const { onOpen } = useEnrolledModalProps();
 
   useEffect(() => {
     selectedQuizDispatch(data);
