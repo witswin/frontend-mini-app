@@ -36,10 +36,12 @@ export const baseTheme = extendTheme({
         color: "gray.0",
         fontFamily: "Montserrat",
         position: "relative",
-        pb: "106px",
+        // pb: "106px",
+        overflowX: 'hidden'
       },
       html: {
         height: "100%",
+        overflowX: 'hidden'
       },
     },
   },

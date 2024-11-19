@@ -10,21 +10,27 @@ import HeaderBg from "@/assets/HeaderBgImage.svg";
 import Logo from "@/assets/Logo.svg";
 import Image from "next/image";
 import { WalletMoney } from "solar-icon-set";
+import { useWalletConnection } from "@/hooks/useWalletConnection";
+import { useAuth } from "@/hooks/useAuthorization";
 
-const WalletStatus = (isConnected: boolean = false) => (
-  <Badge
-    variant={isConnected ? "green" : "red"}
-    size="xs"
-    position="absolute"
-    left="0"
-    bottom="0"
-  />
-);
+const WalletStatus = () => {
+  const authInfo = useAuth();
+  return (
+    <Badge
+      variant={!!authInfo ? "green" : "red"}
+      size="xs"
+      position="absolute"
+      left="0"
+      bottom="0"
+    />
+  );
+};
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
   const health = 3;
-  const isConnected = true;
+
+  const { connect, connectors } = useWalletConnection();
 
   return (
     <HStack
@@ -67,12 +73,26 @@ export const TopNavbar = () => {
 
         <VStack>
           <Image src={Logo} alt="wits" />
-        </VStack> 
+        </VStack>
 
         <VStack mr="4px">
-          <Box position="relative">
-            <WalletMoney iconStyle="BoldDuotone" color="var(--chakra-colors-blue)" size={24} />
-            {WalletStatus(isConnected)}
+          <Box
+            cursor="pointer"
+            onClick={() =>
+              connect({
+                connector: connectors.find(
+                  (connector) => connector.id === "injected"
+                )!,
+              })
+            }
+            position="relative"
+          >
+            <WalletMoney
+              iconStyle="BoldDuotone"
+              color="var(--chakra-colors-blue)"
+              size={24}
+            />
+            <WalletStatus />
           </Box>
           <Text color="gray.40" fontSize="sm" fontWeight="bold">
             Wallet

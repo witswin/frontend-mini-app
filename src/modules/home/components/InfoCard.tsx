@@ -1,14 +1,11 @@
 import { ColorFullText } from "@/components/ColorFullText";
-import { baseTheme } from "@/theme";
 import { INFO_CARD_STATE } from "@/types";
 import { Button, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import { DoubleAltArrowRight } from "solar-icon-set";
 
 const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
-  const [cardState] = useState(state);
-
   const selectedCard: {
     [key in INFO_CARD_STATE]: {
       largeTitle: string;
@@ -70,7 +67,7 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
         <ColorFullText
           fontSize="6xl"
           textAlign="center"
-          textContent={selectedCard[cardState].largeTitle}
+          textContent={selectedCard[state].largeTitle}
         />
 
         <Text
@@ -82,20 +79,19 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
           lineHeight="34px"
           textAlign="center"
         >
-          {selectedCard[cardState].subHeadline}
+          {selectedCard[state].subHeadline}
         </Text>
       </VStack>
 
-      {selectedCard[cardState].btnObject && (
+      {selectedCard[state].btnObject && (
         <Button
-          bgGradient={baseTheme.colors.glassBackground}
           variant="outline"
           gap="8px"
           as={Link}
-          href={selectedCard[cardState].btnObject?.href}
+          href={selectedCard[state].btnObject?.href}
         >
-          {selectedCard[cardState].btnObject?.btnText}
-          {selectedCard[cardState].btnObject?.btnIcon}
+          {selectedCard[state].btnObject?.btnText}
+          {selectedCard[state].btnObject?.btnIcon}
         </Button>
       )}
     </VStack>

@@ -1,9 +1,11 @@
 import { BottomModal } from "@/components/BottomModal";
 import { useHintsDispatch } from "@/modules/question/hooks";
 import { HINTS } from "@/types";
-import { Box, HStack, Tag, Text, VStack } from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction, useId } from "react";
+import { Box, Button, HStack, Tag, Text, VStack } from "@chakra-ui/react";
+import React, { Dispatch, SetStateAction, useId, useMemo } from "react";
 import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
+import { useSelectedQuiz, useSelectedQuizDispatch } from "../hooks";
+import { builtInHint } from "@/globalTypes";
 
 interface HintProps {
   headline: string;
@@ -18,6 +20,7 @@ interface HintBoxProps {
   headline: string;
   subHeadline: string;
   count: number;
+  hint: builtInHint;
   icon: React.JSX.Element;
 }
 const HintBox = ({
@@ -27,27 +30,43 @@ const HintBox = ({
   headline,
   icon,
   subHeadline,
+  hint,
 }: HintBoxProps) => {
   const setHints = useHintsDispatch();
+  const setSelectedQuiz = useSelectedQuizDispatch();
 
   const id = useId();
   return (
     <Box
       w="full"
       h="full"
+      as={Button}
+      variant="ghost"
+      isDisabled={!count}
       onClick={() => {
         setHints((prevState) => {
           return {
             ...prevState,
             selectedHints: [
-              ...prevState.selectedHints,
-              { type: HINTS[type], id: id },
+              ...prevState?.selectedHints,
+              { type: HINTS[type], localId: id, id: hint.hint.id },
             ],
           };
         });
+
+        setSelectedQuiz((prevState) => ({
+          ...prevState,
+          builtInHints: prevState.builtInHints.map((hints) =>
+            hints.hint.hintType === type
+              ? {
+                  ...hints,
+                  count: count - 1,
+                }
+              : hints
+          ),
+        }));
         setIsOpen(false);
       }}
-      cursor="pointer"
     >
       <Hint
         key={type}
@@ -88,40 +107,6 @@ const Hint = ({ headline, subHeadline, count, icon }: HintProps) => {
   );
 };
 
-const hints = {
-  [HINTS.fiftyFifty]: {
-    headline: "50/50",
-    subHeadline: "Remove 2 Answers",
-    count: 2,
-    icon: (
-      <Widget
-        iconStyle="BoldDuotone"
-        size={32}
-        color="var(--chakra-colors-blue)"
-      />
-    ),
-  },
-  [HINTS.extraTime]: {
-    headline: "Extra Time",
-    subHeadline: "3 More Seconds",
-    count: 2,
-    icon: (
-      <AlarmAdd iconStyle="Bold" size={32} color="var(--chakra-colors-blue)" />
-    ),
-  },
-  [HINTS.stats]: {
-    headline: "Audience Poll",
-    subHeadline: "See Others Answers",
-    count: 2,
-    icon: (
-      <UsersGroupTwoRounded
-        iconStyle="Bold"
-        size={32}
-        color="var(--chakra-colors-blue)"
-      />
-    ),
-  },
-};
 export const SelectHint = ({
   isOpen,
   setIsOpen,
@@ -129,6 +114,80 @@ export const SelectHint = ({
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const selectedQuiz = useSelectedQuiz();
+
+  const allHints = useMemo(
+    () => ({
+      [HINTS.fifty]: (hint: builtInHint) => (
+        <HintBox
+          hint={hint}
+          headline="50/50"
+          subHeadline="Remove 2 Answers"
+          count={
+            selectedQuiz.builtInHints.filter(
+              (hints) => hints.hint.hintType === "fifty"
+            )[0]?.count || 0
+          }
+          icon={
+            <Widget
+              iconStyle="BoldDuotone"
+              size={32}
+              color="var(--chakra-colors-blue)"
+            />
+          }
+          type={HINTS.fifty}
+          setIsOpen={setIsOpen}
+          key={1}
+        />
+      ),
+      [HINTS.time]: (hint: builtInHint) => (
+        <HintBox
+          hint={hint}
+          headline="Extra Time"
+          subHeadline="3 More Seconds"
+          count={
+            selectedQuiz.builtInHints.filter(
+              (hints) => hints.hint.hintType === "time"
+            )[0]?.count || 0
+          }
+          icon={
+            <AlarmAdd
+              iconStyle="Bold"
+              size={32}
+              color="var(--chakra-colors-blue)"
+            />
+          }
+          type={HINTS.time}
+          setIsOpen={setIsOpen}
+          key={2}
+        />
+      ),
+      [HINTS.stats]: (hint: builtInHint) => (
+        <HintBox
+          hint={hint}
+          headline="Audience Poll"
+          subHeadline="See Others Answers"
+          count={
+            selectedQuiz.builtInHints.filter(
+              (hints) => hints.hint.hintType === "stats"
+            )[0]?.count || 0
+          }
+          icon={
+            <UsersGroupTwoRounded
+              iconStyle="Bold"
+              size={32}
+              color="var(--chakra-colors-blue)"
+            />
+          }
+          type={HINTS.stats}
+          setIsOpen={setIsOpen}
+          key={3}
+        />
+      ),
+    }),
+    [selectedQuiz]
+  );
+
   return (
     <BottomModal
       title="Select Your Hint"
@@ -136,17 +195,9 @@ export const SelectHint = ({
       isOpen={isOpen}
     >
       <VStack w="full" gap="12px">
-        {Object.entries(hints).map(([key, hint]) => (
-          <HintBox
-            headline={hint.headline}
-            subHeadline={hint.subHeadline}
-            count={hint.count}
-            icon={hint.icon}
-            type={key as keyof typeof HINTS}
-            setIsOpen={setIsOpen}
-            key={key}
-          />
-        ))}
+        {selectedQuiz.builtInHints.map((h) =>
+          allHints[h.hint.hintType as HINTS](h)
+        )}
       </VStack>
     </BottomModal>
   );

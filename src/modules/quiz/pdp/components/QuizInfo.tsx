@@ -5,21 +5,32 @@ import {
   Button,
   chakra,
   HStack,
+  Img,
   Tag,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ArticleCard } from "../../components/ArticleCard";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
-import { QUIZ_STATE } from "../types";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { axiosClient } from "@/configs/axios";
-import { quizType } from "@/globalTypes";
+import { enrolledCompetition, quizType } from "@/globalTypes";
 import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
+import { useCheckEnrolled } from "@/modules/home/hooks";
+import {
+  useEnrolledModalProps,
+  useGetCardState,
+  useSelectedQuizDispatch,
+} from "../../hooks";
+import { CARD_STATE } from "@/types";
+import { useAuth } from "@/hooks/useAuthorization";
+import { useWalletConnection } from "@/hooks/useWalletConnection";
+import { EnrolledCard } from "../../components/EnrolledCard";
+import { AxiosError, AxiosResponse } from "axios";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -27,46 +38,97 @@ const CountDown = dynamic(
 );
 const ChakraSwiper = chakra(Swiper);
 export const QuizInfo = () => {
-  const isEnrolled = true;
-  const heart = 3;
-
   const { query } = useRouter();
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
       await axiosClient
-        .get(`quiz/competitions/${query?.id}/`)
+        .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
   });
+  const router = useRouter();
+
+  const checkIsEnrolledQuiz = useCheckEnrolled();
+  const isEnrolled = checkIsEnrolledQuiz(data?.id);
+  const cardState = useGetCardState(data);
+
+  const { connect, connectors } = useWalletConnection();
+
+  const queryClient = useQueryClient();
+
+  const authInfo = useAuth();
+
+  const { data: enrolledCompetitions } = useQuery({
+    queryKey: ["enrolledCompetition", authInfo?.token, query?.id],
+    queryFn: async () =>
+      await axiosClient
+        .get<string, AxiosResponse<enrolledCompetition[]>>(
+          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          }
+        )
+        .then((res) => res.data),
+    enabled: !!authInfo?.token,
+  });
+
+  const toast = useToast({
+    position: "bottom",
+  });
+
+  const selectedQuizDispatch = useSelectedQuizDispatch();
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      return await axiosClient
+        .delete(`/quiz/competitions/enroll/${enrolledCompetitions[0].id}/`, {
+          headers: {
+            Authorization: `TOKEN ${authInfo?.token}`,
+          },
+        })
+        .then((res) => console.log(res.data));
+    },
+    onError: (data: AxiosError<{ detail: string }>) => {
+      toast({
+        description: data.response.data.detail,
+        status: "error",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
+      toast({
+        description: `You have enrolled ${data?.title}`,
+        status: "success",
+      });
+    },
+  });
+
+  const { onOpen } = useEnrolledModalProps();
+
+  useEffect(() => {
+    selectedQuizDispatch(data);
+  }, []);
 
   const CTAButton = useMemo(
     () => ({
-      [QUIZ_STATE.default]: isEnrolled ? null : (
-        <Button width="full" size="lg" variant="solid">
-          Enroll Quiz
-        </Button>
-      ),
-      [QUIZ_STATE.lobby]: isEnrolled ? (
+      [CARD_STATE.join]: isEnrolled ? null : (
         <Button
-          rightIcon={
-            <DoubleAltArrowRight
-              color="var(--chakra-colors-gray-0)"
-              iconStyle="LineDuotone"
-            />
-          }
+          onClick={() => {
+            router.push(`/quiz/${data.id}/match`);
+          }}
           width="full"
           size="lg"
           variant="solid"
         >
-          Go to Quiz Lobby
-        </Button>
-      ) : (
-        <Button width="full" size="lg" variant="outline">
-          Watch as spectator
+          Join Now
         </Button>
       ),
-      [QUIZ_STATE.started]: isEnrolled ? (
+      [CARD_STATE.lobby]: (
         <Button
+          onClick={() => {
+            router.push(`/quiz/${data.id}/match`);
+          }}
           rightIcon={
             <DoubleAltArrowRight
               color="var(--chakra-colors-gray-0)"
@@ -79,33 +141,46 @@ export const QuizInfo = () => {
         >
           Join Now
         </Button>
-      ) : (
-        <Button width="full" size="lg" variant="outline">
-          Watch as spectator
+      ),
+      [CARD_STATE.resource]: <></>,
+      [CARD_STATE.watch]: (
+        <Button
+          onClick={() => {
+            if (data?.isFinished) {
+              router.push(`/quiz/${data.id}/result`);
+            } else {
+              router.push(`/quiz/${data.id}/match`);
+            }
+          }}
+          width="full"
+          size="lg"
+          variant="outline"
+        >
+          {data?.isFinished ? "Check Winners" : "Watch as spectator"}
         </Button>
       ),
-      [QUIZ_STATE.penalty]:
-        heart > 0 && isEnrolled ? (
-          <Button
-            rightIcon={
-              <DoubleAltArrowRight
-                color="var(--chakra-colors-gray-0)"
-                iconStyle="LineDuotone"
-              />
+      [CARD_STATE.enroll]: (
+        <Button
+          onClick={() => {
+            if (!authInfo?.token) {
+              connect({
+                connector: connectors.find(
+                  (connector) => connector.id === "injected"
+                )!,
+              });
+            } else {
+              onOpen();
             }
-            width="full"
-            size="lg"
-            variant="solid"
-          >
-            Join Now
-          </Button>
-        ) : (
-          <Button width="full" size="lg" variant="outline">
-            Watch as spectator
-          </Button>
-        ),
+          }}
+          width="full"
+          size="lg"
+          variant="solid"
+        >
+          Enroll Quiz
+        </Button>
+      ),
     }),
-    []
+    [authInfo]
   );
 
   return (
@@ -120,12 +195,12 @@ export const QuizInfo = () => {
         >
           <HStack justifyContent="space-between" width="full">
             <Box position="relative">
-              <Image
+              <Img
                 style={{ borderRadius: "50%" }}
                 src={data?.image}
                 alt={data?.title}
-                width={80}
-                height={80}
+                width="80px"
+                height="80px"
               />
               {isEnrolled && (
                 <Badge
@@ -142,7 +217,10 @@ export const QuizInfo = () => {
               )}
             </Box>
             <VStack alignItems="flex-end" rowGap="0">
-              <QuizPrize prize={data?.prizeAmount} unitPrize={data?.token} />
+              <QuizPrize
+                prize={data?.prizeAmount ? data?.prizeAmount / 1e18 : 0}
+                unitPrize={data?.token}
+              />
               <Text
                 fontSize="sm"
                 lineHeight="20px"
@@ -172,7 +250,7 @@ export const QuizInfo = () => {
               lineHeight="16px"
               color="gray.100"
             >
-              {data?.participantsCount} / 1,400 people enrolled
+              {data?.participantsCount} / {data?.maxParticipants}
             </Text>
           </VStack>
           {data?.startAt && (
@@ -191,6 +269,7 @@ export const QuizInfo = () => {
           {isEnrolled ? (
             <Box width="full" position="relative" zIndex={0}>
               <Button
+                onClick={() => mutate()}
                 variant="gray"
                 width="full"
                 leftIcon={
@@ -212,13 +291,7 @@ export const QuizInfo = () => {
               px="2px"
               width="full"
             >
-              {[
-                "Aura Authentication",
-                "Unitap Pass Owner",
-                "sadfkhasoidhasoiudg",
-                "dhasuuid uw",
-                "asjdhasu",
-              ].map((value) => (
+              {["Aura Authentication", "Unitap Pass Owner"].map((value) => (
                 <SwiperSlide style={{ width: "fit-content" }} key={value}>
                   <Tag size="sm" variant="gray">
                     {value}
@@ -228,30 +301,36 @@ export const QuizInfo = () => {
             </ChakraSwiper>
           )}
         </VStack>
-        <ArticleCard
-          articleTitle="salam"
-          content={`asdjkhasjdhas dasidh ioasdh ioasdh ioasdhioashdioashdioashdioash
-          dioashd asdhas sa dioashd asiodh ioasdh aiosdh asidhioasdh
-          asidhiasofhcjxzcvb`}
-          banner=""
-          link="www.google.com"
-          linkText="google"
-        />
+        {data?.resources
+          ?.filter((article) => article.isActive)
+          .map((article) => (
+            <ArticleCard
+              key={article.id}
+              articleTitle={article.title}
+              banner={article.image}
+              content={article.content}
+              link={article.link}
+              linkText={article.linkText}
+            />
+          ))}
       </VStack>
 
       <Box
-        px="16px"
         py="10px"
         bg="blackGradient"
         zIndex={2}
-        position="sticky"
+        position="fixed"
         bottom="0px"
-        left="0"
+        left="50%"
+        transform="translateX(-50%)"
         width="full"
         maxW="538px"
+        px="16px"
       >
-        {CTAButton["lobby"]}
+        {CTAButton[cardState]}
       </Box>
+
+      <EnrolledCard />
     </>
   );
 };

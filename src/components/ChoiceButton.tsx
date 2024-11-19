@@ -1,18 +1,18 @@
-import { useHints, useQuestionData } from "@/modules/question/hooks";
+import { choice } from "@/globalTypes";
+import { useWebSocket } from "@/hooks/useWebSocket";
+import {
+  useHints,
+  useQuestionData,
+  useQuestionDataDispatch,
+} from "@/modules/question/hooks";
 import { HINTS, QUESTION_STATE } from "@/types";
 import { Button, ButtonProps, HStack, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import React, { Dispatch, SetStateAction, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface ChoiceButtonProps extends ButtonProps {
-  buttonInfo: {
-    title: string;
-    id: string;
-    stats: string;
-  };
-  selectedChoice: string;
+  choice: choice;
   disabledFiftyFiftyHint?: boolean;
-  setSelectedChoice: Dispatch<SetStateAction<string>>;
 }
 
 const animate = {
@@ -26,51 +26,113 @@ const animate = {
 };
 
 export const ChoiceButton = ({
-  buttonInfo,
-  selectedChoice,
-  setSelectedChoice,
+  choice,
   disabledFiftyFiftyHint,
   ...buttonProps
 }: ChoiceButtonProps) => {
-  const { questions, activeQuestionId } = useQuestionData();
+  const [statsHint, setStatsHint] = useState(null);
+  const { question } = useQuestionData();
+  const dispatch = useQuestionDataDispatch();
+  const hints = useHints();
 
-  const { state, correct } = questions.find(
-    (item) => item.id === activeQuestionId
+  const { socket } = useWebSocket();
+
+  const timeHintSpecificForThisQuestion = hints.usedHints.find(
+    (item) => item.hintType === HINTS.time && question.id === item.questionId
   );
 
+  useEffect(() => {
+    if (!socket.current.client) return;
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
+        if (data.type === "hint_question") {
+          if (
+            data.questionId === question.id &&
+            data.hintType === HINTS.stats
+          ) {
+            setStatsHint(data);
+          } else {
+            setStatsHint(null);
+          }
+        }
+      }
+    };
+    socket.current.client.addEventListener("message", handleMessage);
+
+    return () => {
+      socket.current.client?.removeEventListener("message", handleMessage);
+    };
+  }, [question.id, socket]);
+
   const handleClick = () => {
-    if (state === QUESTION_STATE.default || state === QUESTION_STATE.alert) {
-      setSelectedChoice(buttonInfo.id);
+    if (
+      (question?.state === QUESTION_STATE.default ||
+        question?.state === QUESTION_STATE.alert) &&
+      question.isEligible
+    ) {
+      dispatch((prev) => ({
+        ...prev,
+        question: {
+          ...prev.question,
+          selectedChoice: choice?.id,
+        },
+      }));
+
+      socket.current.client?.send(
+        JSON.stringify({
+          command: "ANSWER",
+          args: {
+            questionId: question.id,
+            selectedChoiceId: choice.id,
+          },
+        })
+      );
+      if (timeHintSpecificForThisQuestion && question?.selectedChoice) {
+        socket.current.client?.send(
+          JSON.stringify({
+            command: "GET_HINT",
+            args: {
+              questionId: question?.id,
+              hintType: HINTS.time,
+              hintId: String(timeHintSpecificForThisQuestion.dbId),
+              selectedChoiceId: question?.selectedChoice,
+            },
+          })
+        );
+      }
     }
   };
-  const hints = useHints();
 
   const showStatsHint = useMemo(
     () =>
       hints.usedHints.find(
         (item) =>
-          item.hintType === HINTS.stats && item.questionId === activeQuestionId
+          item.hintType === HINTS.stats && item.questionId === question?.id
       ),
-    [activeQuestionId, hints.usedHints]
+    [question, hints.usedHints]
   );
   const variant = useMemo(
     () => ({
       [QUESTION_STATE.default]:
-        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+        +question?.selectedChoice === +choice?.id ? "pressed" : "default",
       [QUESTION_STATE.freeze]: "default",
       [QUESTION_STATE.answered]:
-        +selectedChoice === +buttonInfo.id && +selectedChoice === correct
+        +question?.selectedChoice === +choice?.id &&
+        +question?.selectedChoice === question?.correct?.answerId
           ? "rightAnswer"
-          : +selectedChoice === +buttonInfo.id && +selectedChoice !== correct
+          : +question?.selectedChoice === +choice?.id &&
+            +question?.selectedChoice !== question?.correct?.answerId
           ? "wrongAnswer"
-          : +correct === +buttonInfo.id
+          : +question?.correct?.answerId === +choice?.id
           ? "rightAnswer"
           : "default",
       [QUESTION_STATE.alert]:
-        +selectedChoice === +buttonInfo.id ? "pressed" : "default",
+        +question?.selectedChoice === +choice?.id ? "pressed" : "default",
     }),
-    [correct, selectedChoice]
+    [question?.correct, question.selectedChoice]
   );
+
 
   return (
     <HStack
@@ -79,36 +141,36 @@ export const ChoiceButton = ({
       position="relative"
       width="full"
     >
-      {state !== QUESTION_STATE.rest && (
+      {question?.state !== QUESTION_STATE.rest && (
         <Button
-          variant={variant[state]}
+          variant={variant[question?.state]}
           color="gray.0"
           size="md"
           height="54px"
           width="full"
           onClick={handleClick}
           isDisabled={
-            (state === QUESTION_STATE.freeze &&
-              +selectedChoice !== +buttonInfo.id) ||
-            (state === QUESTION_STATE.answered &&
-              +buttonInfo.id !== correct &&
-              +selectedChoice !== +buttonInfo.id) ||
+            (question?.state === QUESTION_STATE.freeze &&
+              +question?.selectedChoice !== +choice?.id) ||
+            (question?.state === QUESTION_STATE.answered &&
+              +choice?.id !== question?.correct?.answerId &&
+              +question?.selectedChoice !== +choice?.id) ||
             disabledFiftyFiftyHint
           }
           as={motion.button}
-          key={state}
+          key={question?.state}
           {...buttonProps}
-          {...(+selectedChoice === +buttonInfo.id &&
-            state === QUESTION_STATE.freeze && {
+          {...(+question?.selectedChoice === +choice?.id &&
+            question?.state === QUESTION_STATE.freeze && {
               animate,
             })}
         >
-          {buttonInfo.title}
+          {choice?.text}
         </Button>
       )}
       <AnimatePresence>
-        {state !== QUESTION_STATE.freeze &&
-          state !== QUESTION_STATE.answered &&
+        {question?.state !== QUESTION_STATE.freeze &&
+          question?.state !== QUESTION_STATE.answered &&
           showStatsHint && (
             <>
               <motion.div
@@ -117,18 +179,17 @@ export const ChoiceButton = ({
                   left: "0",
                   borderTopLeftRadius: "8px",
                   borderBottomLeftRadius: "8px",
-                  borderTopRightRadius: +buttonInfo.stats === 100 ? "8px" : "0",
-                  borderBottomRightRadius:
-                    +buttonInfo.stats === 100 ? "8px" : "0",
+                  borderTopRightRadius: !!statsHint ? "8px" : "0",
+                  borderBottomRightRadius: !!statsHint ? "8px" : "0",
                   zIndex: -1,
                   height: "100% ",
                   width: 0,
                   background:
-                    selectedChoice === buttonInfo.id
+                    question?.selectedChoice === choice?.id
                       ? "rgba(256, 256, 256, 0.2)"
                       : "#6E81EE5C",
                 }}
-                animate={{ width: `${buttonInfo.stats}%` }}
+                animate={{ width: `${statsHint?.data[choice.id]}%` }}
               />
               <Text
                 fontSize="md"
@@ -136,7 +197,7 @@ export const ChoiceButton = ({
                 position="absolute"
                 right="12px"
               >
-                {buttonInfo.stats}%
+                {statsHint?.data[choice.id]}%
               </Text>
             </>
           )}

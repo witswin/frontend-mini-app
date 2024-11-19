@@ -1,58 +1,79 @@
 import { Card } from "@/components/Card";
 import { QuestionBanner } from "./QuestionBanner";
 import { ProgressTimer } from "@/components/ProgressTimer";
-import { useHints, useQuestionData } from "../hooks";
+import { useCounter, useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "@chakra-ui/react";
 import { HINTS, QUESTION_STATE } from "@/types";
-import { getUniqueRandomNumbers } from "@/utils";
 import { Rest } from "./Rest";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const QuestionCard = () => {
-  const { questions, activeQuestionId } = useQuestionData();
-  const { choices, state, timer, title } = questions.find(
-    (item) => item.id === activeQuestionId
+  const { question, quiz } = useQuestionData();
+  const counter = useCounter();
+
+  const isUsedExtraTimeHint = useHints().usedHints.find(
+    (item) => item.hintType === HINTS.time && question.id === item.questionId
   );
-  const activeQuestion = questions.find((item) => item.id === activeQuestionId);
-
-  const [selectedChoice, setSelectedChoice] = useState<string>(undefined);
-
   const hints = useHints();
 
+  const [disabledChoices, setDisabledChoices] = useState<number[]>(undefined);
+
   const usedHints = hints.usedHints;
-  const questionHintInfo = usedHints.find(
+  const questionFiftyHintInfo = usedHints.find(
     (item) =>
-      item.hintType === HINTS.fiftyFifty &&
-      +item.questionId === +activeQuestionId
+      item.hintType === HINTS.fifty && +item.questionId === +question?.id
   );
 
-  const disabledChoices = useMemo(() => {
-    if (questionHintInfo) {
-      const randomButtonId = getUniqueRandomNumbers(activeQuestion.correct);
+  const { socket } = useWebSocket();
 
-      return randomButtonId;
-    }
-  }, [hints.usedHints, activeQuestionId]);
+  useEffect(() => {
+    if (!socket.current.client) return;
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
+        if (
+          data.questionId === question.id &&
+          data.hintType === HINTS.fifty &&
+          questionFiftyHintInfo
+        ) {
+          setDisabledChoices(data.data);
+        }
+      }
+    };
+    socket.current.client.addEventListener("message", handleMessage);
+    return () => {
+      socket.current.client?.removeEventListener("message", handleMessage);
+    };
+  }, [hints.usedHints, question, socket]);
 
-  console.log({ disabledChoices });
-
-  return activeQuestion.state === QUESTION_STATE.rest ? (
-    <Rest losers={20} seconds={5} isSpectator />
+  return question?.state === QUESTION_STATE.rest ? (
+    <Rest
+      seconds={
+        isUsedExtraTimeHint
+          ? quiz.restTimeSeconds - 3 - quiz.questionHintTimeSeconds
+          : quiz.restTimeSeconds - 3
+      }
+      isSpectator={
+        !question?.isEligible ||
+        question?.selectedChoice !== question?.correct?.answerId
+      }
+    />
   ) : (
-    <Card>
-      <QuestionBanner content={title} />
-      <ProgressTimer timer={timer} state={state} hasCounter hasIcon />
-      {choices.map((choice) => (
+    <Card sx={{ "&>div": { zIndex: 0 } }}>
+      <QuestionBanner content={question?.text} />
+      <ProgressTimer
+        timer={counter}
+        state={question?.state}
+        hasCounter
+        hasIcon
+      />
+      {question?.choices?.map((choice) => (
         <ChoiceButton
-          setSelectedChoice={setSelectedChoice}
-          selectedChoice={selectedChoice}
           key={choice.id}
-          buttonInfo={choice}
-          disabledFiftyFiftyHint={
-            +questionHintInfo?.questionId === +activeQuestionId &&
-            disabledChoices?.includes(+choice.id)
-          }
+          choice={choice}
+          disabledFiftyFiftyHint={disabledChoices?.includes(+choice.id)}
         />
       ))}
       <Text color="gray.200" fontSize="xs">

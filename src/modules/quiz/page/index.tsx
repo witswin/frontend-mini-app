@@ -2,19 +2,26 @@ import { ColorFullText } from "@/components/ColorFullText";
 import { chakra, Text, VStack } from "@chakra-ui/react";
 import { EffectCoverflow } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { MemoizedSwiperItem } from "../components/QuizItem";
 import { EnrolledCard } from "../components/EnrolledCard";
 import { axiosClient } from "@/configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { quizType } from "@/globalTypes";
+import dynamic from "next/dynamic";
 
+const MemoizedSwiperItem = dynamic(
+  () =>
+    import("../components/QuizItem").then(
+      (modules) => modules.MemoizedSwiperItem
+    ),
+  { ssr: false }
+);
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
   const { data } = useQuery({
-    queryKey: ["quizzes"],
+    queryKey: ["competitions"],
     queryFn: async () =>
-      await axiosClient.get("quiz/competitions/").then((res) => res.data),
+      await axiosClient.get("/quiz/competitions/").then((res) => res.data),
   });
 
   return (
@@ -39,6 +46,7 @@ export const QuizPLP = () => {
       </Text>
 
       <ChakraSwiper
+        speed={1000}
         py="2px"
         width="full"
         slidesPerView="auto"
@@ -63,7 +71,7 @@ export const QuizPLP = () => {
         }}
       >
         {data?.results?.map((quiz: quizType) => (
-          <SwiperSlide key={quiz?.id} style={{ width: "fit-content" }}>
+          <SwiperSlide key={quiz?.id} style={{ maxWidth: "318px" }}>
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}

@@ -18,17 +18,22 @@
     "cookies-next": "^4.2.1",
     "framer-motion": "^11.9.0",
     "next": "14.2.13",
+    "next-cookies": "^2.0.3",
     "react": "^18",
     "react-countdown": "^2.3.6",
     "react-dom": "^18",
+    "react-markdown": "8.0.6",
     "solar-icon-set": "^1.0.0",
-    "swiper": "^11.1.14"
+    "swiper": "^11.1.14",
+    "viem": "2.x",
+    "wagmi": "^2.12.25"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^5.58.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/telegram-web-app": "^7.10.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "typescript": "^5"

@@ -3,7 +3,7 @@ import { QuizInfo } from "../components/QuizInfo";
 
 export const Index = () => {
   return (
-    <VStack width="full">
+    <VStack pb="80px" width="full">
       <QuizInfo />
     </VStack>
   );

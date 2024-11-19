@@ -70,9 +70,18 @@ export const QuizInfo = ({
         borderRadius="10px"
         bg="var(--chakra-colors-glassBackground)"
         width="full"
+        sx={{
+          "&>div:first-of-type, span": {
+            width: "fit-content",
+            textAlign: "center",
+            mx: "auto",
+          },
+        }}
       >
         <QuizPrize
-          prize={selectedQuiz?.prizeAmount}
+          prize={
+            selectedQuiz?.prizeAmount ? selectedQuiz?.prizeAmount / 1e18 : 0
+          }
           unitPrize={selectedQuiz?.token}
         />
       </Center>
@@ -85,7 +94,7 @@ export const QuizInfo = ({
         <ValueCard
           status={STATUS_ENROLL_VALUE.TIME}
           subTitle="Each Question"
-          title="10 sec"
+          title={selectedQuiz?.questionTimeSeconds}
         />
       </Flex>
 
@@ -104,8 +113,8 @@ export const QuizInfo = ({
           </Text>
         </HStack>
         <Flex width="full" columnGap="12px">
-          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[0]} />
-          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[1]} />
+          <HintCard setHintModal={setHintModal} hint={hints?.selectedHints?.[0]} />
+          <HintCard setHintModal={setHintModal} hint={hints?.selectedHints?.[1]} />
         </Flex>
       </VStack>
     </Flex>

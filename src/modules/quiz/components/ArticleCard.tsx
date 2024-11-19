@@ -1,7 +1,15 @@
 import { Card } from "@/components/Card";
-import { Button, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  Button,
+  HStack,
+  Img,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import { DoubleAltArrowRight } from "solar-icon-set";
+import ReactMarkdown from "react-markdown";
 
 interface ArticleCardProps {
   header?: {
@@ -59,18 +67,20 @@ export const ArticleCard = ({
               rightIcon={
                 <DoubleAltArrowRight
                   iconStyle="LineDuotone"
-                  color="var(--chakra-colors-blue)"
+                  color="var(--chakra-colors-gray-0)"
                   size={16}
                 />
               }
-              variant="ghost"
+              variant="none"
               size="mini"
             >
               {header.CTAText}
             </Button>
           </HStack>
         )}
-        <Image src={banner} width={380} height={250} alt="" />
+        <AspectRatio ratio={1.52} maxW="538px" width="full">
+          <Img src={banner} width="full" height="full" alt={articleTitle} />
+        </AspectRatio>
         <VStack width="full" rowGap="8px">
           <Text width="full" textAlign="left" color="gray.60" fontSize="sm">
             {linkText}
@@ -85,6 +95,7 @@ export const ArticleCard = ({
             {articleTitle}
           </Text>
           <Text
+            as={ReactMarkdown}
             noOfLines={2}
             color="gray.60"
             fontSize="md"

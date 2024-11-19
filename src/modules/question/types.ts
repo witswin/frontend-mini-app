@@ -1,23 +1,23 @@
-import { HINTS, QUESTION_STATE } from "@/types";
+import { question, quizStats, quizType } from "@/globalTypes";
+import { HINTS } from "@/types";
 
 export type questionData = {
-  activeQuestionId: number;
-  quizStartDate: number;
-  questions: {
-    title: string;
-    state: QUESTION_STATE;
-    timer: number;
-    id: number;
-    correct: number;
-    choices: { id: string; title: string; stats: string }[];
-  }[];
+  quiz: quizType;
+  question: question;
+  quizStats: quizStats;
 };
 
 export type selectedHint = {
-  id: string;
+  id: number;
   type: HINTS;
+  localId: string;
 };
 export type hint = {
-  usedHints: { questionId: number; hintType: HINTS; hintId: string }[];
+  usedHints: {
+    questionId: number;
+    hintType: HINTS;
+    hintId: string;
+    dbId: number;
+  }[];
   selectedHints: selectedHint[];
 };
