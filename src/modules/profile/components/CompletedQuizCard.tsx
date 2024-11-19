@@ -67,24 +67,26 @@ export const CompletedQuizCard = ({
 
   const [pollingEnabled, setPollingEnabled] = useState(false);
 
-  const { data, refetch } = useQuery<userQuiz[]>({
+  useQuery<userQuiz[]>({
     queryKey: ["user_quizzes", profileId], // Use a unique key for the query
     queryFn: async () =>
-      await axiosClient
-        .get(`/quiz/${profileId}/competitions/`)
-        .then((res) => res.data)
-        .finally(() => {
-          if (
-            !!data.filter((quiz) => quiz.competition.id === quizId)[0].txHash
-          ) {
-            setPollingEnabled(false);
-            setClaimRewardLoading(true);
-            setLocalTxHash(
-              data.filter((quiz) => quiz.competition.id === quizId)[0].txHash
-            );
-            setIsRewardsClaimedOpen(true);
-          }
-        }),
+      await axiosClient.get(`/quiz/${profileId}/competitions/`).then((res) => {
+        if (
+          res.data.filter((quiz: userQuiz) => quiz.competition.id === quizId)[0]
+            .txHash
+        ) {
+          setPollingEnabled(false);
+          setClaimRewardLoading(false);
+          setLocalTxHash(
+            res.data.filter(
+              (quiz: userQuiz) => quiz.competition.id === quizId
+            )[0].txHash
+          );
+          setIsRewardsClaimedOpen(true);
+        }
+
+        return res.data;
+      }),
     enabled: pollingEnabled,
     refetchInterval: pollingEnabled ? 10000 : false,
   });
@@ -98,7 +100,6 @@ export const CompletedQuizCard = ({
       })
       .finally(() => {
         setPollingEnabled(true);
-        refetch();
       });
   };
 

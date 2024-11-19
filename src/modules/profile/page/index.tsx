@@ -2,6 +2,7 @@ import { VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Stat } from "../components/Stat";
 import { WalletConnectedModal } from "../components/WalletConnectedModal";
+
 import { Info } from "../components/Info";
 import { Quizzes } from "../components/Quizzes";
 import { useQuery } from "@tanstack/react-query";
@@ -34,10 +35,10 @@ export const Profile = () => {
 
   const { data: quizData } = useQuery<userQuiz[]>({
     queryKey: ["user_quizzes", profileId],
-    queryFn: async () =>
-      await axiosClient
-        .get(`/quiz/${profileId}/competitions/`)
-        .then((res) => res.data),
+    // queryFn: async () =>
+    //   await axiosClient
+    //     .get(`/quiz/${profileId}/competitions/`)
+    //     .then((res) => res.data),
   });
 
   return (

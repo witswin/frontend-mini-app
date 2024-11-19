@@ -76,7 +76,7 @@ export const RewardsClaimedModal = ({
           width={190}
           height={145}
         />
-        <Text color="gray.40" fontWeight={800} fontSize="lg">
+        <Text color="gray.40" fontWeight={800} fontSize="lg" textAlign="center">
           {"You've successfully claimed your reward"}
         </Text>
 
