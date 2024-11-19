@@ -52,6 +52,7 @@ export const SettingsPage = () => {
           gap={2}
           display="flex"
           alignItems="center"
+          justifyContent="space-evenly"
           background={colors.glassBackground}
           padding="2"
           borderRadius="8px"
@@ -116,7 +117,20 @@ export const SettingsPage = () => {
           Socials
         </Text>
 
-        <ConnectionCard isConnected={true}>
+        <ConnectionCard
+          connectedText={
+            <>
+              <Image
+                src="/assets/images/connections/telegram.svg"
+                width={16}
+                height={16}
+                alt="Telegram"
+              />
+              <span>@Alimak0</span>
+            </>
+          }
+          isConnected={true}
+        >
           <Image
             src="/assets/images/connections/telegram.svg"
             width={16}

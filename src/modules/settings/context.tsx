@@ -5,10 +5,14 @@ import {
   SetStateAction,
   useState,
 } from "react"
-import { Integrations, User } from "./types"
+import { Integrations } from "./types"
+import { useQuery } from "@tanstack/react-query"
+import { axiosClient } from "@/configs/axios"
+import { UserProfile } from "@/types"
+import { useAuth } from "@/hooks/useAuthorization"
 
 export type ProfileContextProps = {
-  profile: User | null
+  profile: UserProfile | null
   connections: Integrations | null
 }
 
@@ -22,9 +26,32 @@ export const ProfileDispatchContext =
 
 export const ProfileProvider = ({ children }: PropsWithChildren) => {
   const [state, setState] = useState<ProfileContextProps>(undefined)
+  const authInfo = useAuth()
+
+  const { data } = useQuery({
+    initialData: undefined,
+    queryFn: () =>
+      axiosClient
+        .get("/auth/info/", {
+          headers: {
+            Authorization: `TOKEN ${authInfo?.token}`,
+          },
+        })
+        .then((res) => res.data as UserProfile),
+    queryKey: ["profile", authInfo],
+  })
+
+  const connectionPage = useQuery({
+    initialData: undefined,
+    queryKey: ["connections"],
+    queryFn: () =>
+      axiosClient.get("/auth/user/all-connections/").then((res) => res.data),
+  })
 
   return (
-    <ProfileContext.Provider value={state}>
+    <ProfileContext.Provider
+      value={{ profile: data, connections: connectionPage.data }}
+    >
       <ProfileDispatchContext.Provider value={setState}>
         {children}
       </ProfileDispatchContext.Provider>

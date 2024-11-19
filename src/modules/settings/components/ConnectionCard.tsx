@@ -11,7 +11,7 @@ export const ConnectionCard: FC<
     onDisconnect?: () => void
     connectedText?: ReactNode
   } & PropsWithChildren
-> = ({ isConnected, children, onConnect, onDisconnect }) => {
+> = ({ isConnected, children, onConnect, onDisconnect, connectedText }) => {
   if (isConnected) {
     return (
       <CardSection
@@ -21,7 +21,7 @@ export const ConnectionCard: FC<
         background={colors.glassBackground}
       >
         <Box display="flex" gap={3} alignItems="center" width="full">
-          {children}
+          {connectedText}
 
           <Button
             ml="auto"
