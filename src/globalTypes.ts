@@ -9,7 +9,8 @@ export declare type userQuiz = {
   registeredHints: hintType[],
   userProfile: number,
   txHash: string,
-  competition: quizType,          
+  competition: quizType,
+  id: number          
 }
 
 export declare type profileInfo = {

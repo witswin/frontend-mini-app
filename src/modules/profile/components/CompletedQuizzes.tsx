@@ -73,6 +73,9 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
                 date={new Date(quiz.competition?.startAt).getTime()}
                 imgAddress={quiz.competition.image}
                 isWinner={quiz.isWinner}
+                user_competition_id={quiz.id}
+                isClaimTriggered={quiz.isClaimTriggered}
+                txHash={quiz.txHash}
                 isSelfUser
               />
             );

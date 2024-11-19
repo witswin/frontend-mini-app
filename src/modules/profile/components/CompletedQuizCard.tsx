@@ -4,11 +4,12 @@ import {
   Button,
   HStack,
   Img,
+  Spinner,
   Text,
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { ConfettiMinimalistic } from "solar-icon-set";
 import USDC_img from "@/assets/tokens/USDC.svg";
 import Image from "next/image";
@@ -20,6 +21,9 @@ export const CompletedQuizCard = ({
   imgAddress,
   isWinner,
   isSelfUser,
+  user_competition_id,
+  isClaimTriggered,
+  txHash,
 }: {
   amountWon: number;
   title: string;
@@ -27,13 +31,17 @@ export const CompletedQuizCard = ({
   imgAddress: string;
   isWinner: boolean;
   isSelfUser: boolean;
+  user_competition_id: number;
+  isClaimTriggered: boolean;
+  txHash: string;
 }) => {
   const [isLarge] = useMediaQuery("(min-width: 480px)");
   // token and chain are hard coded for this phase, for next phases of the project they are likely to change
   const token = "USDC";
   const chain = "Arbitrum";
-
   const showClaim = isSelfUser && isWinner;
+  const [claimRewardLoading, setClaimRewardLoading] =
+    useState(isClaimTriggered);
 
   const dateString = new Date(date)
     .toLocaleString("default", {
@@ -96,17 +104,26 @@ export const CompletedQuizCard = ({
             >{`${token} on ${chain}`}</Text>
           </HStack>
         </HStack>
-
-        {isLarge && showClaim && (
-          <Button variant="outline" size="mini">
-            {true ? "Claim" : "Claimed"}
-          </Button>
+        {claimRewardLoading ? (
+          <Spinner size="md" color="gray.40" />
+        ) : (
+          isLarge &&
+          showClaim && (
+            <Button
+              variant="outline"
+              size="mini"
+              onClick={() => {}}
+              isDisabled={!!txHash}
+            >
+              {!!txHash ? "Claimed" : "Claim"}
+            </Button>
+          )
         )}
       </HStack>
 
       {!isLarge && showClaim && (
-        <Button variant="outline" size="mini" w="full">
-          {true ? "Claim" : "Claimed"}
+        <Button variant="outline" size="mini" w="full" isDisabled={!!txHash}>
+          {!!txHash ? "Claimed" : "Claim"}
         </Button>
       )}
     </Card>
