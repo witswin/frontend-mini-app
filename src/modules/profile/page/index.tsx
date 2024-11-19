@@ -35,10 +35,10 @@ export const Profile = () => {
 
   const { data: quizData } = useQuery<userQuiz[]>({
     queryKey: ["user_quizzes", profileId],
-    // queryFn: async () =>
-    //   await axiosClient
-    //     .get(`/quiz/${profileId}/competitions/`)
-    //     .then((res) => res.data),
+    queryFn: async () =>
+      await axiosClient
+        .get(`/quiz/${profileId}/competitions/`)
+        .then((res) => res.data),
   });
 
   return (
