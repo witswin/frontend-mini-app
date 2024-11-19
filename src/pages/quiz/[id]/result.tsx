@@ -15,32 +15,38 @@ const WebSocketProvider = dynamic(
   { ssr: false }
 );
 
+const QuizFinishedInfoProvider = dynamic(
+  () =>
+    import("@/modules/quiz/pdp/result/context").then((modules) => modules.QuizFinishedInfoProvider),
+  { ssr: false }
+);
+
 const Index = () => {
-  return (
-    <WebSocketProvider>
-      <Result />
-    </WebSocketProvider>
-  );
+  return <Result />;
 };
 
 export default Index;
 
 Index.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Container
-      py="8px"
-      maxWidth="538px"
-      zIndex={1}
-      gap="16px"
-      height="full"
-      px="0"
-      minH="100vh"
-      position="relative"
-    >
-      <Box px="16px" width="full">
-        {page}
-      </Box>
-      <ResultBottomNavbar />
-    </Container>
+    <WebSocketProvider>
+      <QuizFinishedInfoProvider>
+        <Container
+          py="8px"
+          maxWidth="538px"
+          zIndex={1}
+          gap="16px"
+          height="full"
+          px="0"
+          minH="100vh"
+          position="relative"
+        >
+          <Box px="16px" width="full">
+            {page}
+          </Box>
+          <ResultBottomNavbar />
+        </Container>
+      </QuizFinishedInfoProvider>
+    </WebSocketProvider>
   );
 };
