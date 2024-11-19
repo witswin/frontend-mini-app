@@ -10,11 +10,13 @@ import { useRouter } from "next/router";
 export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
   const isEmpty = quizzes.length === 0;
   const unClaimedRewards =
-    quizzes.filter((quiz) => quiz.isClaimTriggered === false).length === 0;
+    quizzes.filter((quiz) => quiz.txHash === "").length > 0;
   const selfUser = useAuth();
   const router = useRouter();
 
-  const isSelfUser = router.query.id === selfUser.pk.toString();
+  const isSelfUser = selfUser?.pk
+    ? router.query.id === selfUser?.pk.toString()
+    : false;
 
   const showClaim = isSelfUser && unClaimedRewards;
 
@@ -76,7 +78,9 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
                 user_competition_id={quiz.id}
                 isClaimTriggered={quiz.isClaimTriggered}
                 txHash={quiz.txHash}
-                isSelfUser
+                isSelfUser={isSelfUser}
+                quizId={quiz.competition.id}
+                profileId={selfUser.pk}
               />
             );
           })}

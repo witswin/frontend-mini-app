@@ -1,15 +1,15 @@
 import { BottomModal } from "@/components/BottomModal";
 import {
-  Box,
   HStack,
+  Link,
   Text,
   UseDisclosureProps,
   VStack,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { ArrowRightUp } from "solar-icon-set";
+import USDC_img from "@/assets/tokens/USDC.svg";
 
 interface RewardProps {
   count: number;
@@ -22,7 +22,7 @@ const Reward = ({ count, token, chain, link }: RewardProps) => {
   return (
     <HStack w="full" justifyContent="space-between">
       <HStack gap="8px">
-        <Box boxSize="28px" borderRadius="50px" bg="yellow" />
+        <Image src={USDC_img} alt="USDC" width={28} height={28} />
 
         <HStack gap="4px">
           <Text fontSize="lg" fontWeight={600} color="gray.0">
@@ -36,7 +36,7 @@ const Reward = ({ count, token, chain, link }: RewardProps) => {
         </HStack>
       </HStack>
 
-      <HStack gap="2px" as={Link} href={link}>
+      <HStack gap="2px" as={Link} isExternal href={link}>
         <Text
           fontSize="sm"
           fontWeight={600}
@@ -51,13 +51,20 @@ const Reward = ({ count, token, chain, link }: RewardProps) => {
   );
 };
 
+interface Props {
+  count: number;
+  link: string;
+}
+
 export const RewardsClaimedModal = ({
   isOpen,
   onClose,
-}: UseDisclosureProps) => {
+  count,
+  link,
+}: Props & UseDisclosureProps) => {
   return (
     <BottomModal
-      title="All Rewards Claimed!"
+      title="Reward Claimed!"
       justifyContent="center"
       isOpen={isOpen}
       onClose={onClose}
@@ -70,7 +77,7 @@ export const RewardsClaimedModal = ({
           height={145}
         />
         <Text color="gray.40" fontWeight={800} fontSize="lg">
-          {"You've successfully claimed your rewards"}
+          {"You've successfully claimed your reward"}
         </Text>
 
         <VStack
@@ -80,7 +87,7 @@ export const RewardsClaimedModal = ({
           gap="16px"
           w="full"
         >
-          <Reward count={25} chain="Polygon" token="USDC" link="" />
+          <Reward count={count} chain="Arbitrum" token="USDC" link={link} />
         </VStack>
       </VStack>
     </BottomModal>

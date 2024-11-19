@@ -2,7 +2,6 @@ import { VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Stat } from "../components/Stat";
 import { WalletConnectedModal } from "../components/WalletConnectedModal";
-import { RewardsClaimedModal } from "../components/RewardsClaimedModal";
 import { Info } from "../components/Info";
 import { Quizzes } from "../components/Quizzes";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +12,6 @@ import { profileInfo, profileStats, userQuiz } from "@/globalTypes";
 export const Profile = () => {
   const [isWalletConnectedModalOpen, setIsWalletConnectedModalOpen] =
     useState(false);
-  const [isRewardsClaimedOpen, setIsRewardsClaimedOpen] = useState(false);
 
   const { query } = useRouter();
   const profileId = query?.id as string;
@@ -51,10 +49,6 @@ export const Profile = () => {
       <WalletConnectedModal
         isOpen={isWalletConnectedModalOpen}
         onClose={() => setIsWalletConnectedModalOpen(false)}
-      />
-      <RewardsClaimedModal
-        isOpen={isRewardsClaimedOpen}
-        onClose={() => setIsRewardsClaimedOpen(false)}
       />
     </VStack>
   );

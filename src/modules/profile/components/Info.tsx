@@ -24,7 +24,8 @@ interface Props {
 export const Info = ({ userInfo }: Props) => {
   const ownUser = useAuth();
 
-  const isOwnProfile = userInfo.pk === ownUser.pk;
+  const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false;
+  // const isOwnProfile = userInfo.pk === ownUser.pk;
   const grade = getGrade(userInfo.neuron);
 
   return (
