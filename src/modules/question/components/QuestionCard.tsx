@@ -1,65 +1,108 @@
 import { Card } from "@/components/Card";
 import { QuestionBanner } from "./QuestionBanner";
 import { ProgressTimer } from "@/components/ProgressTimer";
-import { useHints, useQuestionData } from "../hooks";
+import { useCounter, useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
-import { useMemo, useState } from "react";
-import { Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Text, useDisclosure } from "@chakra-ui/react";
 import { HINTS, QUESTION_STATE } from "@/types";
-import { getUniqueRandomNumbers } from "@/utils";
 import { Rest } from "./Rest";
+import { useWebSocket } from "@/hooks/useWebSocket";
+import { GameOverModal } from "./GameOverModal";
 
 export const QuestionCard = () => {
-  const { question } = useQuestionData();
+  const { question, quiz } = useQuestionData();
+  const counter = useCounter();
 
-  const [selectedChoice, setSelectedChoice] = useState<number>(undefined);
-
+  const isUsedExtraTimeHint = useHints().usedHints.find(
+    (item) => item.hintType === HINTS.time && question.id === item.questionId
+  );
   const hints = useHints();
 
+  const [disabledChoices, setDisabledChoices] = useState<number[]>(undefined);
+
   const usedHints = hints.usedHints;
-  const questionHintInfo = usedHints.find(
+  const questionFiftyHintInfo = usedHints.find(
     (item) =>
-      item.hintType === HINTS.fiftyFifty && +item.questionId === +question.id
+      item.hintType === HINTS.fifty && +item.questionId === +question?.id
   );
-  console.log(question.timer);
-  
 
-  // const disabledChoices = useMemo(() => {
-  //   if (questionHintInfo) {
-  //     const randomButtonId = getUniqueRandomNumbers(question.correct);
+  const { socket } = useWebSocket();
 
-  //     return randomButtonId;
-  //   }
-  // }, [hints.usedHints, question]);
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
-  // console.log({ disabledChoices });
+  useEffect(() => {
+    if (question?.correct) {
+      if (
+        question?.selectedChoice !== +question?.correct?.answerId &&
+        !isOpen
+      ) {
+        onOpen();
+      }
+    }
+  }, [question?.correct, question?.selectedChoice]);
 
-  return question?.state === QUESTION_STATE.rest ? (
-    <Rest losers={20} seconds={5} isSpectator />
-  ) : (
-    <Card>
-      <QuestionBanner content={question?.text} />
-      <ProgressTimer
-        timer={question?.timer}
-        state={question?.state}
-        hasCounter
-        hasIcon
-      />
-      {question?.choices?.map((choice) => (
-        <ChoiceButton
-          setSelectedChoice={setSelectedChoice}
-          selectedChoice={selectedChoice}
-          key={choice.id}
-          choice={choice}
-          // disabledFiftyFiftyHint={
-          //   +questionHintInfo?.questionId === +question.id &&
-          //   disabledChoices?.includes(+choice.id)
-          // }
+  console.log({
+    selected: question?.selectedChoice,
+    correct: question?.correct?.answerId,
+  });
+
+  useEffect(() => {
+    if (!socket.current.client) return;
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data !== "PONG") {
+        const data = JSON.parse(e.data);
+        if (
+          data.questionId === question.id &&
+          data.hintType === HINTS.fifty &&
+          questionFiftyHintInfo
+        ) {
+          setDisabledChoices(data.data);
+        }
+      }
+    };
+    socket.current.client.addEventListener("message", handleMessage);
+    return () => {
+      socket.current.client?.removeEventListener("message", handleMessage);
+    };
+  }, [hints.usedHints, question, socket]);
+
+  return (
+    <>
+      {question?.state === QUESTION_STATE.rest ? (
+        <Rest
+          seconds={
+            isUsedExtraTimeHint
+              ? quiz.restTimeSeconds - 3 - quiz.questionHintTimeSeconds
+              : quiz.restTimeSeconds - 3
+          }
+          isSpectator={
+            !question?.isEligible ||
+            question?.selectedChoice !== question?.correct?.answerId
+          }
         />
-      ))}
-      <Text color="gray.200" fontSize="xs">
-        By Adams Sandler
-      </Text>
-    </Card>
+      ) : (
+        <Card sx={{ "&>div": { zIndex: 0 } }}>
+          <QuestionBanner content={question?.text} />
+          <ProgressTimer
+            timer={counter}
+            state={question?.state}
+            hasCounter
+            hasIcon
+          />
+          {question?.choices?.map((choice) => (
+            <ChoiceButton
+              key={choice.id}
+              choice={choice}
+              disabledFiftyFiftyHint={disabledChoices?.includes(+choice.id)}
+            />
+          ))}
+          <Text color="gray.200" fontSize="xs">
+            By Adams Sandler
+          </Text>
+        </Card>
+      )}
+      <GameOverModal isOpen={isOpen} onClose={onClose} />
+    </>
   );
 };

@@ -1,12 +1,8 @@
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Text, VStack } from "@chakra-ui/react";
 import { QuestionCard } from "../components/QuestionCard";
-import { Card } from "@/components/Card";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
-import { QuestionBanner } from "../components/QuestionBanner";
 import { QUESTION_STATE } from "@/types";
-import { ChoiceButton } from "@/components/ChoiceButton";
-import { ProgressTimer } from "@/components/ProgressTimer";
 import { HintButton } from "@/components/HintButtons";
 import { selectedHint } from "../types";
 
@@ -15,7 +11,7 @@ interface HintContentProps {
 }
 const HintContent = ({ hint }: HintContentProps) => {
   const isDisabled = useHints().usedHints.find(
-    (item) => item.hintId === hint.id
+    (item) => item.hintId === hint.localId
   );
 
   return <HintButton hint={hint} isDisabled={!!isDisabled} />;
@@ -63,49 +59,52 @@ export const QuizPage = () => {
       ))} */}
       <AnimatePresence mode="popLayout">
         <motion.div
-          key={question?.id}
+          // key={question?.id}
           style={{
             paddingTop: `${question?.number * 8}px`,
             width: "100%",
             paddingBottom: "36px",
           }}
-          initial={{
-            opacity: 0,
-            scale: 0,
-          }}
-          animate={{
-            scale: 1,
-            opacity: 1,
-          }}
-          exit={{
-            y: 500,
-            opacity: 0,
-          }}
-          transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
+          // initial={{
+          //   opacity: 0,
+          //   scale: 0,
+          // }}
+          // animate={{
+          //   scale: 1,
+          //   opacity: 1,
+          // }}
+          // exit={{
+          //   scale: 0,
+          //   opacity: 0,
+          // }}
+          // transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
-          <Text
-            mt="8px !important"
-            backgroundClip="text"
-            background="glassBackground"
-            sx={{
-              WebkitTextFillColor: "transparent",
-              WebkitBackgroundClip: "text",
-            }}
-            textAlign="center"
-            fontSize="24px"
-            fontWeight="700"
-            fontFamily="Kanit"
-            width="full"
-          >
-            Spectator Mode
-          </Text>
+          {!question.isEligible && (
+            <Text
+              mt="8px !important"
+              backgroundClip="text"
+              background="glassBackground"
+              sx={{
+                WebkitTextFillColor: "transparent",
+                WebkitBackgroundClip: "text",
+              }}
+              textAlign="center"
+              fontSize="24px"
+              fontWeight="700"
+              fontFamily="Kanit"
+              width="full"
+            >
+              Spectator Mode
+            </Text>
+          )}
         </motion.div>
       </AnimatePresence>
       <AnimatePresence>
         {question?.state !== QUESTION_STATE.freeze &&
           question?.state !== QUESTION_STATE.rest &&
-          question?.state !== QUESTION_STATE.answered && (
+          question?.state !== QUESTION_STATE.answered &&
+          question?.isEligible && (
             <motion.div
               initial={{
                 y: 200,

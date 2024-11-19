@@ -42,7 +42,7 @@ export const TopNavbar = () => {
           </Text>
           <HStack gap="4px">
             <Text color="gray.0" fontSize="lg" fontWeight={700}>
-              {question.number}
+              {question?.number || 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
               / {quiz.questions.length}
@@ -54,7 +54,11 @@ export const TopNavbar = () => {
           <ColorFullText
             fontSize="4xl"
             fontWeight={700}
-            textContent={String(question.amountWonPerUser / 1e18)}
+            textContent={
+              question?.amountWonPerUser
+                ? String(question?.amountWonPerUser / 1e18)
+                : "0"
+            }
           />
           <ColorFullText fontSize="xs" fontWeight={700} textContent={"USDT"} />
         </HStack>
@@ -65,10 +69,15 @@ export const TopNavbar = () => {
           </Text>
           <HStack gap="4px">
             <Text color="gray.0" fontSize="lg" fontWeight={700}>
-              {question.remainParticipantsCount}
+              {!!question?.remainParticipantsCount
+                ? question?.remainParticipantsCount
+                : 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
-              / {question.totalParticipantsCount}
+              /{" "}
+              {!!question?.totalParticipantsCount
+                ? question?.totalParticipantsCount
+                : 0}
             </Text>
           </HStack>
         </VStack>

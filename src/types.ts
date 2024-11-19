@@ -39,9 +39,9 @@ export enum PROGRESS_TIME {
 }
 
 export enum HINTS {
-  "fiftyFifty" = "fiftyFifty",
+  "fifty" = "fifty",
   "stats" = "stats",
-  "extraTime" = "extraTime",
+  "time" = "time",
 }
 
 // export type quizCardInfo = {

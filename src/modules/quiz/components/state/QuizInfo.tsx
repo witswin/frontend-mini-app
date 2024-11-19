@@ -79,7 +79,9 @@ export const QuizInfo = ({
         }}
       >
         <QuizPrize
-          prize={selectedQuiz?.prizeAmount}
+          prize={
+            selectedQuiz?.prizeAmount ? selectedQuiz?.prizeAmount / 1e18 : 0
+          }
           unitPrize={selectedQuiz?.token}
         />
       </Center>
@@ -111,8 +113,8 @@ export const QuizInfo = ({
           </Text>
         </HStack>
         <Flex width="full" columnGap="12px">
-          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[0]} />
-          <HintCard setHintModal={setHintModal} hint={hints.selectedHints[1]} />
+          <HintCard setHintModal={setHintModal} hint={hints?.selectedHints?.[0]} />
+          <HintCard setHintModal={setHintModal} hint={hints?.selectedHints?.[1]} />
         </Flex>
       </VStack>
     </Flex>

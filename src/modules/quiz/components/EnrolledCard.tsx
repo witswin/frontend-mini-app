@@ -13,8 +13,11 @@ import { useAuth } from "@/hooks/useAuthorization";
 import { AxiosError } from "axios";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useCheckEnrolled } from "@/modules/home/hooks";
+import { useHints } from "@/modules/question/hooks";
+import { useRouter } from "next/router";
 
 export const EnrolledCard = () => {
+  const router = useRouter();
   const { onClose, isOpen } = useEnrolledModalProps();
   const selectedQuiz = useSelectedQuiz();
   const [showHintModal, setShowHintModal] = useState(false);
@@ -35,8 +38,15 @@ export const EnrolledCard = () => {
   const checkIsEnrolled = useCheckEnrolled();
 
   useEffect(() => {
-    setEnrollCardState(ENROLL_STATUS.enrolled);
+    if (checkIsEnrolled(selectedQuiz?.id)) {
+      setEnrollCardState(ENROLL_STATUS.enrolled);
+    } else {
+      setEnrollCardState(ENROLL_STATUS.quizInfo);
+    }
   }, [checkIsEnrolled(selectedQuiz?.id)]);
+
+  const hints = useHints();
+  const userHints = hints?.selectedHints?.map((hint) => hint.id);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -44,9 +54,8 @@ export const EnrolledCard = () => {
         .post(
           "/quiz/competitions/enroll/",
           {
-            user_hints: [],
-            hint_count: 1,
-            competition: 3,
+            user_hints: userHints,
+            competition: selectedQuiz?.id,
           },
           {
             headers: {
@@ -86,8 +95,6 @@ export const EnrolledCard = () => {
     };
   }, []);
 
-  console.log(authInfo);
-  
   const button = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: {
@@ -113,10 +120,12 @@ export const EnrolledCard = () => {
       },
       [ENROLL_STATUS.enrolled]: {
         title: "Dive into Resources",
-        onClick: () => {},
+        onClick: () => {
+          router.push(`/quiz/${router.query?.id}/resources`);
+        },
       },
     };
-  }, []);
+  }, [authInfo]);
 
   return (
     <BottomModal
