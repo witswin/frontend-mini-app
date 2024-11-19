@@ -1,24 +1,30 @@
 import { BottomModal } from "@/components/BottomModal";
-import { Button, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Text,
+  UseDisclosureProps,
+  VStack,
+} from "@chakra-ui/react";
 import Image from "next/image";
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import itIsWhatItIs from "@/assets/it-is-what-it-is.svg";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useQuestionData } from "../hooks";
 
 export const GameOverModal = ({
   isOpen,
-  setIsOpen,
+  onClose,
 }: {
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  onClose: UseDisclosureProps["onClose"];
 }) => {
-  const loosersCount = 21;
+  const { quizStats } = useQuestionData();
+  const losersCount = quizStats?.previousRoundLosses;
+  const router = useRouter();
   return (
-    <BottomModal
-      onClose={() => setIsOpen(false)}
-      isOpen={isOpen}
-      haveHeader={false}
-    >
+    <BottomModal onClose={onClose} isOpen={isOpen} haveHeader={false}>
       <VStack w="full" h="full" gap="24px" pt="24px">
         <Image src={itIsWhatItIs} alt="sad-character" />
 
@@ -36,7 +42,7 @@ export const GameOverModal = ({
               fontWeight={500}
               textDecoration="underline"
             >
-              {loosersCount}
+              {losersCount}
             </Text>
             <Text fontSize="sm" color="gray.60" fontWeight={500}>
               people lost last round.
@@ -45,10 +51,10 @@ export const GameOverModal = ({
         </VStack>
 
         <VStack gap="8px" w="full">
-          <Button variant="outline" size="lg" w="full">
+          <Button onClick={onClose} variant="outline" size="lg" w="full">
             Continue Watching
           </Button>
-          <Button variant="ghost" as={Link} href="/">
+          <Button onClick={()=>router.push("/")} variant="ghost" as={Link} href="/">
             Back to home
           </Button>
         </VStack>
