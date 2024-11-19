@@ -3,7 +3,7 @@ import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants"
 import { useAuth, useAuthDispatch } from "@/hooks/useAuthorization"
 import { UserProfile } from "@/types"
 import { setCookie } from "cookies-next"
-import Script from "next/script"
+import { useRouter } from "next/router"
 import {
   createContext,
   FC,
@@ -23,6 +23,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isLoginLoading, setIsLoginLoading] = useState(false)
   const dispatch = useAuthDispatch()
   const auth = useAuth()
+  const router = useRouter()
 
   // const loginWithTelegramWidget = () => {}
 
@@ -44,7 +45,28 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!window.Telegram?.WebApp) return
+    const tg = window.Telegram?.WebApp
+
+    if (tg) {
+      // Show the Telegram Back Button
+      tg.BackButton.show()
+
+      const onBack = () => {
+        router.back() // Trigger Next.js router back navigation
+      }
+
+      // Listen for Back Button clicks
+      tg.BackButton.onClick(onBack)
+
+      return () => {
+        tg.BackButton.hide() // Cleanup on unmount
+        tg.BackButton.offClick(onBack) // Remove the Back button click listener
+      }
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return
 
     setIsWebApp(true)
 
@@ -60,17 +82,6 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {children}
-      <Script
-        onLoad={() => {
-          if (!window.Telegram?.WebApp) return
-
-          setIsWebApp(true)
-
-          if (auth) return
-          loginWithTelegramWebApp()
-        }}
-        src="https://telegram.org/js/telegram-web-app.js"
-      />
     </TelegramAuthContext.Provider>
   )
 }
