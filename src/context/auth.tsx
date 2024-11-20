@@ -48,7 +48,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   useEffect(() => {
     // if (window.Telegram.WebApp.initData) return
 
-    if (message.message && !state) {
+    if (message.message) {
       signMessageAsync({
         message: message.message,
         account: address,
