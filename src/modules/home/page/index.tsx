@@ -1,12 +1,13 @@
 import { QuizCard } from "@/components/QuizCard";
 import { CARD_STATE, INFO_CARD_STATE } from "@/types";
-import { VStack } from "@chakra-ui/react";
+import { Badge, Box, Button, Text, VStack } from "@chakra-ui/react";
 import { TopNavbar } from "@/components/TopNavbar";
 import { useMemo } from "react";
 import { InfoCard } from "../components/InfoCard";
 import { useQuery } from "@tanstack/react-query";
 import { axiosClient } from "@/configs/axios";
 import { useGetHomeCardState } from "../hooks";
+import { BottomModal } from "@/components/BottomModal";
 
 export const Home = () => {
   const { data: closeCompetition } = useQuery({
@@ -56,9 +57,20 @@ export const Home = () => {
   return (
     <VStack height="full" w="full" rowGap="16px">
       <TopNavbar />
-      <VStack mt="12px" w="full" height="full">
+      {/* <VStack mt="12px" w="full" height="full">
         {infoCard[cardState]}
-      </VStack>
+      </VStack> */}
+      <Button variant="outline">hello</Button>
+      <Button variant="gray">hello</Button>
+      <Box bg={"greenyellow"}></Box>
+      {/* <BottomModal isOpen={true}>
+        <VStack h="200px">
+          <Text>this is a test modal</Text>
+        </VStack>
+        <Button variant="outline" size={"lg"}>
+          hello
+        </Button>
+      </BottomModal> */}
     </VStack>
   );
 };

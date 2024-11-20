@@ -46,7 +46,7 @@ export const Button = {
   },
   variants: {
     outline: {
-      backgroundColor: "gray.900",
+      backgroundColor: "gray.700",      
       color: "gray.20",
       position: "relative",
       border: "none",
@@ -59,7 +59,7 @@ export const Button = {
         height: "calc(100% + 3px)",
         width: "calc(100% + 2px)",
         background: "var(--chakra-colors-primaryRadial)",
-        zIndex: -1,
+        zIndex: -1,        
       },
       _focus: {
         bg: "glassBackground",
@@ -140,14 +140,14 @@ export const Button = {
       },
     },
     gray: {
-      backgroundColor: "gray.500",
+      backgroundColor: "rgba(32, 32, 51, 0.6)",
       color: "gray.20",
       borderStyle: "solid",
       borderTopWidth: "1px",
       borderRightWidth: "1px",
       borderLeftWidth: "1px",
       borderBottomWidth: "2px",
-      borderColor: "gray.400",
+      borderColor: "gray.400",      
       _hover: {
         bg: "gray.400",
       },
@@ -156,7 +156,7 @@ export const Button = {
       },
       _disabled: {
         backgroundColor: "gray.700",
-        boxShadow: "0px 2px 0px 0px var(--chakra-colors-gray-400)",
+        opacity: '0.4',
       },
     },
     ghost: {
