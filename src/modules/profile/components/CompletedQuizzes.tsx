@@ -80,7 +80,7 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
                 txHash={quiz.txHash}
                 isSelfUser={isSelfUser}
                 quizId={quiz.competition.id}
-                profileId={selfUser.pk}
+                profileId={router.query.id as string}
               />
             );
           })}

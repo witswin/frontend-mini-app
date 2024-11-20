@@ -6,7 +6,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import React from "react";
 
 const Index = ({ dehydratedState }: { dehydratedState: DehydratedState }) => {
@@ -17,10 +17,18 @@ const Index = ({ dehydratedState }: { dehydratedState: DehydratedState }) => {
   );
 };
 
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (
+  ctx: GetServerSidePropsContext
+) => {
   const { query } = ctx;
-  const profileId = query?.id as string;
+  const profileId = query.id as string;
   const queryClient = new QueryClient();
+
+  if (profileId === "undefined") {
+    return {
+      redirect: { destination: "/", permanent: false },
+    };
+  }
 
   await Promise.all([
     prefetchSSRData(

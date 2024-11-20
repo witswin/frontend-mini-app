@@ -41,7 +41,7 @@ export const CompletedQuizCard = ({
   user_competition_id: number;
   isClaimTriggered: boolean;
   txHash: string;
-  profileId: number;
+  profileId: string;
   quizId: number;
 }) => {
   const [isLarge] = useMediaQuery("(min-width: 480px)");
