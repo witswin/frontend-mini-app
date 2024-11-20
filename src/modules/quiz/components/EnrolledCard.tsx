@@ -11,7 +11,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosClient } from "@/configs/axios";
 import { useAuth } from "@/hooks/useAuthorization";
 import { AxiosError } from "axios";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useCheckEnrolled } from "@/modules/home/hooks";
 import { useHints } from "@/modules/question/hooks";
 import { useRouter } from "next/router";
@@ -31,7 +30,6 @@ export const EnrolledCard = () => {
     ENROLL_STATUS.quizInfo
   );
 
-  const { connect } = useWalletConnection();
 
   const queryClient = useQueryClient();
 
@@ -100,11 +98,13 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.quizInfo]: {
         title: "Enroll",
         onClick: () => {
-          if (!authInfo?.token) {
-            connect();
-          } else {
-            mutate();
-          }
+          // if (!authInfo?.token) {
+          //   connect();
+          // } else {
+          //   mutate();
+          // }
+          mutate();
+
           // setEnrollCardState(ENROLL_STATUS.task);
         },
       },

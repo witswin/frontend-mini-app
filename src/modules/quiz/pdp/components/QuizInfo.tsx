@@ -28,7 +28,6 @@ import {
 } from "../../hooks";
 import { CARD_STATE } from "@/types";
 import { useAuth } from "@/hooks/useAuthorization";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { EnrolledCard } from "../../components/EnrolledCard";
 import { AxiosError, AxiosResponse } from "axios";
 
@@ -51,8 +50,6 @@ export const QuizInfo = () => {
   const checkIsEnrolledQuiz = useCheckEnrolled();
   const isEnrolled = checkIsEnrolledQuiz(data?.id);
   const cardState = useGetCardState(data);
-
-  const { connect } = useWalletConnection();
 
   const queryClient = useQueryClient();
 
@@ -162,11 +159,12 @@ export const QuizInfo = () => {
       [CARD_STATE.enroll]: (
         <Button
           onClick={() => {
-            if (!authInfo?.token) {
-              connect();
-            } else {
-              onOpen();
-            }
+            // if (!authInfo?.token) {
+            //   connect();
+            // } else {
+            //   onOpen();
+            // }
+            onOpen();
           }}
           width="full"
           size="lg"
