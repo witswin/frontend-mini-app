@@ -3,7 +3,6 @@ import {
   Dispatch,
   PropsWithChildren,
   SetStateAction,
-  useState,
 } from "react"
 import { Integrations } from "./types"
 import { useQuery } from "@tanstack/react-query"
@@ -22,13 +21,12 @@ export const ProfileContext = createContext<ProfileContextProps>({
 })
 
 export const ProfileDispatchContext =
-  createContext<Dispatch<SetStateAction<ProfileContextProps>>>(undefined)
+  createContext<Dispatch<SetStateAction<undefined>>>(undefined)
 
 export const ProfileProvider = ({ children }: PropsWithChildren) => {
-  const [state, setState] = useState<ProfileContextProps>(undefined)
   const authInfo = useAuth()
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     initialData: undefined,
     queryFn: () =>
       axiosClient
@@ -52,7 +50,12 @@ export const ProfileProvider = ({ children }: PropsWithChildren) => {
     <ProfileContext.Provider
       value={{ profile: data, connections: connectionPage.data }}
     >
-      <ProfileDispatchContext.Provider value={setState}>
+      <ProfileDispatchContext.Provider
+        value={() => {
+          connectionPage.refetch()
+          refetch()
+        }}
+      >
         {children}
       </ProfileDispatchContext.Provider>
     </ProfileContext.Provider>
