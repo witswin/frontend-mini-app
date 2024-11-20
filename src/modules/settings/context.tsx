@@ -55,7 +55,7 @@ export const ProfileProvider = ({ children }: PropsWithChildren) => {
           },
         })
         .then((res) => res.data as UserProfile),
-    queryKey: ["profile", authInfo],
+    queryKey: ["profile", authInfo?.token],
   })
 
   const connectionPage = useQuery({
