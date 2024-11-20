@@ -30,7 +30,7 @@ export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
   const health = 3;
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect } = useWalletConnection();
 
   return (
     <HStack
@@ -76,17 +76,7 @@ export const TopNavbar = () => {
         </VStack>
 
         <VStack mr="4px">
-          <Box
-            cursor="pointer"
-            onClick={() =>
-              connect({
-                connector: connectors.find(
-                  (connector) => connector.id === "injected"
-                )!,
-              })
-            }
-            position="relative"
-          >
+          <Box cursor="pointer" onClick={() => connect()} position="relative">
             <WalletMoney
               iconStyle="BoldDuotone"
               color="var(--chakra-colors-blue)"
