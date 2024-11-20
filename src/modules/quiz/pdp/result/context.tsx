@@ -3,7 +3,11 @@ import { useAuth } from "@/hooks/useAuthorization";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
-export const QuizFinishedInfo = createContext({
+export const QuizFinishedInfo = createContext<{
+  finishedData: quizFinishedData[];
+  quizStats: quizStats;
+  winner: quizFinishedData;
+}>({
   finishedData: null,
   quizStats: null,
   winner: null,
@@ -26,6 +30,11 @@ export const QuizFinishedInfoProvider = ({
 
   const winner = state?.finishedData?.find((user) => user.pk === authInfo?.pk);
 
+
+  useEffect(() => {
+    setState((prev) => ({ ...prev, winner }));
+  }, [winner]);
+
   useEffect(() => {
     if (!socket.current.client) return;
     const handleMessage = (e: MessageEvent) => {
@@ -35,7 +44,6 @@ export const QuizFinishedInfoProvider = ({
           setState((prev) => ({
             ...prev,
             finishedData: data?.winnersList,
-            winner,
           }));
         }
         if (data.type === "quiz_stats") {
