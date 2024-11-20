@@ -171,7 +171,7 @@ export const Info = ({ userInfo }: Props) => {
             justifyContent="center"
             alignItems="center"
             as={Link}
-            href="/setting"
+            href="/settings"
             flex={1}
           >
             <SettingsMinimalistic color="gray.20" size={20} iconStyle="Bold" />
