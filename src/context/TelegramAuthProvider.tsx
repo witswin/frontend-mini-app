@@ -48,7 +48,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     const tg = window.Telegram?.WebApp
 
     const canGoBack = () => {
-      return document.referrer !== "" // Checks if the page was accessed from another page
+      return history.length > 0
     }
 
     if (canGoBack()) {
