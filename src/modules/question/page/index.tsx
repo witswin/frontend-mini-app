@@ -79,13 +79,11 @@ export const Question = () => {
             new Date(quiz.startAt),
             quiz.questionTimeSeconds,
             quiz.restTimeSeconds,
-            question.number
+            data.question.number
           );
-          if (secondsRemaining >= quiz.questionHintTimeSeconds) {
-            setCounter(secondsRemaining + 1);
-          } else {
-            setCounter(secondsRemaining);
-          }
+
+          setCounter(secondsRemaining);
+
           dispatch((prev) => {
             if (prev?.question?.id === data?.question) return prev;
 
@@ -147,21 +145,17 @@ export const Question = () => {
         pageState !== CARD_STATE.lobby
       ) {
         setPageState(CARD_STATE.lobby);
-      } else if (
-        new Date(quiz.startAt).getTime() - new Date().getTime() < 6000 &&
-        pageState !== CARD_STATE.join
-      ) {
-        setPageState(CARD_STATE.join);
       }
-      if (
-        new Date(quiz.startAt).getTime() < new Date().getTime() &&
-        quizContentMode !== "quiz"
-      ) {
+      if (new Date(quiz.startAt).getTime() - new Date().getTime() < 6000) {
+        setPageState(CARD_STATE.join);
+        setQuizContentMode("timer");
+      }
+      if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
         setQuizContentMode("quiz");
       }
-    }, 500);
+    }, 300);
     return () => clearInterval(interval);
-  }, [pageState, quiz.startAt, quizContentMode]);
+  }, []);
 
   const content = useMemo(
     () => ({
