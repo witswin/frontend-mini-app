@@ -18,7 +18,18 @@ const resolveIntegrationApi = async (
     })
     return "twitter"
   } else if (integrationName === "discord") {
+    const code = params.code
+
+    await axiosClient.get(`/auth/discord/callback/`, {
+      params: {
+        code,
+      },
+    })
+
+    return "discord"
   }
+
+  throw new Error("Uknown third party redirect")
 }
 
 export const ConenctionRerdirectResolver: FC<{
