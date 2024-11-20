@@ -52,7 +52,7 @@ export const QuizInfo = () => {
   const isEnrolled = checkIsEnrolledQuiz(data?.id);
   const cardState = useGetCardState(data);
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect } = useWalletConnection();
 
   const queryClient = useQueryClient();
 
@@ -163,11 +163,7 @@ export const QuizInfo = () => {
         <Button
           onClick={() => {
             if (!authInfo?.token) {
-              connect({
-                connector: connectors.find(
-                  (connector) => connector.id === "injected"
-                )!,
-              });
+              connect();
             } else {
               onOpen();
             }

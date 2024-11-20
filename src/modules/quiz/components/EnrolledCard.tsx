@@ -31,7 +31,7 @@ export const EnrolledCard = () => {
     ENROLL_STATUS.quizInfo
   );
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect } = useWalletConnection();
 
   const queryClient = useQueryClient();
 
@@ -101,11 +101,7 @@ export const EnrolledCard = () => {
         title: "Enroll",
         onClick: () => {
           if (!authInfo?.token) {
-            connect({
-              connector: connectors.find(
-                (connector) => connector.id === "injected"
-              )!,
-            });
+            connect();
           } else {
             mutate();
           }
