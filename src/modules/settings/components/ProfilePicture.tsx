@@ -117,10 +117,9 @@ export const ProfilePicture = () => {
         padding="2"
         borderRadius="8px"
         width="full"
-        pointerEvents={loading ? "none" : "auto"}
-        opacity={loading ? 0.6 : 1}
       >
         <Button
+          isLoading={loading}
           variant="unstyled"
           display="flex"
           alignItems="center"
@@ -133,6 +132,8 @@ export const ProfilePicture = () => {
         </Button>
         <Divider orientation="vertical" height="20px" />
         <Button
+          isLoading={loading}
+          disabled={!profile.image}
           variant="unstyled"
           display="flex"
           alignItems="center"
