@@ -66,7 +66,6 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
             </HStack>
           )}
           {quizzes.map((quiz) => {
-            console.log(quiz.competition.startAt);
             return (
               <CompletedQuizCard
                 key={quiz.competition.id}

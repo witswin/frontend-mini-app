@@ -22,6 +22,8 @@ export declare type profileInfo = {
   }[];
   image?: string;
   neuron: number;
+  first_name: string;
+  last_name: string;
 }
 
 export declare type profileStats = {

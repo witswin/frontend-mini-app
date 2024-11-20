@@ -8,6 +8,7 @@ import {
   HStack,
   Text,
   VStack,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 import { SettingsMinimalistic, WalletMoney } from "solar-icon-set";
 import Link from "next/link";
@@ -16,6 +17,13 @@ import { textTruncator } from "@/utils";
 import { profileInfo } from "@/globalTypes";
 import { useAuth } from "@/hooks/useAuthorization";
 import { getGrade, GradeBadge } from "./Grading";
+import {
+  BrandDiscord,
+  BrandFarcaster,
+  BrandInstagram,
+  BrandTelegram,
+  BrandX,
+} from "./icons";
 
 interface Props {
   userInfo: profileInfo;
@@ -62,27 +70,92 @@ export const Info = ({ userInfo }: Props) => {
       </VStack>
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
-          {userInfo?.username || `user_${userInfo?.pk}`}
+          {userInfo?.first_name + userInfo?.last_name || `user_${userInfo?.pk}`}
         </Text>
-        {/* {isOwnProfile && (
+        {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
-            {telegramId}
+            {ownUser.username}
           </Text>
-        )} */}
+        )}
       </VStack>
 
       <GradeBadge neuronCount={userInfo.neuron} grade={grade} />
 
-      {/* social Links */}
-      {!!userInfo?.wallets[0] && (
-        <HStack>
+      {/* social Links gotta add logic for showing each link*/}
+      <HStack w="full" justifyContent="center" wrap="wrap" spacing="16px">
+        <Badge
+          variant="glass"
+          size="md"
+          display="flex"
+          justifyContent="center"
+          as={ChakraLink}
+          isExternal
+          href={""}
+        >
+          <VStack justifyContent="center">
+            <BrandInstagram />
+          </VStack>
+        </Badge>
+        <Badge
+          variant="glass"
+          size="md"
+          display="flex"
+          justifyContent="center"
+          as={ChakraLink}
+          isExternal
+          href={""}
+        >
+          <VStack justifyContent="center">
+            <BrandDiscord />
+          </VStack>
+        </Badge>
+        <Badge
+          variant="glass"
+          size="md"
+          display="flex"
+          justifyContent="center"
+          as={ChakraLink}
+          isExternal
+          href={""}
+        >
+          <VStack justifyContent="center">
+            <BrandFarcaster />
+          </VStack>
+        </Badge>
+        <Badge
+          variant="glass"
+          size="md"
+          display="flex"
+          justifyContent="center"
+          as={ChakraLink}
+          isExternal
+          href={""}
+        >
+          <VStack justifyContent="center">
+            <BrandX />
+          </VStack>
+        </Badge>
+        <Badge
+          variant="glass"
+          size="md"
+          display="flex"
+          justifyContent="center"
+          as={ChakraLink}
+          isExternal
+          href={""}
+        >
+          <VStack justifyContent="center">
+            <BrandTelegram />
+          </VStack>
+        </Badge>
+        {!!userInfo?.wallets[0] && (
           <Badge variant="glass" size="md">
             <Text fontSize="md" fontWeight={600} color="gray.0" mx="4px">
               {textTruncator(userInfo?.wallets[0].walletAddress)}
             </Text>
           </Badge>
-        </HStack>
-      )}
+        )}
+      </HStack>
 
       {isOwnProfile && (
         <Flex
