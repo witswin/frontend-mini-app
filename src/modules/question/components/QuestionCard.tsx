@@ -30,14 +30,15 @@ export const QuestionCard = () => {
   const { socket } = useWebSocket();
 
   const { isOpen, onClose, onOpen } = useDisclosure();
-
+  const [isShowedBefore, setIsShowedBefore] = useState(false);
   useEffect(() => {
     if (question?.correct) {
       if (
         question?.selectedChoice !== +question?.correct?.answerId &&
-        !isOpen
+        !isShowedBefore
       ) {
         onOpen();
+        setIsShowedBefore(true);
       }
     }
   }, [question?.correct, question?.selectedChoice]);

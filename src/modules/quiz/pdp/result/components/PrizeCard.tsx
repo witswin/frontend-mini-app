@@ -4,7 +4,13 @@ import Image from "next/image";
 import { ColorFullText } from "@/components/ColorFullText";
 import { motion } from "framer-motion";
 
-export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
+export const PrizeCard = ({
+  prizeCount,
+  isSelfWinner,
+}: {
+  prizeCount: number;
+  isSelfWinner: boolean;
+}) => {
   const [prizeOpen, setPrizeOpen] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,6 +27,9 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
       bg="glassBackground"
       borderRadius="16px"
       height="full"
+      {...(isSelfWinner && {
+        justifyContent: "center",
+      })}
     >
       <Box position="relative">
         <Box position="relative" zIndex={10}>
@@ -85,8 +94,14 @@ export const PrizeCard = ({ prizeCount }: { prizeCount: number }) => {
         </Box>
       </Box>
       <ColorFullText
+        textAlign="center"
+        whiteSpace="pre-line"
         fontSize={{ base: "xl", sm: "5xl" }}
-        textContent="Awesome, you're a winner!"
+        textContent={
+          isSelfWinner
+            ? `Incredible!\n You're the only winner!`
+            : "Awesome, you're a winner!"
+        }
       />
       <HStack>
         <Text
