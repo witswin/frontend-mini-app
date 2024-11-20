@@ -87,7 +87,7 @@ export const ProfilePicture = () => {
             objectFit="cover"
             borderRadius="full"
             alt={profile.username}
-            src={profile.image}
+            src={profile?.image}
             className="w-full h-full"
           />
         ) : (
@@ -131,7 +131,7 @@ export const ProfilePicture = () => {
         <Divider orientation="vertical" height="20px" />
         <Button
           isLoading={loading}
-          disabled={!profile.image}
+          disabled={!!profile?.image}
           variant="unstyled"
           display="flex"
           alignItems="center"
