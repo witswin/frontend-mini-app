@@ -40,7 +40,7 @@ export const ConenctionRerdirectResolver: FC<{
   useEffect(() => {
     resolveIntegrationApi(integrationName, router.query)
       .then((res) => {
-        router.push(`/?callback=${res}`)
+        router.push(`/settings?callback=${res}`)
       })
       .catch(() => router.push("/"))
   }, [router, integrationName])

@@ -12,14 +12,14 @@ import { SignableMessage } from "viem"
 import { useAccount, useSignMessage } from "wagmi"
 import { setCookie } from "cookies-next"
 import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants"
-import { auth } from "@/globalTypes"
+import { UserProfile } from "@/types"
 
-export const AuthState = createContext<auth>(undefined)
+export const AuthState = createContext<UserProfile>(undefined)
 export const AuthDispatch =
-  createContext<Dispatch<SetStateAction<auth>>>(undefined)
+  createContext<Dispatch<SetStateAction<UserProfile>>>(undefined)
 
 interface AuthProvider extends PropsWithChildren {
-  auth: auth
+  auth: UserProfile
 }
 export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const [message, setMessage] = useState<{
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const [state, setState] = useState(auth)
 
   useEffect(() => {
-    if (isConnected && address && !state) {
+    if (isConnected && address) {
       axiosClient
         .post("/auth/create-message/", {
           address,
@@ -46,24 +46,39 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   }, [isConnected])
 
   useEffect(() => {
-    if (window?.Telegram?.WebApp?.initData) return
+    // if (window.Telegram.WebApp.initData) return
 
-    if (message.message && !state) {
+    if (state && state.wallets.find((item) => item.walletAddress === address))
+      return
+
+    if (message.message) {
       signMessageAsync({
         message: message.message,
         account: address,
       })
         .then((res) => {
-          return axiosClient
-            .post("/auth/verify-wallet/", {
+          if (!window.Telegram.WebApp.initData)
+            return axiosClient
+              .post("/auth/verify-wallet/", {
+                address: address,
+                signature: res,
+                nonce: message.nonce,
+              })
+              .then(({ data }) => {
+                setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token)
+                return data.token
+              })
+
+          const hasWallet = !!state.wallets.length
+
+          axiosClient.post(
+            hasWallet ? "/auth/change-wallet" : "/auth/add-wallets/",
+            {
               address: address,
               signature: res,
               nonce: message.nonce,
-            })
-            .then(({ data }) => {
-              setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token)
-              return data.token
-            })
+            }
+          )
         })
         .then((token) => {
           axiosClient
