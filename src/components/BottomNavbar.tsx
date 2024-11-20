@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuthorization";
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -6,77 +7,86 @@ import {
   NotebookMinimalistic,
   SliderVertical,
   User,
-} from "solar-icon-set";
-
-const routes = [
-  {
-    id: 0,
-    title: "Home",
-    href: "/",
-    icon: (isActive: boolean) => (
-      <HomeAngle2
-        color={
-          isActive ? "var(--chakra-colors-blue)" : "var(--chakra-colors-gray-0)"
-        }
-        iconStyle={isActive ? "Bold" : "BoldDuotone"}
-        size={24}
-      />
-    ),
-  },
-  {
-    id: 1,
-    href: "/quiz",
-    title: "Quiz",
-    icon: (isActive: boolean) => (
-      <SliderVertical
-        color={
-          isActive ? "var(--chakra-colors-blue)" : "var(--chakra-colors-gray-0)"
-        }
-        iconStyle={isActive ? "Bold" : "BoldDuotone"}
-        size={24}
-      />
-    ),
-  },
-  {
-    id: 2,
-    href: "/learn",
-    title: "Learn",
-    icon: (isActive: boolean) => (
-      <Box
-        sx={{
-          path: {
-            fill: isActive
-              ? "var(--chakra-colors-blue)"
-              : "var(--chakra-colors-gray-0)",
-          },
-        }}
-        color={
-          isActive ? "var(--chakra-colors-blue)" : "var(--chakra-colors-gray-0)"
-        }
-        as={NotebookMinimalistic}
-        iconStyle={isActive ? "Bold" : "BoldDuotone"}
-        size={24}
-      />
-    ),
-  },
-  {
-    id: 3,
-    href: "/profile",
-    title: "Profile",
-    icon: (isActive: boolean) => (
-      <User
-        color={
-          isActive ? "var(--chakra-colors-blue)" : "var(--chakra-colors-gray-0)"
-        }
-        iconStyle={isActive ? "Bold" : "BoldDuotone"}
-        size={24}
-      />
-    ),
-  },
-];
+} from "solar-icon-set"
 
 export const BottomNavbar = () => {
   const router = useRouter();
+  const authInfo = useAuth();
+
+  const routes = [
+    {
+      id: 0,
+      title: "Home",
+      href: "/",
+      icon: (isActive: boolean) => (
+        <HomeAngle2
+          color={
+            isActive
+              ? "var(--chakra-colors-blue)"
+              : "var(--chakra-colors-gray-0)"
+          }
+          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          size={24}
+        />
+      ),
+    },
+    {
+      id: 1,
+      href: "/quiz",
+      title: "Quiz",
+      icon: (isActive: boolean) => (
+        <SliderVertical
+          color={
+            isActive
+              ? "var(--chakra-colors-blue)"
+              : "var(--chakra-colors-gray-0)"
+          }
+          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          size={24}
+        />
+      ),
+    },
+    {
+      id: 2,
+      href: "/learn",
+      title: "Learn",
+      icon: (isActive: boolean) => (
+        <Box
+          sx={{
+            path: {
+              fill: isActive
+                ? "var(--chakra-colors-blue)"
+                : "var(--chakra-colors-gray-0)",
+            },
+          }}
+          color={
+            isActive
+              ? "var(--chakra-colors-blue)"
+              : "var(--chakra-colors-gray-0)"
+          }
+          as={NotebookMinimalistic}
+          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          size={24}
+        />
+      ),
+    },
+    {
+      id: 3,
+      href: `/profile/${authInfo?.pk}`,
+      title: "Profile",
+      icon: (isActive: boolean) => (
+        <User
+          color={
+            isActive
+              ? "var(--chakra-colors-blue)"
+              : "var(--chakra-colors-gray-0)"
+          }
+          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          size={24}
+        />
+      ),
+    },
+  ];
 
   return (
     <Box
@@ -103,7 +113,7 @@ export const BottomNavbar = () => {
         mx="auto"
       >
         {routes.map((route) => {
-          const isActive = router.pathname === route.href;
+          const isActive = router.asPath === route.href;
 
           return (
             <Link href={route.href} key={route.id}>
@@ -138,9 +148,9 @@ export const BottomNavbar = () => {
                 )}
               </VStack>
             </Link>
-          );
+          )
         })}
       </HStack>
     </Box>
-  );
-};
+  )
+}
