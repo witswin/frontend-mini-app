@@ -13,6 +13,7 @@ import { CardSection } from "./CardSection"
 import { useProfile, useProfileDispatch } from "../hooks"
 import { axiosClient } from "@/configs/axios"
 import { useRef, useState } from "react"
+import { handleApiError } from "@/utils"
 
 export const ProfilePicture = () => {
   const { profile } = useProfile()
@@ -42,10 +43,7 @@ export const ProfilePicture = () => {
       })
       .catch((e) => {
         console.error("Something happened on updating user profile !", e)
-        toast({
-          description: "Something went wrong!",
-          status: "error",
-        })
+        handleApiError(e, toast)
       })
       .finally(() => {
         setLoading(false)

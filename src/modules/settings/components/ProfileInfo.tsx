@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { UserProfile } from "@/types"
 import { axiosClient } from "@/configs/axios"
 import { AxiosError } from "axios"
+import { handleApiError } from "@/utils"
 
 export const ProfileInfo = () => {
   const { profile } = useProfile()
@@ -50,10 +51,7 @@ export const ProfileInfo = () => {
         console.error("Something happened on updating user profile !", e)
 
         if (e instanceof AxiosError) {
-          toast({
-            description: Object.values(e.response.data)[0] as string,
-            status: "error",
-          })
+          handleApiError(e, toast)
         } else {
           toast({
             description: "Something went wrong!",

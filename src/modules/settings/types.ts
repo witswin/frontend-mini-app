@@ -14,6 +14,7 @@ export type TelegramConnection = {
   username?: string
   firstName?: string
   lastName?: string
+  isConnected?: boolean
 }
 
 export type TwitterConnection = Omit<
@@ -21,7 +22,16 @@ export type TwitterConnection = Omit<
   "firstName" | "lastName"
 >
 
+export type DiscordConnection = TwitterConnection
+
+export type FarcasterConnection = {
+  id: number
+  isConnected: boolean
+}
+
 export type Integrations = {
   Telegram?: TelegramConnection
   Twitter?: TwitterConnection
+  Farcaster?: FarcasterConnection
+  Discord?: DiscordConnection
 }
