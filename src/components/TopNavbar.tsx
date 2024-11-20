@@ -12,6 +12,8 @@ import Image from "next/image";
 import { WalletMoney } from "solar-icon-set";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useAuth } from "@/hooks/useAuthorization";
+import { useAccount } from "wagmi";
+import { textTruncator } from "@/utils";
 
 const WalletStatus = () => {
   const authInfo = useAuth();
@@ -31,6 +33,10 @@ export const TopNavbar = () => {
   const health = 3;
 
   const { connect } = useWalletConnection();
+
+  const { address } = useAccount();
+  const authInfo = useAuth();
+  console.log({ authInfo });
 
   return (
     <HStack
@@ -56,6 +62,7 @@ export const TopNavbar = () => {
         justifyContent="space-between"
         px="12px"
         pt="4px"
+        height="115px"
       >
         <VStack>
           <HStack gap="2px">
@@ -75,7 +82,7 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack mr="4px">
+        <VStack my="auto" justifyContent="center" mr="4px">
           <Box cursor="pointer" onClick={() => connect()} position="relative">
             <WalletMoney
               iconStyle="BoldDuotone"
@@ -84,8 +91,12 @@ export const TopNavbar = () => {
             />
             <WalletStatus />
           </Box>
-          <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            Wallet
+          <Text
+            color="gray.40"
+            fontSize={authInfo && address ? "10px" : "sm"}
+            fontWeight="bold"
+          >
+            {authInfo && address && textTruncator(address)}
           </Text>
         </VStack>
       </HStack>
