@@ -16,7 +16,7 @@ import { useAccount } from "wagmi";
 import { textTruncator } from "@/utils";
 
 const WalletStatus = () => {
-  const authInfo = useAuth();
+  const authInfo = useAuth()
   return (
     <Badge
       variant={!!authInfo ? "green" : "red"}
@@ -25,14 +25,14 @@ const WalletStatus = () => {
       left="0"
       bottom="0"
     />
-  );
-};
+  )
+}
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)");
-  const health = 3;
+  const [isLarge] = useMediaQuery("(min-width: 500px)")
+  const health = 3
 
-  const { connect } = useWalletConnection();
+  const { connect } = useWalletConnection()
 
   const { address } = useAccount();
   const authInfo = useAuth();
@@ -101,5 +101,5 @@ export const TopNavbar = () => {
         </VStack>
       </HStack>
     </HStack>
-  );
-};
+  )
+}
