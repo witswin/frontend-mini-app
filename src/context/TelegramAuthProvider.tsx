@@ -47,21 +47,28 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const tg = window.Telegram?.WebApp
 
-    if (tg) {
-      // Show the Telegram Back Button
-      tg.BackButton.show()
+    if (!tg) return
+
+    // Function to determine if back navigation is available
+    const canGoBack = () => {
+      return document.referrer !== "" // Checks if the page was accessed from another page
+    }
+
+    if (canGoBack()) {
+      tg.BackButton.show() // Show the Telegram Back Button
 
       const onBack = () => {
         router.back() // Trigger Next.js router back navigation
       }
 
-      // Listen for Back Button clicks
       tg.BackButton.onClick(onBack)
 
       return () => {
-        tg.BackButton.hide() // Cleanup on unmount
-        tg.BackButton.offClick(onBack) // Remove the Back button click listener
+        tg.BackButton.offClick(onBack) // Cleanup listener
+        tg.BackButton.hide() // Hide the button on unmount
       }
+    } else {
+      tg.BackButton.hide() // Hide the button if back is not available
     }
   }, [router])
 
