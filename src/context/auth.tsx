@@ -34,7 +34,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const [state, setState] = useState(auth)
 
   useEffect(() => {
-    if (isConnected && address && !state) {
+    if (isConnected && address) {
       axiosClient
         .post("/auth/create-message/", {
           address,
@@ -47,6 +47,9 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
 
   useEffect(() => {
     // if (window.Telegram.WebApp.initData) return
+
+    if (state && state.wallets.find((item) => item.walletAddress === address))
+      return
 
     if (message.message) {
       signMessageAsync({
