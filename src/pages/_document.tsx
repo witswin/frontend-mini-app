@@ -17,6 +17,10 @@ export default function Document() {
           src="https://telegram.org/js/telegram-web-app.js"
         />
         <NextScript />
+        <Script
+          strategy="beforeInteractive"
+          src="https://telegram.org/js/telegram-web-app.js"
+        />
       </body>
     </Html>
   )

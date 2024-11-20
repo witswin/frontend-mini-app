@@ -3,6 +3,7 @@ import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants"
 import { useAuth, useAuthDispatch } from "@/hooks/useAuthorization"
 import { UserProfile } from "@/types"
 import { setCookie } from "cookies-next"
+import { useRouter } from "next/router"
 import {
   createContext,
   FC,
@@ -22,6 +23,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isLoginLoading, setIsLoginLoading] = useState(false)
   const dispatch = useAuthDispatch()
   const auth = useAuth()
+  const router = useRouter()
 
   // const loginWithTelegramWidget = () => {}
 
@@ -43,7 +45,35 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [dispatch])
 
   useEffect(() => {
-    if (!window.Telegram?.WebApp.initData) return
+    const tg = window.Telegram?.WebApp
+
+    if (!tg) return
+
+    // Function to determine if back navigation is available
+    const canGoBack = () => {
+      return document.referrer !== "" // Checks if the page was accessed from another page
+    }
+
+    if (canGoBack()) {
+      tg.BackButton.show() // Show the Telegram Back Button
+
+      const onBack = () => {
+        router.back() // Trigger Next.js router back navigation
+      }
+
+      tg.BackButton.onClick(onBack)
+
+      return () => {
+        tg.BackButton.offClick(onBack) // Cleanup listener
+        tg.BackButton.hide() // Hide the button on unmount
+      }
+    } else {
+      tg.BackButton.hide() // Hide the button if back is not available
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return
 
     setIsWebApp(true)
 

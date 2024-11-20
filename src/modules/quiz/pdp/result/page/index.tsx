@@ -3,46 +3,22 @@ import { Box, Grid, GridItem, Spinner, Text, VStack } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { PrizeCard } from "../components/PrizeCard";
 import { QuizWinners } from "../components/QuizWinners";
-import { useWebSocket } from "@/hooks/useWebSocket";
-import { quizFinishedData } from "@/globalTypes";
-import { useAuth } from "@/hooks/useAuthorization";
+import { useFinishedData } from "../hooks";
 
 export const Result = () => {
-  const { socket } = useWebSocket();
-
-  const authInfo = useAuth();
-  const [finishedData, setFinishedData] = useState<quizFinishedData[]>(null);
-  const isWinner = finishedData?.find((user) => user.pk === authInfo?.pk);
-  const [quizStats, setQuizStats] = useState(null);
-
   const [isLoading, setLoading] = useState(true);
 
-  console.log({ finishedData });
+  const finishedDataInfo = useFinishedData();
 
   useEffect(() => {
-    if (quizStats && finishedData && isLoading) {
+    if (
+      finishedDataInfo?.quizStats &&
+      finishedDataInfo?.finishedData &&
+      isLoading
+    ) {
       setLoading(false);
     }
-  }, [finishedData, quizStats, isLoading]);
-
-  useEffect(() => {
-    if (!socket.current.client) return;
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data !== "PONG") {
-        const data = JSON.parse(e.data);
-        if (data.type === "quiz_finish") {
-          setFinishedData(data?.winnersList);
-        }
-        if (data.type === "quiz_stats") {
-          setQuizStats(data.data);
-        }
-      }
-    };
-    socket.current.client.addEventListener("message", handleMessage);
-    return () => {
-      socket.current.client?.removeEventListener("message", handleMessage);
-    };
-  }, [socket]);
+  }, [finishedDataInfo, isLoading]);
 
   return (
     <VStack
@@ -61,16 +37,20 @@ export const Result = () => {
       ) : (
         <Grid
           rowGap={{ base: "8px", sm: "16px" }}
-          gridTemplateRows={!!isWinner ? "fit-content 1fr" : "1fr"}
+          gridTemplateRows={
+            !!finishedDataInfo?.winner ? "fit-content 1fr" : "1fr"
+          }
           w="full"
           h="full"
           mb="16px"
         >
-          {!!isWinner && (
+          {!!finishedDataInfo?.winner && (
             <GridItem>
               <PrizeCard
                 prizeCount={
-                  quizStats?.prizeToWin ? quizStats?.prizeToWin / 1e18 : 0
+                  finishedDataInfo?.quizStats?.prizeToWin
+                    ? finishedDataInfo?.quizStats?.prizeToWin / 1e18
+                    : 0
                 }
               />
             </GridItem>
@@ -98,9 +78,9 @@ export const Result = () => {
               fontSize="sm"
               fontWeight={500}
               color="gray.60"
-            >{`Total prize had divided between ${finishedData?.length} winners.`}</Text>
+            >{`Total prize had divided between ${finishedDataInfo?.finishedData?.length} winners.`}</Text>
             <Box height="full" overflowY="auto">
-              <QuizWinners finishedData={finishedData} />
+              <QuizWinners finishedData={finishedDataInfo?.finishedData} />
             </Box>
           </GridItem>
         </Grid>

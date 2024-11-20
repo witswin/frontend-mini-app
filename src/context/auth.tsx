@@ -34,25 +34,9 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const { isConnected, address } = useAccount()
   const [state, setState] = useState(auth)
 
-  const promptMessage = useCallback(() => {
-    if (isConnected && address && !state) {
-      axiosClient
-        .post("/auth/create-message/", {
-          address,
-        })
-        .then(({ data }) => {
-          setMessage({ message: data.message, nonce: data.nonce })
-        })
-    }
-  }, [address, isConnected, state])
-
   useEffect(() => {
     if (window.Telegram?.WebApp.initData) return
 
-    promptMessage()
-  }, [promptMessage])
-
-  useEffect(() => {
     if (message.message && !state) {
       signMessageAsync({
         message: message.message,
@@ -85,7 +69,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
           console.warn(err)
         })
     }
-  }, [address, message, signMessageAsync, state])
+  }, [message])
 
   return (
     <AuthState.Provider value={state}>

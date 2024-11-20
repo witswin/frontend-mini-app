@@ -52,7 +52,7 @@ export const QuizInfo = () => {
   const isEnrolled = checkIsEnrolledQuiz(data?.id)
   const cardState = useGetCardState(data)
 
-  const { connect, connectors } = useWalletConnection()
+  const { connect } = useWalletConnection()
 
   const queryClient = useQueryClient()
 
@@ -77,8 +77,6 @@ export const QuizInfo = () => {
   const toast = useToast({
     position: "bottom",
   })
-
-  console.log({ data })
 
   const selectedQuizDispatch = useSelectedQuizDispatch()
   const { mutate } = useMutation({
@@ -106,9 +104,7 @@ export const QuizInfo = () => {
     },
   })
 
-  const { onOpen, isOpen } = useEnrolledModalProps()
-
-  console.log({ isOpen })
+  const { onOpen } = useEnrolledModalProps()
 
   useEffect(() => {
     selectedQuizDispatch(data)
@@ -167,11 +163,7 @@ export const QuizInfo = () => {
         <Button
           onClick={() => {
             if (!authInfo?.token) {
-              connect({
-                connector: connectors.find(
-                  (connector) => connector.id === "walletConnect"
-                )!,
-              })
+              connect()
             } else {
               onOpen()
             }
