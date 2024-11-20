@@ -15,11 +15,11 @@ export const Card = ({ colored, children, ...rest }: CardProps & BoxProps) => {
         borderRadius: "16px",
         content: "''",
         position: "absolute",
-        inset: "-1px",
+        inset: "-2px",
         bottom: "-2px",
         background: colored ? "primaryRadial" : "gray.400",
         boxShadow: "0px 2px 0px 0px var(--chakra-colors-gray-400)",
-        width: "calc(100% + 2px)",
+        width: "calc(100% + 4px)",
         zIndex: -1,
         height: "calc(100% + 3px)",
       }}

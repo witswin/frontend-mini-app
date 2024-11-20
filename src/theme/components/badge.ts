@@ -43,5 +43,11 @@ export const Badge = {
       bg: "var(--chakra-colors-glassBackground)",
       color: "gray.0",
     },
+    gray: {
+      rounded: "full",
+      bg: "var(--chakra-colors-glassBackground)",
+      color: "gray.0",
+      backdropFilter: "blur(32px)",
+    },
   },
 };
