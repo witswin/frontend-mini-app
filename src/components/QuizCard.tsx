@@ -6,6 +6,7 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   // chakra,
   HStack,
   Img,
@@ -150,7 +151,9 @@ const QuizCard = forwardRef(
         >
           {quiz?.prizeAmount && quiz?.token && quiz?.details && (
             <VStack mb="8px" rowGap="0">
-              <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
+              <Center>
+                <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
+              </Center>
               <Text
                 textAlign="center"
                 color="gray.60"
