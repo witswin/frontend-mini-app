@@ -10,7 +10,7 @@ import {
   useMediaQuery,
   VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowRightUp, ConfettiMinimalistic } from "solar-icon-set";
 import USDC_img from "@/assets/tokens/USDC.svg";
 import Image from "next/image";
@@ -54,6 +54,11 @@ export const CompletedQuizCard = ({
     useState(isClaimTriggered);
 
   const [localTxHash, setLocalTxHash] = useState(txHash);
+
+  useEffect(() => {
+    setLocalTxHash(txHash);
+    setIsRewardsClaimedOpen(isClaimTriggered);
+  }, [txHash, isClaimTriggered]);
 
   const dateString = new Date(date)
     .toLocaleString("default", {
