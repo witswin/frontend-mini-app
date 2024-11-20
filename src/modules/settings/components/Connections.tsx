@@ -33,6 +33,7 @@ export const Connections = () => {
           </>
         }
         preventRemove
+        preventAdd
         isConnected={!!connections.Telegram}
       >
         <Image

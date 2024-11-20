@@ -44,12 +44,9 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       .finally(() => setIsLoginLoading(false))
   }, [dispatch])
 
-  useEffect(() => {
+  const onRouteChange = useCallback(() => {
     const tg = window.Telegram?.WebApp
 
-    if (!tg) return
-
-    // Function to determine if back navigation is available
     const canGoBack = () => {
       return document.referrer !== "" // Checks if the page was accessed from another page
     }
@@ -70,7 +67,19 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     } else {
       tg.BackButton.hide() // Hide the button if back is not available
     }
-  }, [router, router.pathname])
+  }, [router])
+
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp
+
+    if (!tg) return
+
+    router.events.on("routeChangeComplete", onRouteChange)
+
+    return () => {
+      router.events.off("routeChangeComplete", onRouteChange)
+    }
+  }, [onRouteChange, router])
 
   useEffect(() => {
     if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return

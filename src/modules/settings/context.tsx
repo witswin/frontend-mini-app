@@ -24,11 +24,14 @@ export const ProfileDispatchContext =
   createContext<Dispatch<SetStateAction<undefined>>>(undefined)
 
 export const getAllConnections = async (token?: string) => {
-  const { data } = await axiosClient.get<UserConnection[]>("/auth/info/", {
-    headers: {
-      Authorization: `TOKEN ${token}`,
-    },
-  })
+  const { data } = await axiosClient.get<UserConnection[]>(
+    "/auth/user/all-connections/",
+    {
+      headers: {
+        Authorization: `TOKEN ${token}`,
+      },
+    }
+  )
 
   const transformedData = data.reduce((prev, curr) => {
     const name = Object.keys(curr)[0]
@@ -59,14 +62,14 @@ export const ProfileProvider = ({ children }: PropsWithChildren) => {
   })
 
   const connectionPage = useQuery({
-    initialData: {},
+    initialData: undefined,
     queryKey: ["connections", authInfo?.token],
     queryFn: () => getAllConnections(authInfo?.token),
   })
 
   return (
     <ProfileContext.Provider
-      value={{ profile: data, connections: connectionPage.data }}
+      value={{ profile: data, connections: connectionPage.data ?? {} }}
     >
       <ProfileDispatchContext.Provider
         value={() => {
