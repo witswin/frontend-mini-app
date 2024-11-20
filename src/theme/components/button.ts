@@ -4,6 +4,9 @@ export const Button = {
   },
   sizes: {
     mini: {
+      px: '10px',
+      py: '8px',
+      gap: '4px',
       fontSize: "sm",
       fontWeight: "600",
       lineHeight: "20px",
