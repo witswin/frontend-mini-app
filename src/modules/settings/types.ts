@@ -1,16 +1,12 @@
-export type Wallet = {
-  walletAddress: string
-  createdAt: string
-  pk: number
-}
+import { UserProfile } from "@/types"
 
-export type User = {
-  pk: number
-  username?: string
-  image?: string
-  firstName?: string
-  lastName?: string
-  wallets: Wallet[]
+export type UserConnection = {
+  [key: string]: {
+    id: number
+    userProfile: UserProfile
+    createdAt: string
+    isConnected: boolean
+  }
 }
 
 export type TelegramConnection = {
@@ -20,6 +16,12 @@ export type TelegramConnection = {
   lastName?: string
 }
 
+export type TwitterConnection = Omit<
+  TelegramConnection,
+  "firstName" | "lastName"
+>
+
 export type Integrations = {
   Telegram?: TelegramConnection
+  Twitter?: TwitterConnection
 }

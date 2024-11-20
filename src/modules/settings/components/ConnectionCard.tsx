@@ -10,8 +10,16 @@ export const ConnectionCard: FC<
     onConnect?: () => void
     onDisconnect?: () => void
     connectedText?: ReactNode
+    preventRemove?: boolean
   } & PropsWithChildren
-> = ({ isConnected, children, onConnect, onDisconnect, connectedText }) => {
+> = ({
+  isConnected,
+  children,
+  onConnect,
+  onDisconnect,
+  connectedText,
+  preventRemove,
+}) => {
   if (isConnected) {
     return (
       <CardSection
@@ -23,24 +31,26 @@ export const ConnectionCard: FC<
         <Box display="flex" gap={3} alignItems="center" width="full">
           {connectedText}
 
-          <Button
-            ml="auto"
-            background={colors.glassBackground}
-            _before={{
-              background: colors.glassBackground,
-            }}
-            borderRadius="12px"
-            size="sm"
-            fontWeight="normal"
-            variant="solid"
-            gap="8px"
-            onClick={onDisconnect}
-          >
-            <Box gap={1} display="flex" alignItems="center">
-              <TrashBinTrash />
-              <span>Remove</span>
-            </Box>
-          </Button>
+          {preventRemove || (
+            <Button
+              ml="auto"
+              background={colors.glassBackground}
+              _before={{
+                background: colors.glassBackground,
+              }}
+              borderRadius="12px"
+              size="sm"
+              fontWeight="normal"
+              variant="solid"
+              gap="8px"
+              onClick={onDisconnect}
+            >
+              <Box gap={1} display="flex" alignItems="center">
+                <TrashBinTrash />
+                <span>Remove</span>
+              </Box>
+            </Button>
+          )}
         </Box>
       </CardSection>
     )

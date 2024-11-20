@@ -5,6 +5,7 @@ import { useProfile, useProfileDispatch } from "../hooks"
 import { useEffect, useState } from "react"
 import { UserProfile } from "@/types"
 import { axiosClient } from "@/configs/axios"
+import { AxiosError } from "axios"
 
 export const ProfileInfo = () => {
   const { profile } = useProfile()
@@ -39,6 +40,7 @@ export const ProfileInfo = () => {
       .put("/auth/info/", formData)
       .then(() => {
         setState(undefined)
+        setHasChange(false)
         toast({
           description: "Profile updated successfully",
           status: "success",
@@ -46,10 +48,18 @@ export const ProfileInfo = () => {
       })
       .catch((e) => {
         console.error("Something happened on updating user profile !", e)
-        toast({
-          description: "Something went wrong!",
-          status: "error",
-        })
+
+        if (e instanceof AxiosError) {
+          toast({
+            description: Object.values(e.response.data)[0] as string,
+            status: "error",
+          })
+        } else {
+          toast({
+            description: "Something went wrong!",
+            status: "error",
+          })
+        }
       })
       .finally(() => {
         setLoading(false)
