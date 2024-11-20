@@ -1,20 +1,19 @@
-import { Button, Img, Text, useToast, VStack } from "@chakra-ui/react"
-import { useEnrolledModalProps, useSelectedQuiz } from "../hooks"
-import { useEffect, useMemo, useState } from "react"
-import { ENROLL_STATUS } from "../types"
-import { QuizInfo } from "./state/QuizInfo"
-import { QuizTask } from "./state/QuizTask"
-import { QuizEnrolled } from "./state/QuizEnrolled"
-import { BottomModal } from "@/components/BottomModal"
-import { SelectHint } from "./SelectHint"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { axiosClient } from "@/configs/axios"
-import { useAuth } from "@/hooks/useAuthorization"
-import { AxiosError } from "axios"
-import { useWalletConnection } from "@/hooks/useWalletConnection"
-import { useCheckEnrolled } from "@/modules/home/hooks"
-import { useHints } from "@/modules/question/hooks"
-import { useRouter } from "next/router"
+import { Button, Img, Text, useToast, VStack } from "@chakra-ui/react";
+import { useEnrolledModalProps, useSelectedQuiz } from "../hooks";
+import { useEffect, useMemo, useState } from "react";
+import { ENROLL_STATUS } from "../types";
+import { QuizInfo } from "./state/QuizInfo";
+import { QuizTask } from "./state/QuizTask";
+import { QuizEnrolled } from "./state/QuizEnrolled";
+import { BottomModal } from "@/components/BottomModal";
+import { SelectHint } from "./SelectHint";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosClient } from "@/configs/axios";
+import { useAuth } from "@/hooks/useAuthorization";
+import { AxiosError } from "axios";
+import { useCheckEnrolled } from "@/modules/home/hooks";
+import { useHints } from "@/modules/question/hooks";
+import { useRouter } from "next/router";
 
 export const EnrolledCard = () => {
   const router = useRouter()
@@ -29,7 +28,6 @@ export const EnrolledCard = () => {
 
   const [enrollCardState, setEnrollCardState] = useState(ENROLL_STATUS.quizInfo)
 
-  const { connect } = useWalletConnection()
 
   const queryClient = useQueryClient()
 
@@ -98,11 +96,13 @@ export const EnrolledCard = () => {
       [ENROLL_STATUS.quizInfo]: {
         title: "Enroll",
         onClick: () => {
-          if (!authInfo?.token) {
-            connect()
-          } else {
-            mutate()
-          }
+          // if (!authInfo?.token) {
+          //   connect();
+          // } else {
+          //   mutate();
+          // }
+          mutate();
+
           // setEnrollCardState(ENROLL_STATUS.task);
         },
       },

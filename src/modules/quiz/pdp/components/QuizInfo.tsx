@@ -25,12 +25,11 @@ import {
   useEnrolledModalProps,
   useGetCardState,
   useSelectedQuizDispatch,
-} from "../../hooks"
-import { CARD_STATE } from "@/types"
-import { useAuth } from "@/hooks/useAuthorization"
-import { useWalletConnection } from "@/hooks/useWalletConnection"
-import { EnrolledCard } from "../../components/EnrolledCard"
-import { AxiosError, AxiosResponse } from "axios"
+} from "../../hooks";
+import { CARD_STATE } from "@/types";
+import { useAuth } from "@/hooks/useAuthorization";
+import { EnrolledCard } from "../../components/EnrolledCard";
+import { AxiosError, AxiosResponse } from "axios";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
@@ -52,9 +51,7 @@ export const QuizInfo = () => {
   const isEnrolled = checkIsEnrolledQuiz(data?.id)
   const cardState = useGetCardState(data)
 
-  const { connect } = useWalletConnection()
-
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const authInfo = useAuth()
 
@@ -162,11 +159,12 @@ export const QuizInfo = () => {
       [CARD_STATE.enroll]: (
         <Button
           onClick={() => {
-            if (!authInfo?.token) {
-              connect()
-            } else {
-              onOpen()
-            }
+            // if (!authInfo?.token) {
+            //   connect();
+            // } else {
+            //   onOpen();
+            // }
+            onOpen();
           }}
           width="full"
           size="lg"
