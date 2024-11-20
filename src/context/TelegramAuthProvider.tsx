@@ -70,7 +70,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     } else {
       tg.BackButton.hide() // Hide the button if back is not available
     }
-  }, [router])
+  }, [router, router.pathname])
 
   useEffect(() => {
     if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return
