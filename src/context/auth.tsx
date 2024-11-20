@@ -5,7 +5,6 @@ import {
   Dispatch,
   PropsWithChildren,
   SetStateAction,
-  useCallback,
   useEffect,
   useState,
 } from "react"
@@ -35,7 +34,19 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const [state, setState] = useState(auth)
 
   useEffect(() => {
-    if (window.Telegram?.WebApp.initData) return
+    if (isConnected && address && !state) {
+      axiosClient
+        .post("/auth/create-message/", {
+          address,
+        })
+        .then(({ data }) => {
+          setMessage({ message: data.message, nonce: data.nonce })
+        })
+    }
+  }, [isConnected])
+
+  useEffect(() => {
+    if (window.Telegram.WebApp.initData) return
 
     if (message.message && !state) {
       signMessageAsync({
