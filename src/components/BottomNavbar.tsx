@@ -81,7 +81,7 @@ export const BottomNavbar = () => {
   return (
     <Box
       position="fixed"
-      zIndex="docked"
+      zIndex="sticky"
       bottom="0"
       maxWidth="538px"
       left="50%"
