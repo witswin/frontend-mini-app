@@ -9,25 +9,32 @@ import {
 } from "@chakra-ui/react";
 import { CardSection } from "./CardSection";
 import { useProfile } from "../hooks";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { UserProfile } from "@/types";
 
 export const ProfileInfo = ({
   formState,
   setFormState,
   setHasChange,
+  isError,
+  setIsError,
 }: {
   formState: Partial<UserProfile>;
   setFormState: Dispatch<SetStateAction<Partial<UserProfile>>>;
   setHasChange: Dispatch<SetStateAction<boolean>>;
+  isError: boolean;
+  setIsError: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { profile } = useProfile();
 
   useEffect(() => {
     setFormState(profile ?? {});
     setHasChange(false);
-    setValid(!usernameRegex.test(formState.username));
   }, [profile]);
+
+  useEffect(() => {
+    setIsError(!usernameRegex.test(formState.username));
+  }, [formState]);
 
   const onFormItemChange = (value: string, name: string) => {
     setFormState({ ...formState, [name]: value });
@@ -35,7 +42,7 @@ export const ProfileInfo = ({
   };
 
   const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-  const [valid, setValid] = useState(false);
+
   // const isError = formState.username === "";
   // const isError = hasChange && !usernameRegex.test(formState.username);
 
@@ -45,7 +52,7 @@ export const ProfileInfo = ({
         Account Info
       </Text>
 
-      <FormControl width="full" isInvalid={valid}>
+      <FormControl width="full" isInvalid={isError}>
         <FormLabel color="gray.20" fontWeight="semibold" fontSize="sm">
           Username
         </FormLabel>
@@ -68,7 +75,7 @@ export const ProfileInfo = ({
             borderColor: "red.400",
           }}
         />
-        {valid ? (
+        {isError ? (
           <FormErrorMessage
             color="red.400"
             fontSize="sm"

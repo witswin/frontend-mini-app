@@ -18,7 +18,7 @@ export const SettingsPage = () => {
   );
   const [loading, setLoading] = useState(false);
   const [hasChange, setHasChange] = useState(false);
-  // const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const formData = useMemo(() => new FormData(), []);
 
@@ -96,8 +96,8 @@ export const SettingsPage = () => {
         formState={formState}
         setHasChange={setHasChange}
         setFormState={setFormState}
-        // isError={isError}
-        // setIsError={setIsError}
+        isError={isError}
+        setIsError={setIsError}
       />
       <Connections />
 
@@ -113,7 +113,7 @@ export const SettingsPage = () => {
           <Button
             onClick={() => onSubmitChanges()}
             isLoading={loading}
-            isDisabled={!hasChange}
+            isDisabled={!hasChange || isError}
             w="full"
             bottom="0"
             height="50px"
