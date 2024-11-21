@@ -3,7 +3,7 @@ import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants"
 import { useAuth, useAuthDispatch } from "@/hooks/useAuthorization"
 import { UserProfile } from "@/types"
 import { setCookie } from "cookies-next"
-import Script from "next/script"
+import { useRouter } from "next/router"
 import {
   createContext,
   FC,
@@ -23,6 +23,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isLoginLoading, setIsLoginLoading] = useState(false)
   const dispatch = useAuthDispatch()
   const auth = useAuth()
+  const router = useRouter()
 
   // const loginWithTelegramWidget = () => {}
 
@@ -43,8 +44,45 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       .finally(() => setIsLoginLoading(false))
   }, [dispatch])
 
+  const onRouteChange = useCallback(() => {
+    const tg = window.Telegram?.WebApp
+
+    const canGoBack = () => {
+      return history.length > 0
+    }
+
+    if (canGoBack()) {
+      tg.BackButton.show() // Show the Telegram Back Button
+
+      const onBack = () => {
+        router.back() // Trigger Next.js router back navigation
+      }
+
+      tg.BackButton.onClick(onBack)
+
+      return () => {
+        tg.BackButton.offClick(onBack) // Cleanup listener
+        tg.BackButton.hide() // Hide the button on unmount
+      }
+    } else {
+      tg.BackButton.hide() // Hide the button if back is not available
+    }
+  }, [router])
+
   useEffect(() => {
-    if (!window.Telegram?.WebApp) return
+    const tg = window.Telegram?.WebApp
+
+    if (!tg) return
+
+    router.events.on("routeChangeComplete", onRouteChange)
+
+    return () => {
+      router.events.off("routeChangeComplete", onRouteChange)
+    }
+  }, [onRouteChange, router])
+
+  useEffect(() => {
+    if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return
 
     setIsWebApp(true)
 
@@ -60,17 +98,6 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {children}
-      <Script
-        onLoad={() => {
-          if (!window.Telegram?.WebApp) return
-
-          setIsWebApp(true)
-
-          if (auth) return
-          loginWithTelegramWebApp()
-        }}
-        src="https://telegram.org/js/telegram-web-app.js"
-      />
     </TelegramAuthContext.Provider>
   )
 }

@@ -4,6 +4,7 @@ import Avatar from "@/assets/Avatar.svg";
 import { textTruncator } from "@/utils";
 import { GradientBorder } from "./GradientBorder";
 import { BoxShadow } from "./BoxShadow";
+import { useRouter } from "next/router";
 
 export const WinnerCard = ({
   name,
@@ -11,15 +12,20 @@ export const WinnerCard = ({
   profileAvatar,
   isSelfUser,
   username,
+  userId,
 }: {
   name: string;
   walletAddress: string;
   profileAvatar?: string;
   isSelfUser: boolean;
   username: string;
+  userId: number;
 }) => {
+  const router = useRouter();
   return (
     <HStack
+      cursor="pointer"
+      onClick={() => router.push(`/profile/${userId}`)}
       w="full"
       h={{ base: "40px", sm: "56px" }}
       bg="glassBackground"

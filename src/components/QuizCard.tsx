@@ -6,6 +6,7 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   // chakra,
   HStack,
   Img,
@@ -65,6 +66,7 @@ const QuizCard = forwardRef(
   ) => {
     const selectedQuizDispatch = useSelectedQuizDispatch();
     const checkIsEnrolled = useCheckEnrolled();
+    const isQuizFinished = quiz?.isFinished;
 
     const router = useRouter();
     const selectedCTA: {
@@ -135,10 +137,23 @@ const QuizCard = forwardRef(
     );
     return (
       <VStack ref={ref} width="full">
-        <Card colored={colored}>
+        <Card
+          sx={{
+            ...(quiz?.isFinished && {
+              // background: "#3E3E4F99",
+
+              "&>div": {
+                background: "#3E3E4F99",
+              },
+            }),
+          }}
+          colored={colored}
+        >
           {quiz?.prizeAmount && quiz?.token && quiz?.details && (
             <VStack mb="8px" rowGap="0">
-              <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
+              <Center>
+                <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
+              </Center>
               <Text
                 textAlign="center"
                 color="gray.60"
@@ -170,7 +185,22 @@ const QuizCard = forwardRef(
               boxSize={isLarge ? "124px" : "80px"}
               src={quiz?.image}
             />
-            {checkIsEnrolled(quiz.id) && (
+            {isQuizFinished && (
+              <Badge
+                position="absolute"
+                bottom="12px"
+                left="50%"
+                transform="translate(-50%,12px)"
+                textTransform="capitalize"
+                px="6px"
+                variant="gray"
+                size="md"
+              >
+                Expired
+              </Badge>
+            )}
+
+            {checkIsEnrolled(quiz.id) && !isQuizFinished && (
               <Badge
                 position="absolute"
                 bottom="12px"

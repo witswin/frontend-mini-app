@@ -12,11 +12,14 @@ import Image from "next/image";
 import { WalletMoney } from "solar-icon-set";
 import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useAuth } from "@/hooks/useAuthorization";
+import { useAccount } from "wagmi";
+import { textTruncator } from "@/utils";
 
-const WalletStatus = ({ signedIn }: { signedIn: boolean }) => {
+const WalletStatus = () => {
+  const authInfo = useAuth();
   return (
     <Badge
-      variant={signedIn ? "green" : "red"}
+      variant={!!authInfo ? "green" : "red"}
       size="xs"
       position="absolute"
       left="0"
@@ -29,7 +32,10 @@ export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)");
   const authInfo = useAuth();
 
-  const { connect, connectors } = useWalletConnection();
+  const { connect } = useWalletConnection();
+
+  const { address } = useAccount();
+  console.log({ authInfo });
 
   return (
     <HStack
@@ -80,27 +86,21 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack w="82px" pl="12px">
-          <Box
-            cursor="pointer"
-            onClick={() =>
-              connect({
-                connector: connectors.find(
-                  (connector) => connector.id === "injected"
-                )!,
-              })
-            }
-            position="relative"
-          >
+        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
+          <Box cursor="pointer" onClick={() => connect()} position="relative">
             <WalletMoney
               iconStyle="BoldDuotone"
               color="var(--chakra-colors-blue)"
               size={24}
             />
-            <WalletStatus signedIn={!!authInfo} />
+            <WalletStatus />
           </Box>
-          <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            Wallet
+          <Text
+            color="gray.40"
+            fontSize={authInfo && address ? "10px" : "sm"}
+            fontWeight="bold"
+          >
+            {authInfo && address && textTruncator(address)}
           </Text>
         </VStack>
       </HStack>

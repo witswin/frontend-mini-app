@@ -27,7 +27,7 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
         onOpen={onOpen}
         ref={ref}
         state={cardState}
-        colored={isIntersecting}
+        colored={isIntersecting && !quiz?.isFinished}
         quiz={quiz}
       />
     </VStack>
