@@ -80,7 +80,7 @@ export const ProfileInfo = () => {
           placeholder="People will know you by this name."
         />
       </FormLabel>
-      <FormLabel width="full">
+      {/* <FormLabel width="full">
         First Name
         <Input
           name="firstName"
@@ -101,7 +101,7 @@ export const ProfileInfo = () => {
           background={colors.inputBackground}
           placeholder=""
         />
-      </FormLabel>
+      </FormLabel> */}
 
       <Button
         onClick={() => onSubmitChanges()}
