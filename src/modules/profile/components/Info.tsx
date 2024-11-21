@@ -18,16 +18,11 @@ import { handleApiError, textTruncator } from "@/utils"
 import { profileInfo } from "@/globalTypes"
 import { useAuth } from "@/hooks/useAuthorization"
 import { getGrade, GradeBadge } from "./Grading"
-import {
-  BrandDiscord,
-  BrandFarcaster,
-  BrandInstagram,
-  BrandTelegram,
-  BrandX,
-} from "./icons"
+import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from "./icons"
 import { SignableMessage } from "viem"
 import { useAccount, useSignMessage } from "wagmi"
 import { axiosClient } from "@/configs/axios"
+import { useQuery } from "@tanstack/react-query"
 
 interface Props {
   userInfo: profileInfo
@@ -49,6 +44,15 @@ export const Info = ({ userInfo }: Props) => {
   }>({ message: null, nonce: "" })
   const { signMessageAsync } = useSignMessage()
   const toast = useToast()
+  const integrationsFetch = useQuery({
+    initialData: undefined,
+    refetchOnMount: true,
+    queryKey: ["fetch-integrations", userInfo.pk],
+    queryFn: () =>
+      axiosClient
+        .get(`/auth/users/${userInfo.pk}/connections/`)
+        .then((res) => res.data),
+  })
 
   useEffect(() => {
     if (!signMessageLoading) return
@@ -66,10 +70,11 @@ export const Info = ({ userInfo }: Props) => {
 
   useEffect(() => {
     // if (window.Telegram.WebApp.initData) return
+    if (!address) return
 
     if (
       ownUser.wallets.find(
-        (item) => item.walletAddress.toLowerCase() === address.toLowerCase()
+        (item) => item.walletAddress?.toLowerCase() === address?.toLowerCase()
       )
     ) {
       setSignMessageLoading(false)
@@ -153,7 +158,7 @@ export const Info = ({ userInfo }: Props) => {
 
       {/* social Links gotta add logic for showing each link*/}
       <HStack w="full" justifyContent="center" wrap="wrap" spacing="16px">
-        <Badge
+        {/* <Badge
           variant="glass"
           size="md"
           display="flex"
@@ -165,59 +170,69 @@ export const Info = ({ userInfo }: Props) => {
           <VStack justifyContent="center">
             <BrandInstagram />
           </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandDiscord />
-          </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandFarcaster />
-          </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandX />
-          </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandTelegram />
-          </VStack>
-        </Badge>
+        </Badge> */}
+        {!!integrationsFetch.data?.Discord && (
+          <Badge
+            variant="glass"
+            size="md"
+            display="flex"
+            justifyContent="center"
+            as={ChakraLink}
+            isExternal
+            href={`https://discord.gg/${integrationsFetch.data?.Discord.username}`}
+          >
+            <VStack justifyContent="center">
+              <BrandDiscord />
+            </VStack>
+          </Badge>
+        )}
+        {!!integrationsFetch.data?.Farcaster && (
+          <Badge
+            variant="glass"
+            size="md"
+            display="flex"
+            justifyContent="center"
+            as={ChakraLink}
+            isExternal
+            href={""}
+          >
+            <VStack justifyContent="center">
+              <BrandFarcaster />
+            </VStack>
+          </Badge>
+        )}
+        {!!integrationsFetch.data?.Twitter &&
+          !!integrationsFetch.data?.Twitter.isConnected && (
+            <Badge
+              variant="glass"
+              size="md"
+              display="flex"
+              justifyContent="center"
+              as={ChakraLink}
+              isExternal
+              href={`https://x.com/${integrationsFetch.data?.Twitter.username}`}
+            >
+              <VStack justifyContent="center">
+                <BrandX />
+              </VStack>
+            </Badge>
+          )}
+        {!!integrationsFetch.data?.Telegram &&
+          !integrationsFetch.data?.Telegram.isPrivate && (
+            <Badge
+              variant="glass"
+              size="md"
+              display="flex"
+              justifyContent="center"
+              as={ChakraLink}
+              isExternal
+              href={`https://t.me/${integrationsFetch.data?.Telegram.username}`}
+            >
+              <VStack justifyContent="center">
+                <BrandTelegram />
+              </VStack>
+            </Badge>
+          )}
         {!!userInfo?.wallets[0] && (
           <Badge variant="glass" size="md">
             <Text fontSize="md" fontWeight={600} color="gray.0" mx="4px">
