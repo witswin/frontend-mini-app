@@ -269,8 +269,9 @@ const QuizCard = forwardRef(
           )}
           {quiz?.participantsCount && quiz?.userProfile && (
             <Text fontSize="xs" fontWeight="600" color="gray.100">
-              {quiz?.participantsCount} / {quiz?.maxParticipants} people
-              enrolled
+              {quiz?.participantsCount}
+              {quiz?.maxParticipants !== 0 && "/ " + quiz?.maxParticipants}{" "}
+              people enrolled
             </Text>
           )}
         </Card>
