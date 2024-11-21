@@ -57,7 +57,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
         account: address,
       })
         .then((res) => {
-          if (!window.Telegram.WebApp.initData)
+          if (!window.Telegram?.WebApp?.initData)
             return axiosClient
               .post("/auth/verify-wallet/", {
                 address: address,

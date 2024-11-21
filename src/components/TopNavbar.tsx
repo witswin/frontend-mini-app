@@ -31,13 +31,12 @@ const WalletStatus = () => {
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)")
-  const health = 3
+  const authInfo = useAuth()
+  const router = useRouter()
 
   const { connect } = useWalletConnection()
 
   const { address } = useAccount()
-  const router = useRouter()
-  const authInfo = useAuth()
   console.log({ authInfo })
 
   return (
@@ -63,20 +62,30 @@ export const TopNavbar = () => {
         w="full"
         justifyContent="space-between"
         px="12px"
-        pt="4px"
-        height="115px"
+        pt={isLarge ? "20px" : "4px"}
       >
-        <VStack>
+        <VStack w="82px">
           <HStack gap="2px">
             {/* <Neuron size={24} /> */}
 
-            <Badge size="sm" variant="glass">
+            {/* <Badge size="sm" variant="glass">
               {"x "}
               {health}
-            </Badge>
+            </Badge> */}
+            <Image
+              src="/assets/images/home/Neuron.svg"
+              alt="neuron"
+              width={22}
+              height={23}
+            />
           </HStack>
-          <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            Health
+          <Text
+            whiteSpace="nowrap"
+            color="gray.40"
+            fontSize="sm"
+            fontWeight="bold"
+          >
+            {`${authInfo?.neuron ?? 0} Neurons`}
           </Text>
         </VStack>
 
@@ -84,7 +93,7 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack my="auto" justifyContent="center" mr="4px">
+        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
           <Box
             cursor="pointer"
             onClick={() => {
