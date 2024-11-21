@@ -16,7 +16,7 @@ import { useAccount } from "wagmi";
 import { textTruncator } from "@/utils";
 
 const WalletStatus = () => {
-  const authInfo = useAuth()
+  const authInfo = useAuth();
   return (
     <Badge
       variant={!!authInfo ? "green" : "red"}
@@ -25,17 +25,16 @@ const WalletStatus = () => {
       left="0"
       bottom="0"
     />
-  )
-}
+  );
+};
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)")
-  const health = 3
+  const [isLarge] = useMediaQuery("(min-width: 500px)");
+  const authInfo = useAuth();
 
-  const { connect } = useWalletConnection()
+  const { connect } = useWalletConnection();
 
   const { address } = useAccount();
-  const authInfo = useAuth();
   console.log({ authInfo });
 
   return (
@@ -61,20 +60,25 @@ export const TopNavbar = () => {
         w="full"
         justifyContent="space-between"
         px="12px"
-        pt="4px"
-        height="115px"
+        pt={isLarge ? "20px" : "4px"}
       >
-        <VStack>
+        <VStack w="82px">
           <HStack gap="2px">
             {/* <Neuron size={24} /> */}
 
-            <Badge size="sm" variant="glass">
+            {/* <Badge size="sm" variant="glass">
               {"x "}
               {health}
-            </Badge>
+            </Badge> */}
+            <Image
+              src="/assets/images/home/Neuron.svg"
+              alt="neuron"
+              width={22}
+              height={23}
+            />
           </HStack>
           <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            Health
+            {`${authInfo?.neurons} Neuorans`}
           </Text>
         </VStack>
 
@@ -82,7 +86,7 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack my="auto" justifyContent="center" mr="4px">
+        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
           <Box cursor="pointer" onClick={() => connect()} position="relative">
             <WalletMoney
               iconStyle="BoldDuotone"
@@ -101,5 +105,5 @@ export const TopNavbar = () => {
         </VStack>
       </HStack>
     </HStack>
-  )
-}
+  );
+};
