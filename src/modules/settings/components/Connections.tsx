@@ -94,22 +94,9 @@ export const DiscordConnection = () => {
 
   const onConnect = async () => {
     try {
-      const response = await axiosClient.get("/auth/discord/", {
-        maxRedirects: 0, // Prevent axios from following the redirect automatically
-        validateStatus: (status) => status >= 200 && status < 400, // Accept 302 as valid
-      })
+      const response = await axiosClient.get("/auth/discord/")
 
-      if (response.status === 302) {
-        // Redirect the user to the URL in the Location header
-        const redirectUrl = response.headers["location"]
-        if (redirectUrl) {
-          window.location.href = redirectUrl // Redirect the user
-        } else {
-          console.error("Redirect location not found")
-        }
-      } else {
-        console.error("Unexpected status code:", response.status)
-      }
+      window.location.href = response.data.data
     } catch (error) {
       console.error("Error making API request:", error)
     }
@@ -158,8 +145,8 @@ export const FarcasterConnection = () => {
     }
 
     axiosClient
-      .post("/auth/user/connect/faraster", {
-        walletAddress: profile.wallets.at(0).walletAddress,
+      .post("/auth/user/connect/farcaster/", {
+        userWalletAddress: profile.wallets.at(0).walletAddress,
       })
       .then(() => {
         setState(undefined)
