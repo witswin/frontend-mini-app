@@ -51,11 +51,17 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       return history.length > 0
     }
 
+    if (router.asPath === "/") {
+      tg.BackButton.hide() // Hide the button on unmount
+
+      return
+    }
+
     if (canGoBack()) {
       tg.BackButton.show() // Show the Telegram Back Button
 
       const onBack = () => {
-        router.back() // Trigger Next.js router back navigation
+        router.back()
       }
 
       tg.BackButton.onClick(onBack)
