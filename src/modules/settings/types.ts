@@ -5,6 +5,7 @@ export type UserConnection = {
     id: number
     userProfile: UserProfile
     createdAt: string
+    username?: string
     isConnected: boolean
   }
 }
@@ -15,6 +16,7 @@ export type TelegramConnection = {
   firstName?: string
   lastName?: string
   isConnected?: boolean
+  isPrivate?: boolean
 }
 
 export type TwitterConnection = Omit<

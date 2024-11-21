@@ -5,19 +5,19 @@ import {
   Text,
   useMediaQuery,
   VStack,
-} from "@chakra-ui/react";
-import HeaderBg from "@/assets/HeaderBgImage.svg";
-import Logo from "@/assets/Logo.svg";
-import Image from "next/image";
-import { WalletMoney } from "solar-icon-set";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { useAuth } from "@/hooks/useAuthorization";
-import { useAccount } from "wagmi";
-import { textTruncator } from "@/utils";
-import Link from "next/link";
+} from "@chakra-ui/react"
+import HeaderBg from "@/assets/HeaderBgImage.svg"
+import Logo from "@/assets/Logo.svg"
+import Image from "next/image"
+import { WalletMoney } from "solar-icon-set"
+import { useWalletConnection } from "@/hooks/useWalletConnection"
+import { useAuth } from "@/hooks/useAuthorization"
+import { useAccount } from "wagmi"
+import { textTruncator } from "@/utils"
+import { useRouter } from "next/router"
 
 const WalletStatus = () => {
-  const authInfo = useAuth();
+  const authInfo = useAuth()
   return (
     <Badge
       variant={!!authInfo ? "green" : "red"}
@@ -26,17 +26,18 @@ const WalletStatus = () => {
       left="0"
       bottom="0"
     />
-  );
-};
+  )
+}
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)");
-  const authInfo = useAuth();
+  const [isLarge] = useMediaQuery("(min-width: 500px)")
+  const authInfo = useAuth()
+  const router = useRouter()
 
-  const { connect } = useWalletConnection();
+  const { connect } = useWalletConnection()
 
-  const { address } = useAccount();
-  console.log({ authInfo });
+  const { address } = useAccount()
+  console.log({ authInfo })
 
   return (
     <HStack
@@ -92,18 +93,16 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack
-          w="82px"
-          pl="12px"
-          my="auto"
-          justifyContent="center"
-          mr="4px"
-          {...(!!authInfo && {
-            as: Link,
-            href: `/profile/${authInfo?.pk}`,
-          })}
-        >
-          <Box cursor="pointer" onClick={() => connect()} position="relative">
+        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
+          <Box
+            cursor="pointer"
+            onClick={() => {
+              if (!authInfo || !authInfo.wallets.length) connect()
+
+              router.push("/profile/" + authInfo.pk)
+            }}
+            position="relative"
+          >
             <WalletMoney
               iconStyle="BoldDuotone"
               color="var(--chakra-colors-blue)"
@@ -121,5 +120,5 @@ export const TopNavbar = () => {
         </VStack>
       </HStack>
     </HStack>
-  );
-};
+  )
+}

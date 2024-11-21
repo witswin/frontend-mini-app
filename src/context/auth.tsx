@@ -71,8 +71,8 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
 
           const hasWallet = !!state.wallets.length
 
-          axiosClient.post(
-            hasWallet ? "/auth/change-wallet" : "/auth/add-wallets/",
+          return axiosClient.post(
+            hasWallet ? "/auth/change-wallets/" : "/auth/add-wallets/",
             {
               address: address,
               signature: res,
