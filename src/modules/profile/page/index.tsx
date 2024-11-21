@@ -42,7 +42,7 @@ export const Profile = () => {
   });
 
   return (
-    <VStack w="full" h="full" gap="16px" >
+    <VStack w="full" h="full" gap="16px" pb="16px">
       <Info userInfo={infoData} />
       <Stat userStats={statsData} />
       <Quizzes quizzes={quizData} />

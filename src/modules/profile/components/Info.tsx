@@ -9,10 +9,10 @@ import {
   Text,
   VStack,
   Link as ChakraLink,
+  Image,
 } from "@chakra-ui/react";
 import { SettingsMinimalistic, WalletMoney } from "solar-icon-set";
 import Link from "next/link";
-import Image from "next/image";
 import { textTruncator } from "@/utils";
 import { profileInfo } from "@/globalTypes";
 import { useAuth } from "@/hooks/useAuthorization";
@@ -38,13 +38,13 @@ export const Info = ({ userInfo }: Props) => {
 
   return (
     <Card>
-      <VStack position="relative" boxSize="92px" justifyContent="center">
+      <VStack position="relative" boxSize="102px" justifyContent="center">
         <CircularProgress
           value={40}
           top={0}
           left={0}
-          size="92px"
-          thickness="2px" /* Adjust border thickness */
+          size="102px"
+          thickness="2px"
           color={grade.color}
           trackColor="gray.600"
           position="absolute"
@@ -53,8 +53,9 @@ export const Info = ({ userInfo }: Props) => {
         <Image
           alt="avatar"
           src={userInfo?.image || "/assets/images/profile/Avatar.svg"}
-          width={80}
-          height={80}
+          boxSize={"80px"}
+          borderRadius="full"
+          fit="cover"
         />
         <VStack
           boxSize="32px"
@@ -70,11 +71,12 @@ export const Info = ({ userInfo }: Props) => {
       </VStack>
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
-          {userInfo?.first_name + userInfo?.last_name || `user_${userInfo?.pk}`}
+          {userInfo.username}
         </Text>
         {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
-            {ownUser.username}
+            {userInfo?.first_name + userInfo?.last_name ||
+              `user_${userInfo?.pk}`}
           </Text>
         )}
       </VStack>
