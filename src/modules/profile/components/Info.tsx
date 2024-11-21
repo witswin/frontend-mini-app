@@ -1,5 +1,5 @@
-import React from "react";
-import { Card } from "./Card";
+import React, { useEffect, useState } from "react"
+import { Card } from "./Card"
 import {
   Badge,
   CircularProgress,
@@ -9,32 +9,118 @@ import {
   Text,
   VStack,
   Link as ChakraLink,
-} from "@chakra-ui/react";
-import { SettingsMinimalistic, WalletMoney } from "solar-icon-set";
-import Link from "next/link";
-import Image from "next/image";
-import { textTruncator } from "@/utils";
-import { profileInfo } from "@/globalTypes";
-import { useAuth } from "@/hooks/useAuthorization";
-import { getGrade, GradeBadge } from "./Grading";
-import {
-  BrandDiscord,
-  BrandFarcaster,
-  BrandInstagram,
-  BrandTelegram,
-  BrandX,
-} from "./icons";
+  Image,
+  useToast,
+} from "@chakra-ui/react"
+import { SettingsMinimalistic, WalletMoney } from "solar-icon-set"
+import Link from "next/link"
+import { handleApiError, textTruncator } from "@/utils"
+import { profileInfo } from "@/globalTypes"
+import { useAuth } from "@/hooks/useAuthorization"
+import { getGrade, GradeBadge } from "./Grading"
+import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from "./icons"
+import { SignableMessage } from "viem"
+import { useAccount, useSignMessage } from "wagmi"
+import { axiosClient } from "@/configs/axios"
+import { useQuery } from "@tanstack/react-query"
+import { Integrations, UserConnection } from "@/modules/settings/types"
 
 interface Props {
-  userInfo: profileInfo;
+  userInfo: profileInfo
 }
 
 export const Info = ({ userInfo }: Props) => {
-  const ownUser = useAuth();
+  const ownUser = useAuth()
 
-  const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false;
+  const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false
   // const isOwnProfile = userInfo.pk === ownUser.pk;
-  const grade = getGrade(userInfo.neuron);
+  const grade = getGrade(userInfo.neuron)
+
+  const { isConnected, address } = useAccount()
+
+  const [signMessageLoading, setSignMessageLoading] = useState(false)
+  const [message, setMessage] = useState<{
+    message: SignableMessage
+    nonce: string
+  }>({ message: null, nonce: "" })
+  const { signMessageAsync } = useSignMessage()
+  const toast = useToast()
+  const integrationsFetch = useQuery({
+    initialData: undefined,
+    refetchOnMount: true,
+    queryKey: ["fetch-integrations", userInfo.pk],
+    queryFn: () =>
+      axiosClient.get(`/auth/users/${userInfo.pk}/connections/`).then((res) => {
+        const data = res.data as UserConnection[]
+
+        const transformedData = data.reduce((prev, curr) => {
+          const name = Object.keys(curr)[0]
+
+          if (!curr[name].isConnected) return prev
+
+          prev[name] = curr[name]
+          return prev
+        }, {} as UserConnection)
+
+        return transformedData as Integrations
+      }),
+  })
+
+  useEffect(() => {
+    if (!signMessageLoading) return
+
+    if (isConnected && address) {
+      axiosClient
+        .post("/auth/create-message/", {
+          address,
+        })
+        .then(({ data }) => {
+          setMessage({ message: data.message, nonce: data.nonce })
+        })
+    }
+  }, [address, isConnected, setSignMessageLoading, signMessageLoading])
+
+  useEffect(() => {
+    // if (window.Telegram.WebApp.initData) return
+    if (!address) return
+
+    if (
+      ownUser.wallets.find(
+        (item) => item.walletAddress?.toLowerCase() === address?.toLowerCase()
+      )
+    ) {
+      setSignMessageLoading(false)
+      return
+    }
+
+    if (message.message) {
+      signMessageAsync({
+        message: message.message,
+        account: address,
+      })
+        .then((res) => {
+          const hasWallet = !!ownUser.wallets.length
+
+          axiosClient.post(
+            hasWallet ? "/auth/change-wallets/" : "/auth/add-wallets/",
+            {
+              address: address,
+              signature: res,
+              nonce: message.nonce,
+            }
+          )
+        })
+        .catch((err) => {
+          handleApiError(err, toast)
+          console.warn(err)
+        })
+        .finally(() => {})
+    }
+  }, [message, ownUser, signMessageLoading, toast])
+
+  const onConnectWallet = () => {
+    setSignMessageLoading(true)
+  }
 
   return (
     <Card>
@@ -51,10 +137,11 @@ export const Info = ({ userInfo }: Props) => {
           transform="rotate(225deg)"
         />
         <Image
+          borderRadius="full"
           alt="avatar"
           src={userInfo?.image || "/assets/images/profile/Avatar.svg"}
-          width={80}
-          height={80}
+          width={`80px`}
+          height={`80px`}
         />
         <VStack
           boxSize="32px"
@@ -83,7 +170,7 @@ export const Info = ({ userInfo }: Props) => {
 
       {/* social Links gotta add logic for showing each link*/}
       <HStack w="full" justifyContent="center" wrap="wrap" spacing="16px">
-        <Badge
+        {/* <Badge
           variant="glass"
           size="md"
           display="flex"
@@ -95,60 +182,70 @@ export const Info = ({ userInfo }: Props) => {
           <VStack justifyContent="center">
             <BrandInstagram />
           </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandDiscord />
-          </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandFarcaster />
-          </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandX />
-          </VStack>
-        </Badge>
-        <Badge
-          variant="glass"
-          size="md"
-          display="flex"
-          justifyContent="center"
-          as={ChakraLink}
-          isExternal
-          href={""}
-        >
-          <VStack justifyContent="center">
-            <BrandTelegram />
-          </VStack>
-        </Badge>
-        {!!userInfo?.wallets[0] && (
+        </Badge> */}
+        {!!integrationsFetch.data?.Discord && (
+          <Badge
+            variant="glass"
+            size="md"
+            display="flex"
+            justifyContent="center"
+            as={ChakraLink}
+            isExternal
+            href={`https://discord.gg/${integrationsFetch.data?.Discord.username}`}
+          >
+            <VStack justifyContent="center">
+              <BrandDiscord />
+            </VStack>
+          </Badge>
+        )}
+        {!!integrationsFetch.data?.Farcaster && (
+          <Badge
+            variant="glass"
+            size="md"
+            display="flex"
+            justifyContent="center"
+            as={ChakraLink}
+            isExternal
+            href={""}
+          >
+            <VStack justifyContent="center">
+              <BrandFarcaster />
+            </VStack>
+          </Badge>
+        )}
+        {!!integrationsFetch.data?.Twitter &&
+          !!integrationsFetch.data?.Twitter.isConnected && (
+            <Badge
+              variant="glass"
+              size="md"
+              display="flex"
+              justifyContent="center"
+              as={ChakraLink}
+              isExternal
+              href={`https://x.com/${integrationsFetch.data?.Twitter.username}`}
+            >
+              <VStack justifyContent="center">
+                <BrandX />
+              </VStack>
+            </Badge>
+          )}
+        {!!integrationsFetch.data?.Telegram &&
+          !integrationsFetch.data?.Telegram.isPrivate && (
+            <Badge
+              variant="glass"
+              size="md"
+              display="flex"
+              justifyContent="center"
+              as={ChakraLink}
+              isExternal
+              href={`https://t.me/${integrationsFetch.data?.Telegram.username}`}
+            >
+              <VStack justifyContent="center">
+                <BrandTelegram />
+              </VStack>
+            </Badge>
+          )}
+        {!!userInfo?.wallets?.length && (
           <Badge variant="glass" size="md">
             <Text fontSize="md" fontWeight={600} color="gray.0" mx="4px">
               {textTruncator(userInfo?.wallets[0].walletAddress)}
@@ -186,15 +283,15 @@ export const Info = ({ userInfo }: Props) => {
             justifyContent="center"
             alignItems="center"
             cursor="pointer"
-            onClick={() => {}}
+            onClick={onConnectWallet}
           >
             <WalletMoney color="gray.20" size={20} iconStyle="Bold" />
             <Text fontSize="md" fontWeight={600} color="gray.20">
-              Connect Wallet
+              {userInfo.wallets.length ? "Change Wallet" : "Connect Wallet"}
             </Text>
           </HStack>
         </Flex>
       )}
     </Card>
-  );
-};
+  )
+}

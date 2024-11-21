@@ -5,15 +5,16 @@ import {
   Text,
   useMediaQuery,
   VStack,
-} from "@chakra-ui/react";
-import HeaderBg from "@/assets/HeaderBgImage.svg";
-import Logo from "@/assets/Logo.svg";
-import Image from "next/image";
-import { WalletMoney } from "solar-icon-set";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { useAuth } from "@/hooks/useAuthorization";
-import { useAccount } from "wagmi";
-import { textTruncator } from "@/utils";
+} from "@chakra-ui/react"
+import HeaderBg from "@/assets/HeaderBgImage.svg"
+import Logo from "@/assets/Logo.svg"
+import Image from "next/image"
+import { WalletMoney } from "solar-icon-set"
+import { useWalletConnection } from "@/hooks/useWalletConnection"
+import { useAuth } from "@/hooks/useAuthorization"
+import { useAccount } from "wagmi"
+import { textTruncator } from "@/utils"
+import { useRouter } from "next/router"
 
 const WalletStatus = () => {
   const authInfo = useAuth()
@@ -30,13 +31,13 @@ const WalletStatus = () => {
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery("(min-width: 500px)")
-  const health = 3
+  const authInfo = useAuth()
+  const router = useRouter()
 
   const { connect } = useWalletConnection()
 
-  const { address } = useAccount();
-  const authInfo = useAuth();
-  console.log({ authInfo });
+  const { address } = useAccount()
+  console.log({ authInfo })
 
   return (
     <HStack
@@ -61,20 +62,30 @@ export const TopNavbar = () => {
         w="full"
         justifyContent="space-between"
         px="12px"
-        pt="4px"
-        height="115px"
+        pt={isLarge ? "20px" : "4px"}
       >
-        <VStack>
+        <VStack w="82px">
           <HStack gap="2px">
             {/* <Neuron size={24} /> */}
 
-            <Badge size="sm" variant="glass">
+            {/* <Badge size="sm" variant="glass">
               {"x "}
               {health}
-            </Badge>
+            </Badge> */}
+            <Image
+              src="/assets/images/home/Neuron.svg"
+              alt="neuron"
+              width={22}
+              height={23}
+            />
           </HStack>
-          <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            Health
+          <Text
+            whiteSpace="nowrap"
+            color="gray.40"
+            fontSize="sm"
+            fontWeight="bold"
+          >
+            {`${authInfo?.neuron ?? 0} Neurons`}
           </Text>
         </VStack>
 
@@ -82,8 +93,16 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack my="auto" justifyContent="center" mr="4px">
-          <Box cursor="pointer" onClick={() => connect()} position="relative">
+        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
+          <Box
+            cursor="pointer"
+            onClick={() => {
+              if (!authInfo || !authInfo.wallets.length) connect()
+
+              router.push("/profile/" + authInfo.pk)
+            }}
+            position="relative"
+          >
             <WalletMoney
               iconStyle="BoldDuotone"
               color="var(--chakra-colors-blue)"

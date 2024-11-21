@@ -77,5 +77,6 @@ export type UserProfile = {
   firstName?: string
   lastName?: string
   username: string
+  neuron: number
   image?: string
 }

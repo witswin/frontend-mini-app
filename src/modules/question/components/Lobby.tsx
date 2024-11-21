@@ -1,7 +1,8 @@
-import { ColorFullText } from "@/components/ColorFullText";
-import { CountDown } from "@/components/CountDown";
-import { axiosClient } from "@/configs/axios";
-import { quizType } from "@/globalTypes";
+import { ColorFullText } from "@/components/ColorFullText"
+import { CountDown } from "@/components/CountDown"
+import { axiosClient } from "@/configs/axios"
+import { quizType } from "@/globalTypes"
+import { useAuth } from "@/hooks/useAuthorization"
 import {
   Box,
   Divider,
@@ -11,18 +12,18 @@ import {
   UnorderedList,
   VStack,
   chakra,
-} from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { useMemo } from "react";
-import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
+} from "@chakra-ui/react"
+import { useQuery } from "@tanstack/react-query"
+import { useRouter } from "next/router"
+import { useMemo } from "react"
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set"
 
 interface HintContentProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: (args: any) => JSX.Element;
-  title: string;
-  description: string;
-  iconType: string;
+  icon: (args: any) => JSX.Element
+  title: string
+  description: string
+  iconType: string
 }
 const HintContent = ({
   description,
@@ -62,17 +63,17 @@ const HintContent = ({
       {description}
     </Text>
   </VStack>
-);
+)
 
 const Rules = () => {
-  const { query } = useRouter();
+  const { query } = useRouter()
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  });
+  })
 
   return (
     <VStack width="full">
@@ -120,18 +121,18 @@ const Rules = () => {
         </Text>
       </UnorderedList>
     </VStack>
-  );
-};
+  )
+}
 
 const HintInfo = () => {
-  const { query } = useRouter();
+  const { query } = useRouter()
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  });
+  })
 
   const content = useMemo(
     () => ({
@@ -161,7 +162,7 @@ const HintInfo = () => {
       ),
     }),
     []
-  );
+  )
   return (
     <VStack width="full">
       <Text fontSize="md" fontWeight="bold" width="full">
@@ -169,10 +170,12 @@ const HintInfo = () => {
       </Text>
       {data?.builtInHints?.map((hint) => content[hint.hint.hintType])}
     </VStack>
-  );
-};
+  )
+}
 export const Lobby = () => {
-  const { query } = useRouter();
+  const { query } = useRouter()
+
+  const auth = useAuth()
 
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
@@ -180,7 +183,7 @@ export const Lobby = () => {
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  });
+  })
   return (
     <VStack
       width="full"
@@ -191,8 +194,16 @@ export const Lobby = () => {
       maxH="100vh"
     >
       <VStack flex={0} height="auto" width="full" rowGap="24px">
-        <ColorFullText fontSize="5xl" textContent="Welcome, M.Hossein! " />
-        <Text fontSize="5xl" color="gray.0" lineHeight="36px">
+        <ColorFullText
+          fontSize="5xl"
+          textContent={`Welcome, ${auth.username ?? "Guest User"}!`}
+        />
+        <Text
+          fontSize="5xl"
+          textAlign="center"
+          color="gray.0"
+          lineHeight="36px"
+        >
           Get ready to test your knowledge!
         </Text>
         <Text>The quiz starts in:</Text>
@@ -227,5 +238,5 @@ export const Lobby = () => {
         <HintInfo />
       </VStack>
     </VStack>
-  );
-};
+  )
+}
