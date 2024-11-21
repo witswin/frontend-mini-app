@@ -47,6 +47,7 @@ export default function App({
         defaultOptions: {
           queries: {
             staleTime: 60 * 10000,
+            refetchOnMount:true,
           },
         },
       })
