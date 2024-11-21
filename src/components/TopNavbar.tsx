@@ -14,6 +14,7 @@ import { useWalletConnection } from "@/hooks/useWalletConnection";
 import { useAuth } from "@/hooks/useAuthorization";
 import { useAccount } from "wagmi";
 import { textTruncator } from "@/utils";
+import Link from "next/link";
 
 const WalletStatus = () => {
   const authInfo = useAuth();
@@ -77,8 +78,13 @@ export const TopNavbar = () => {
               height={23}
             />
           </HStack>
-          <Text whiteSpace="nowrap" color="gray.40" fontSize="sm" fontWeight="bold">
-            {`${authInfo?.neuron ??   0} Neurons`}
+          <Text
+            whiteSpace="nowrap"
+            color="gray.40"
+            fontSize="sm"
+            fontWeight="bold"
+          >
+            {`${authInfo?.neuron ?? 0} Neurons`}
           </Text>
         </VStack>
 
@@ -86,7 +92,17 @@ export const TopNavbar = () => {
           <Image src={Logo} alt="wits" />
         </VStack>
 
-        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
+        <VStack
+          w="82px"
+          pl="12px"
+          my="auto"
+          justifyContent="center"
+          mr="4px"
+          {...(!!authInfo && {
+            as: Link,
+            href: `/profile/${authInfo?.pk}`,
+          })}
+        >
           <Box cursor="pointer" onClick={() => connect()} position="relative">
             <WalletMoney
               iconStyle="BoldDuotone"
