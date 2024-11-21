@@ -13,12 +13,12 @@ export const QuizWinners = ({ finishedData }: QuizWinnersProps) => {
     <VStack w="full" gap={{ base: "8px", sm: "16px" }} pb="128px">
       {finishedData?.map((user) => (
         <WinnerCard
-          userId={user.pk}
-          key={user.pk}
-          name={user.firstName}
-          walletAddress={user.wallets[0].walletAddress}
-          isSelfUser={user.pk === authInfo?.pk}
-          username={user.username}
+          userId={user?.pk}
+          key={user?.pk}
+          name={user?.firstName}
+          walletAddress={user?.wallets?.[0]?.walletAddress}
+          isSelfUser={user?.pk === authInfo?.pk}
+          username={user?.username}
         />
       ))}
     </VStack>
