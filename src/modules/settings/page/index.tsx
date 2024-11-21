@@ -8,6 +8,7 @@ import { useProfile, useProfileDispatch } from "../hooks";
 import { AxiosError } from "axios";
 import { handleApiError } from "@/utils";
 import { UserProfile } from "@/types";
+import { useRouter } from "next/router";
 
 export const SettingsPage = () => {
   const toast = useToast();
@@ -21,6 +22,7 @@ export const SettingsPage = () => {
   const [isError, setIsError] = useState(false);
 
   const formData = useMemo(() => new FormData(), []);
+  const router = useRouter();
 
   useEffect(() => {
     setFormState(profile ?? {});
@@ -64,6 +66,7 @@ export const SettingsPage = () => {
       })
       .finally(() => {
         setLoading(false);
+        router.push(`/profile/${profile.pk}`);
       });
   };
 
