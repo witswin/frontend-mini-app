@@ -1,26 +1,23 @@
-import { QuizPrize } from "@/components/QuizCard"
+import { QuizPrize } from "@/components/QuizCard";
 import {
   Badge,
   Box,
   Button,
-  chakra,
   HStack,
   Img,
-  Tag,
   Text,
   useToast,
   VStack,
-} from "@chakra-ui/react"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { ArticleCard } from "../../components/ArticleCard"
-import dynamic from "next/dynamic"
-import { useEffect, useMemo } from "react"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/router"
-import { axiosClient } from "@/configs/axios"
-import { enrolledCompetition, quizType } from "@/globalTypes"
-import { DoubleAltArrowRight, Logout3 } from "solar-icon-set"
-import { useCheckEnrolled } from "@/modules/home/hooks"
+} from "@chakra-ui/react";
+import { ArticleCard } from "../../components/ArticleCard";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { axiosClient } from "@/configs/axios";
+import { enrolledCompetition, quizType } from "@/globalTypes";
+import { DoubleAltArrowRight, Logout3 } from "solar-icon-set";
+import { useCheckEnrolled } from "@/modules/home/hooks";
 import {
   useEnrolledModalProps,
   useGetCardState,
@@ -34,26 +31,25 @@ import { AxiosError, AxiosResponse } from "axios";
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
   { ssr: false }
-)
-const ChakraSwiper = chakra(Swiper)
+);
 export const QuizInfo = () => {
-  const { query } = useRouter()
+  const { query } = useRouter();
   const { data } = useQuery<quizType>({
     queryKey: ["quiz", query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  })
-  const router = useRouter()
+  });
+  const router = useRouter();
 
-  const checkIsEnrolledQuiz = useCheckEnrolled()
-  const isEnrolled = checkIsEnrolledQuiz(data?.id)
-  const cardState = useGetCardState(data)
+  const checkIsEnrolledQuiz = useCheckEnrolled();
+  const isEnrolled = checkIsEnrolledQuiz(data?.id);
+  const cardState = useGetCardState(data);
 
   const queryClient = useQueryClient();
 
-  const authInfo = useAuth()
+  const authInfo = useAuth();
 
   const { data: enrolledCompetitions } = useQuery({
     queryKey: ["enrolledCompetition", authInfo?.token, query?.id],
@@ -69,13 +65,13 @@ export const QuizInfo = () => {
         )
         .then((res) => res.data),
     enabled: !!authInfo?.token,
-  })
+  });
 
   const toast = useToast({
     position: "bottom",
-  })
+  });
 
-  const selectedQuizDispatch = useSelectedQuizDispatch()
+  const selectedQuizDispatch = useSelectedQuizDispatch();
   const { mutate } = useMutation({
     mutationFn: async () => {
       return await axiosClient
@@ -84,35 +80,35 @@ export const QuizInfo = () => {
             Authorization: `TOKEN ${authInfo?.token}`,
           },
         })
-        .then((res) => console.log(res.data))
+        .then((res) => console.log(res.data));
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({
         description: data.response.data.detail,
         status: "error",
-      })
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] })
+      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
       toast({
         description: `You have enrolled ${data?.title}`,
         status: "success",
-      })
+      });
     },
-  })
+  });
 
-  const { onOpen } = useEnrolledModalProps()
+  const { onOpen } = useEnrolledModalProps();
 
   useEffect(() => {
-    selectedQuizDispatch(data)
-  }, [])
+    selectedQuizDispatch(data);
+  }, []);
 
   const CTAButton = useMemo(
     () => ({
       [CARD_STATE.join]: isEnrolled ? null : (
         <Button
           onClick={() => {
-            router.push(`/quiz/${data.id}/match`)
+            router.push(`/quiz/${data.id}/match`);
           }}
           width="full"
           size="lg"
@@ -124,7 +120,7 @@ export const QuizInfo = () => {
       [CARD_STATE.lobby]: (
         <Button
           onClick={() => {
-            router.push(`/quiz/${data.id}/match`)
+            router.push(`/quiz/${data.id}/match`);
           }}
           rightIcon={
             <DoubleAltArrowRight
@@ -144,9 +140,9 @@ export const QuizInfo = () => {
         <Button
           onClick={() => {
             if (data?.isFinished) {
-              router.push(`/quiz/${data.id}/result`)
+              router.push(`/quiz/${data.id}/result`);
             } else {
-              router.push(`/quiz/${data.id}/match`)
+              router.push(`/quiz/${data.id}/match`);
             }
           }}
           width="full"
@@ -175,7 +171,7 @@ export const QuizInfo = () => {
       ),
     }),
     [authInfo]
-  )
+  );
 
   return (
     <>
@@ -244,7 +240,8 @@ export const QuizInfo = () => {
               lineHeight="16px"
               color="gray.100"
             >
-              {data?.participantsCount} / {data?.maxParticipants}
+              {data?.participantsCount}
+              {data?.maxParticipants !== 0 && "/ " + data?.maxParticipants}
             </Text>
           </VStack>
           {data?.startAt && (
@@ -260,7 +257,7 @@ export const QuizInfo = () => {
             />
           )}
 
-          {isEnrolled ? (
+          {isEnrolled && (
             <Box width="full" position="relative" zIndex={0}>
               <Button
                 onClick={() => mutate()}
@@ -277,22 +274,6 @@ export const QuizInfo = () => {
                 Cancel Enrollment
               </Button>
             </Box>
-          ) : (
-            <ChakraSwiper
-              slidesPerView="auto"
-              spaceBetween={8}
-              py="2px"
-              px="2px"
-              width="full"
-            >
-              {["Aura Authentication", "Unitap Pass Owner"].map((value) => (
-                <SwiperSlide style={{ width: "fit-content" }} key={value}>
-                  <Tag size="sm" variant="gray">
-                    {value}
-                  </Tag>
-                </SwiperSlide>
-              ))}
-            </ChakraSwiper>
           )}
         </VStack>
         {data?.resources
@@ -326,5 +307,5 @@ export const QuizInfo = () => {
 
       <EnrolledCard />
     </>
-  )
-}
+  );
+};

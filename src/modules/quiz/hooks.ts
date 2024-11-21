@@ -46,7 +46,7 @@ export const useGetCardState = (competition: quizType) => {
     if (!isEnrolled && timeState !== "expired") {
       setCompetitionState(CARD_STATE.enroll);
     } else {
-      if (timeState === "default") {
+      if (timeState === "default" && competition.resources.length !== 0) {
         setCompetitionState(CARD_STATE.resource);
       } else if (timeState === "lobby") {
         setCompetitionState(CARD_STATE.lobby);
