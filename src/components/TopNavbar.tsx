@@ -5,15 +5,16 @@ import {
   Text,
   useMediaQuery,
   VStack,
-} from "@chakra-ui/react";
-import HeaderBg from "@/assets/HeaderBgImage.svg";
-import Logo from "@/assets/Logo.svg";
-import Image from "next/image";
-import { WalletMoney } from "solar-icon-set";
-import { useWalletConnection } from "@/hooks/useWalletConnection";
-import { useAuth } from "@/hooks/useAuthorization";
-import { useAccount } from "wagmi";
-import { textTruncator } from "@/utils";
+} from "@chakra-ui/react"
+import HeaderBg from "@/assets/HeaderBgImage.svg"
+import Logo from "@/assets/Logo.svg"
+import Image from "next/image"
+import { WalletMoney } from "solar-icon-set"
+import { useWalletConnection } from "@/hooks/useWalletConnection"
+import { useAuth } from "@/hooks/useAuthorization"
+import { useAccount } from "wagmi"
+import { textTruncator } from "@/utils"
+import { useRouter } from "next/router"
 
 const WalletStatus = () => {
   const authInfo = useAuth()
@@ -34,9 +35,10 @@ export const TopNavbar = () => {
 
   const { connect } = useWalletConnection()
 
-  const { address } = useAccount();
-  const authInfo = useAuth();
-  console.log({ authInfo });
+  const { address } = useAccount()
+  const router = useRouter()
+  const authInfo = useAuth()
+  console.log({ authInfo })
 
   return (
     <HStack
@@ -83,7 +85,15 @@ export const TopNavbar = () => {
         </VStack>
 
         <VStack my="auto" justifyContent="center" mr="4px">
-          <Box cursor="pointer" onClick={() => connect()} position="relative">
+          <Box
+            cursor="pointer"
+            onClick={() => {
+              if (!authInfo || !authInfo.wallets.length) connect()
+
+              router.push("/profile/" + authInfo.pk)
+            }}
+            position="relative"
+          >
             <WalletMoney
               iconStyle="BoldDuotone"
               color="var(--chakra-colors-blue)"
