@@ -23,6 +23,7 @@ import { SignableMessage } from "viem"
 import { useAccount, useSignMessage } from "wagmi"
 import { axiosClient } from "@/configs/axios"
 import { useQuery } from "@tanstack/react-query"
+import { Integrations, UserConnection } from "@/modules/settings/types"
 
 interface Props {
   userInfo: profileInfo
@@ -49,9 +50,20 @@ export const Info = ({ userInfo }: Props) => {
     refetchOnMount: true,
     queryKey: ["fetch-integrations", userInfo.pk],
     queryFn: () =>
-      axiosClient
-        .get(`/auth/users/${userInfo.pk}/connections/`)
-        .then((res) => res.data),
+      axiosClient.get(`/auth/users/${userInfo.pk}/connections/`).then((res) => {
+        const data = res.data as UserConnection[]
+
+        const transformedData = data.reduce((prev, curr) => {
+          const name = Object.keys(curr)[0]
+
+          if (!curr[name].isConnected) return prev
+
+          prev[name] = curr[name]
+          return prev
+        }, {} as UserConnection)
+
+        return transformedData as Integrations
+      }),
   })
 
   useEffect(() => {
