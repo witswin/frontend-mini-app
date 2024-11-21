@@ -1,15 +1,17 @@
-import { Divider, Flex, Text, VStack } from "@chakra-ui/react";
-import React from "react";
-import { Card } from "./Card";
-import { CheckCircle, Notes, Ranking } from "solar-icon-set";
-import { profileStats } from "@/globalTypes";
+import { Divider, Flex, Text, VStack } from "@chakra-ui/react"
+import React from "react"
+import { Card } from "./Card"
+import { CheckCircle, Notes, Ranking } from "solar-icon-set"
+import { profileStats } from "@/globalTypes"
 
 interface Props {
-  userStats: profileStats;
+  userStats: profileStats
 }
 
 export const Stat = ({ userStats }: Props) => {
-  const { rank, quizCount, winrate } = userStats;
+  if (!userStats) return null
+
+  const { rank, quizCount, winrate } = userStats
 
   return (
     <Card>
@@ -100,5 +102,5 @@ export const Stat = ({ userStats }: Props) => {
         </VStack>
       </Flex>
     </Card>
-  );
-};
+  )
+}

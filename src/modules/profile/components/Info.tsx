@@ -245,7 +245,7 @@ export const Info = ({ userInfo }: Props) => {
               </VStack>
             </Badge>
           )}
-        {!!userInfo?.wallets.length && (
+        {!!userInfo?.wallets?.length && (
           <Badge variant="glass" size="md">
             <Text fontSize="md" fontWeight={600} color="gray.0" mx="4px">
               {textTruncator(userInfo?.wallets[0].walletAddress)}
