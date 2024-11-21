@@ -1,33 +1,40 @@
-import { colors } from "@/theme/colors"
+import { colors } from "@/theme/colors";
 import {
-  Box,
   Button,
   Divider,
+  Flex,
+  HStack,
   Image,
   Input,
   Text,
+  useMediaQuery,
   useToast,
-} from "@chakra-ui/react"
-import { GalleryAdd, TrashBinTrash, User } from "solar-icon-set"
-import { CardSection } from "./CardSection"
-import { useProfile, useProfileDispatch } from "../hooks"
-import { axiosClient } from "@/configs/axios"
-import { useRef, useState } from "react"
-import { handleApiError } from "@/utils"
+  VStack,
+} from "@chakra-ui/react";
+import { GalleryAdd, TrashBinTrash, User } from "solar-icon-set";
+import { CardSection } from "./CardSection";
+import { useProfile, useProfileDispatch } from "../hooks";
+import { axiosClient } from "@/configs/axios";
+import { useRef, useState } from "react";
+import { handleApiError } from "@/utils";
 
 export const ProfilePicture = () => {
-  const { profile } = useProfile()
-  const setState = useProfileDispatch()
-  const inputRef = useRef<HTMLInputElement>(null)
-  const toast = useToast()
+  const { profile } = useProfile();
+  const setState = useProfileDispatch();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isLarge] = useMediaQuery("(min-width: 400px)");
 
-  const [loading, setLoading] = useState(false)
+  const toast = useToast({
+    containerStyle: { color: "black" },
+  });
+
+  const [loading, setLoading] = useState(false);
 
   const onRemoveImage = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { wallets: _, ...rest } = profile
+    const { wallets: _, ...rest } = profile;
 
-    setLoading(true)
+    setLoading(true);
 
     axiosClient
       .put("/auth/info/", {
@@ -35,114 +42,154 @@ export const ProfilePicture = () => {
         image: null,
       })
       .then(() => {
-        setState(undefined)
+        setState(undefined);
         toast({
           description: "Profile updated successfully",
           status: "success",
-        })
+        });
       })
       .catch((e) => {
-        console.error("Something happened on updating user profile !", e)
-        handleApiError(e, toast)
+        console.error("Something happened on updating user profile !", e);
+        handleApiError(e, toast);
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }
+        setLoading(false);
+      });
+  };
 
   const onUploadImage = (file: File) => {
-    const formData = new FormData()
+    const formData = new FormData();
 
-    formData.append("image", file)
-    formData.append("username", profile.username)
-    formData.append("firstName", profile.firstName)
-    formData.append("lastName", profile.lastName)
-    setLoading(true)
+    formData.append("image", file);
+    formData.append("username", profile.username);
+    setLoading(true);
 
     axiosClient
       .put("/auth/info/", formData)
       .then(() => {
-        setState(undefined)
+        setState(undefined);
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }
+        setLoading(false);
+        inputRef.current.value = "";
+      });
+  };
+
+  const supportedFormats = ["image/jpeg", "image/png", "image/jpg"];
 
   return (
     <CardSection>
-      <Box
-        fontSize="small"
-        padding={0}
-        width={128}
-        height={128}
-        borderRadius="full"
-        background={colors.glassBackground}
-        display="grid"
-        placeItems="center"
-      >
-        {profile?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <Image
-            objectFit="cover"
-            borderRadius="full"
-            alt={profile.username}
-            src={profile?.image}
-            className="w-full h-full"
-          />
-        ) : (
-          <User iconStyle="Bold" size={76} />
-        )}
+      <VStack w="full" gap="32px">
+        <VStack
+          fontSize="small"
+          padding={0}
+          boxSize="124px"
+          borderRadius="full"
+          background={colors.glassBackground}
+          display="grid"
+          placeItems="center"
+        >
+          {!!profile?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <Image
+              fit="cover"
+              borderRadius="full"
+              alt={profile.username}
+              src={profile?.image}
+              className="w-full h-full"
+              boxSize="124px"
+            />
+          ) : (
+            <User iconStyle="Bold" size={76} />
+          )}
+        </VStack>
         <Input
           display="none"
           onChange={(e) => {
-            if (!e.target || !e.target.files.length) return
+            if (
+              !e.target ||
+              !e.target.files.length ||
+              !supportedFormats.includes(e.target.files[0].type)
+            ) {
+              toast({
+                title: "Invalid Image File",
+                description:
+                  "Please upload an image in JPG or PNG format under 5 MB.",
+                status: "error",
+              });
+              inputRef.current.value = "";
+              return;
+            }
 
-            onUploadImage(e.target.files[0])
+            onUploadImage(e.target.files[0]);
           }}
           type="file"
           ref={inputRef}
         />
-      </Box>
 
-      <Box
-        mt="4"
-        gap={2}
-        display="flex"
-        alignItems="center"
-        justifyContent="space-evenly"
-        background={colors.glassBackground}
-        padding="2"
-        borderRadius="8px"
-        width="full"
-      >
-        <Button
-          isLoading={loading}
-          variant="unstyled"
-          display="flex"
+        <Flex
+          bg="glassBackground"
+          borderRadius="8px"
+          p="8px"
+          gap="8px"
+          h="54px"
+          w="full"
           alignItems="center"
-          gap={1}
-          textColor={colors.gray[20]}
-          onClick={() => inputRef.current?.click()}
         >
-          <GalleryAdd size={25} />
-          <Text>Upload Photo</Text>
-        </Button>
-        <Divider orientation="vertical" height="20px" />
-        <Button
-          isLoading={loading}
-          disabled={!!profile?.image}
-          variant="unstyled"
-          display="flex"
-          alignItems="center"
-          gap={3}
-          textColor={colors.gray[20]}
-          onClick={onRemoveImage}
-        >
-          <TrashBinTrash size={25} />
-          <Text>Remove Photo</Text>
-        </Button>
-      </Box>
+          <Button
+            isLoading={loading}
+            isDisabled={!!profile?.image}
+            variant="unstyled"
+            onClick={() => inputRef.current?.click()}
+            flex={1}
+            display="flex"
+            justifyContent="center"
+          >
+            <HStack
+              gap="6px"
+              justifyContent="center"
+              alignItems="center"
+              wrap="wrap"
+            >
+              <GalleryAdd size={20} iconStyle="Linear" color="gray.20" />
+              <Text
+                fontSize={isLarge ? "md" : "xs"}
+                fontWeight="semibold"
+                color="gray.20"
+                letterSpacing="0.15px"
+              >
+                Upload Photo
+              </Text>
+            </HStack>
+          </Button>
+          <Divider orientation="vertical" borderColor="gray.300" />
+          <Button
+            isDisabled={!profile?.image}
+            variant="unstyled"
+            onClick={onRemoveImage}
+            flex={1}
+            display="flex"
+            justifyContent="center"
+          >
+            <HStack
+              gap="6px"
+              justifyContent="center"
+              alignItems="center"
+              onClick={() => {}}
+            >
+              <TrashBinTrash size={20} iconStyle="Linear" color="gray.20" />
+              <Text
+                fontSize={isLarge ? "md" : "xs"}
+                fontWeight="semibold"
+                color="gray.20"
+                letterSpacing="0.15px"
+              >
+                Remove Photo
+              </Text>
+            </HStack>
+          </Button>
+        </Flex>
+      </VStack>
     </CardSection>
-  )
-}
+  );
+};

@@ -1,66 +1,67 @@
-import { Text, useToast } from "@chakra-ui/react"
-import { useProfile, useProfileDispatch } from "../hooks"
-import { CardSection } from "./CardSection"
-import { ConnectionCard } from "./ConnectionCard"
-import Image from "next/image"
-import { axiosClient } from "@/configs/axios"
-import { handleApiError } from "@/utils"
+import { Divider, Text, useToast, VStack } from "@chakra-ui/react";
+import { useProfile, useProfileDispatch } from "../hooks";
+import { CardSection } from "./CardSection";
+import { ConnectionCard } from "./ConnectionCard";
+import Image from "next/image";
+import { axiosClient } from "@/configs/axios";
+import { handleApiError } from "@/utils";
 
 export const getTwitterOAuthUrlApi = async (): Promise<string> => {
-  const res = await axiosClient.get("/auth/twitter/")
-  return res.data.url as string
-}
+  const res = await axiosClient.get("/auth/twitter/");
+  return res.data.url as string;
+};
 
 export const Connections = () => {
-  const { connections } = useProfile()
+  const { connections } = useProfile();
 
   return (
-    <CardSection mt="3">
+    <CardSection>
       <Text fontWeight="bold" color="gray.10" fontSize="xl">
         Socials
       </Text>
 
-      <ConnectionCard
-        connectedText={
-          <>
-            <Image
-              src="/assets/images/connections/telegram.svg"
-              width={16}
-              height={16}
-              alt="Telegram"
-            />
-            <span>{connections.Telegram?.username}</span>
-          </>
-        }
-        preventRemove
-        preventAdd
-        isConnected={!!connections.Telegram}
-      >
-        <Image
-          src="/assets/images/connections/telegram.svg"
-          width={16}
-          height={16}
-          alt="Telegram"
-        />
-        <span>Telegram</span>
-      </ConnectionCard>
+      <VStack w="full" gap="16px">
+        <ConnectionCard
+          connectedText={
+            <>
+              <Image
+                src="/assets/images/connections/telegram.svg"
+                width={16}
+                height={16}
+                alt="Telegram"
+              />
+              <span>{connections.Telegram?.username}</span>
+            </>
+          }
+          preventRemove
+          preventAdd
+          isConnected={!!connections.Telegram}
+        >
+          <Image
+            src="/assets/images/connections/telegram.svg"
+            width={16}
+            height={16}
+            alt="Telegram"
+          />
+          <span>Telegram</span>
+        </ConnectionCard>
 
-      <div className="mt-5"></div>
-      <TwitterConnection />
-      <div className="mt-5"></div>
-      <FarcasterConnection />
-      <div className="mt-5"></div>
-      <DiscordConnection />
+        <Divider borderColor="gray.400" />
+
+        <TwitterConnection />
+        <FarcasterConnection />
+        <DiscordConnection />
+      </VStack>
     </CardSection>
-  )
-}
+  );
+};
 
 export const TwitterConnection = () => {
-  const { connections } = useProfile()
+  const { connections } = useProfile();
 
   const onConnect = () => {
-    getTwitterOAuthUrlApi().then((res) => (window.location.href = res))
-  }
+    getTwitterOAuthUrlApi().then((res) => (window.location.href = res));
+  };
 
   return (
     <ConnectionCard
@@ -86,34 +87,34 @@ export const TwitterConnection = () => {
       />
       <span>Twitter</span>
     </ConnectionCard>
-  )
-}
+  );
+};
 
 export const DiscordConnection = () => {
-  const { connections } = useProfile()
+  const { connections } = useProfile();
 
   const onConnect = async () => {
     try {
       const response = await axiosClient.get("/auth/discord/", {
         maxRedirects: 0, // Prevent axios from following the redirect automatically
         validateStatus: (status) => status >= 200 && status < 400, // Accept 302 as valid
-      })
+      });
 
       if (response.status === 302) {
         // Redirect the user to the URL in the Location header
-        const redirectUrl = response.headers["location"]
+        const redirectUrl = response.headers["location"];
         if (redirectUrl) {
-          window.location.href = redirectUrl // Redirect the user
+          window.location.href = redirectUrl; // Redirect the user
         } else {
-          console.error("Redirect location not found")
+          console.error("Redirect location not found");
         }
       } else {
-        console.error("Unexpected status code:", response.status)
+        console.error("Unexpected status code:", response.status);
       }
     } catch (error) {
-      console.error("Error making API request:", error)
+      console.error("Error making API request:", error);
     }
-  }
+  };
 
   return (
     <ConnectionCard
@@ -139,22 +140,22 @@ export const DiscordConnection = () => {
       />
       <span>Discord</span>
     </ConnectionCard>
-  )
-}
+  );
+};
 
 export const FarcasterConnection = () => {
-  const { connections, profile } = useProfile()
-  const setState = useProfileDispatch()
+  const { connections, profile } = useProfile();
+  const setState = useProfileDispatch();
 
-  const toast = useToast()
+  const toast = useToast();
 
   const onConnect = async () => {
     if (!profile.wallets.length) {
       toast({
         description: "Connect your wallet first!",
         status: "error",
-      })
-      return
+      });
+      return;
     }
 
     axiosClient
@@ -162,12 +163,12 @@ export const FarcasterConnection = () => {
         walletAddress: profile.wallets.at(0).walletAddress,
       })
       .then(() => {
-        setState(undefined)
+        setState(undefined);
       })
       .catch((e) => {
-        handleApiError(e, toast)
-      })
-  }
+        handleApiError(e, toast);
+      });
+  };
 
   return (
     <ConnectionCard
@@ -193,5 +194,5 @@ export const FarcasterConnection = () => {
       />
       <span>Farcaster</span>
     </ConnectionCard>
-  )
-}
+  );
+};
