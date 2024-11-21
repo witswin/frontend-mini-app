@@ -2,7 +2,7 @@ import { Button, Text, useToast, VStack } from "@chakra-ui/react";
 import { ProfilePicture } from "../components/ProfilePicture";
 import { ProfileInfo } from "../components/ProfileInfo";
 import { Connections } from "../components/Connections";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { axiosClient } from "@/configs/axios";
 import { useProfile, useProfileDispatch } from "../hooks";
 import { AxiosError } from "axios";
@@ -20,16 +20,22 @@ export const SettingsPage = () => {
   const [hasChange, setHasChange] = useState(false);
   // const [isError, setIsError] = useState(false);
 
+  const formData = useMemo(() => new FormData(), []);
+
   useEffect(() => {
     setFormState(profile ?? {});
     setHasChange(false);
   }, [profile]);
 
   const onSubmitChanges = () => {
-    setLoading(true);
+    console.log("after submit");
 
-    const formData = new FormData();
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
+
     formData.append("username", formState.username);
+    setLoading(true);
 
     axiosClient
       .put("/auth/info/", formData)
@@ -84,7 +90,7 @@ export const SettingsPage = () => {
         </Text>
       </VStack>
 
-      <ProfilePicture />
+      <ProfilePicture formData={formData} setHasChange={setHasChange} />
 
       <ProfileInfo
         formState={formState}
