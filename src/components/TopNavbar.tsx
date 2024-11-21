@@ -77,8 +77,8 @@ export const TopNavbar = () => {
               height={23}
             />
           </HStack>
-          <Text color="gray.40" fontSize="sm" fontWeight="bold">
-            {`${authInfo?.neurons} Neuorans`}
+          <Text whiteSpace="nowrap" color="gray.40" fontSize="sm" fontWeight="bold">
+            {`${authInfo?.neuron ??   0} Neurons`}
           </Text>
         </VStack>
 
