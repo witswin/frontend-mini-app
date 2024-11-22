@@ -158,12 +158,12 @@ export const Info = ({ userInfo }: Props) => {
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
           {userInfo.username}
         </Text>
-        {isOwnProfile && (
+        {/* {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
             {userInfo?.first_name + userInfo?.last_name ||
               `user_${userInfo?.pk}`}
           </Text>
-        )}
+        )} */}
       </VStack>
 
       <GradeBadge neuronCount={userInfo.neuron} grade={grade} />
