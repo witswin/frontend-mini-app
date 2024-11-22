@@ -47,7 +47,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     const tg = window.Telegram?.WebApp;
 
     const canGoBack = () => {
-      return history.length > 0;
+      return history.length > 0 && router.asPath !== '/';
     };
 
     if (router.asPath === '/') {
