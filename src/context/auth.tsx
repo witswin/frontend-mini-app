@@ -33,12 +33,14 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const { isConnected, address } = useAccount()
   const [state, setState] = useState(auth)
 
+  const controller = new AbortController();
+
   useEffect(() => {
     if (isConnected && address) {
       axiosClient
         .post("/auth/create-message/", {
           address,
-        })
+        },{signal:controller.signal})
         .then(({ data }) => {
           setMessage({ message: data.message, nonce: data.nonce })
         })
