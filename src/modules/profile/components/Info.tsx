@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Card } from './Card';
 import {
   Badge,
@@ -10,18 +10,16 @@ import {
   VStack,
   Link as ChakraLink,
   Image,
-  useToast,
   useClipboard,
 } from '@chakra-ui/react';
 
 import { SettingsMinimalistic, WalletMoney } from 'solar-icon-set';
 import Link from 'next/link';
-import { handleApiError, textTruncator } from '@/utils';
+import { textTruncator } from '@/utils';
 import { profileInfo } from '@/globalTypes';
 import { useAuth } from '@/hooks/useAuthorization';
 import { getGrade, GradeBadge } from './Grading';
 import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from './icons';
-import { useAccount, useSignMessage } from 'wagmi';
 import { axiosClient } from '@/configs/axios';
 import { useQuery } from '@tanstack/react-query';
 import { Integrations, UserConnection } from '@/modules/settings/types';
@@ -38,12 +36,8 @@ export const Info = ({ userInfo }: Props) => {
   // const isOwnProfile = userInfo.pk === ownUser.pk;
   const grade = getGrade(userInfo?.neuron);
 
-  const { address } = useAccount();
   const { connect, disconnect } = useWalletConnection();
 
-  const [signMessageLoading, setSignMessageLoading] = useState(false);
-  const { signMessageAsync } = useSignMessage();
-  const toast = useToast();
   const integrationsFetch = useQuery({
     initialData: undefined,
     refetchOnMount: true,
@@ -63,72 +57,8 @@ export const Info = ({ userInfo }: Props) => {
       }),
   });
 
-  const messageFetch = useQuery({
-    initialData: undefined,
-    queryKey: ['message-sign', address],
-    // enabled: !!address,
-    queryFn: () =>
-      address
-        ? axiosClient
-            .post('/auth/create-message/', {
-              address,
-            })
-            .then(({ data }) => {
-              return { message: data.message, nonce: data.nonce };
-            })
-        : undefined,
-  });
-
-  useEffect(() => {
-    // if (window.Telegram.WebApp.initData) return
-    if (!address || !signMessageLoading) return;
-
-    if (
-      ownUser.wallets.find(
-        (item) => item.walletAddress?.toLowerCase() === address?.toLowerCase(),
-      )
-    ) {
-      setSignMessageLoading(false);
-      return;
-    }
-
-    const message = messageFetch.data;
-
-    if (messageFetch.data?.message) {
-      signMessageAsync({
-        message: message.message,
-        account: address,
-      })
-        .then((res) => {
-          const hasWallet = !!ownUser.wallets.length;
-
-          axiosClient.post(
-            hasWallet ? '/auth/change-wallets/' : '/auth/add-wallets/',
-            {
-              address: address,
-              signature: res,
-              nonce: message.nonce,
-            },
-          );
-        })
-        .catch((err) => {
-          handleApiError(err, toast);
-          console.warn(err);
-        })
-        .finally(() => {});
-    }
-  }, [
-    address,
-    messageFetch.data,
-    ownUser,
-    signMessageAsync,
-    signMessageLoading,
-    toast,
-  ]);
-
   const onConnectWallet = () => {
     disconnect();
-    setSignMessageLoading(true);
 
     setTimeout(() => {
       connect();
