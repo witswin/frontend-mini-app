@@ -1,6 +1,5 @@
-import { colors } from "@/theme/colors"
-import { BoxProps, VStack } from "@chakra-ui/react"
-import { FC, PropsWithChildren } from "react"
+import { BoxProps, VStack } from "@chakra-ui/react";
+import { FC, PropsWithChildren } from "react";
 
 export const CardSection: FC<PropsWithChildren & BoxProps> = ({
   children,
@@ -9,9 +8,10 @@ export const CardSection: FC<PropsWithChildren & BoxProps> = ({
   return (
     <VStack
       width="full"
-      position="relative"
-      background={colors.glassBackground}
+      background="glassBackground"
       borderRadius="16px"
+      p="16px"
+      gap="24px"
       {...rest}
     >
       <VStack
@@ -26,5 +26,5 @@ export const CardSection: FC<PropsWithChildren & BoxProps> = ({
         {children}
       </VStack>
     </VStack>
-  )
-}
+  );
+};

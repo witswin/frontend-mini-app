@@ -7,7 +7,7 @@ import {
   NotebookMinimalistic,
   SliderVertical,
   User,
-} from "solar-icon-set"
+} from "solar-icon-set";
 
 export const BottomNavbar = () => {
   const router = useRouter();
@@ -113,6 +113,7 @@ export const BottomNavbar = () => {
         mx="auto"
       >
         {routes.map((route) => {
+          // source of problem
           const isActive = router.asPath === route.href;
 
           return (
@@ -132,7 +133,7 @@ export const BottomNavbar = () => {
 
                     <Box
                       position="absolute"
-                      bottom="18px"
+                      bottom="8px"
                       boxShadow="0px 4px 10px var(--chakra-colors-cyan)"
                       width="24px"
                       h="3px"
@@ -148,9 +149,9 @@ export const BottomNavbar = () => {
                 )}
               </VStack>
             </Link>
-          )
+          );
         })}
       </HStack>
     </Box>
-  )
-}
+  );
+};

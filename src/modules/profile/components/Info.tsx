@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { Card } from "./Card"
+import React, { useEffect, useState } from "react";
+import { Card } from "./Card";
 import {
   Badge,
   CircularProgress,
@@ -11,63 +11,64 @@ import {
   Link as ChakraLink,
   Image,
   useToast,
-} from "@chakra-ui/react"
-import { SettingsMinimalistic, WalletMoney } from "solar-icon-set"
-import Link from "next/link"
-import { handleApiError, textTruncator } from "@/utils"
-import { profileInfo } from "@/globalTypes"
-import { useAuth } from "@/hooks/useAuthorization"
-import { getGrade, GradeBadge } from "./Grading"
-import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from "./icons"
-import { SignableMessage } from "viem"
-import { useAccount, useSignMessage } from "wagmi"
-import { axiosClient } from "@/configs/axios"
-import { useQuery } from "@tanstack/react-query"
-import { Integrations, UserConnection } from "@/modules/settings/types"
+} from "@chakra-ui/react";
+
+import { SettingsMinimalistic, WalletMoney } from "solar-icon-set";
+import Link from "next/link";
+import { handleApiError, textTruncator } from "@/utils";
+import { profileInfo } from "@/globalTypes";
+import { useAuth } from "@/hooks/useAuthorization";
+import { getGrade, GradeBadge } from "./Grading";
+import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from "./icons";
+import { SignableMessage } from "viem";
+import { useAccount, useSignMessage } from "wagmi";
+import { axiosClient } from "@/configs/axios";
+import { useQuery } from "@tanstack/react-query";
+import { Integrations, UserConnection } from "@/modules/settings/types";
 
 interface Props {
-  userInfo: profileInfo
+  userInfo: profileInfo;
 }
 
 export const Info = ({ userInfo }: Props) => {
-  const ownUser = useAuth()
+  const ownUser = useAuth();
 
-  const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false
+  const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false;
   // const isOwnProfile = userInfo.pk === ownUser.pk;
-  const grade = getGrade(userInfo.neuron)
+  const grade = getGrade(userInfo.neuron);
 
-  const { isConnected, address } = useAccount()
+  const { isConnected, address } = useAccount();
 
-  const [signMessageLoading, setSignMessageLoading] = useState(false)
+  const [signMessageLoading, setSignMessageLoading] = useState(false);
   const [message, setMessage] = useState<{
-    message: SignableMessage
-    nonce: string
-  }>({ message: null, nonce: "" })
-  const { signMessageAsync } = useSignMessage()
-  const toast = useToast()
+    message: SignableMessage;
+    nonce: string;
+  }>({ message: null, nonce: "" });
+  const { signMessageAsync } = useSignMessage();
+  const toast = useToast();
   const integrationsFetch = useQuery({
     initialData: undefined,
     refetchOnMount: true,
     queryKey: ["fetch-integrations", userInfo.pk],
     queryFn: () =>
       axiosClient.get(`/auth/users/${userInfo.pk}/connections/`).then((res) => {
-        const data = res.data as UserConnection[]
+        const data = res.data as UserConnection[];
 
         const transformedData = data.reduce((prev, curr) => {
-          const name = Object.keys(curr)[0]
+          const name = Object.keys(curr)[0];
 
-          if (!curr[name].isConnected) return prev
+          if (!curr[name].isConnected) return prev;
 
-          prev[name] = curr[name]
-          return prev
-        }, {} as UserConnection)
+          prev[name] = curr[name];
+          return prev;
+        }, {} as UserConnection);
 
-        return transformedData as Integrations
+        return transformedData as Integrations;
       }),
-  })
+  });
 
   useEffect(() => {
-    if (!signMessageLoading) return
+    if (!signMessageLoading) return;
 
     if (isConnected && address) {
       axiosClient
@@ -75,22 +76,22 @@ export const Info = ({ userInfo }: Props) => {
           address,
         })
         .then(({ data }) => {
-          setMessage({ message: data.message, nonce: data.nonce })
-        })
+          setMessage({ message: data.message, nonce: data.nonce });
+        });
     }
-  }, [address, isConnected, setSignMessageLoading, signMessageLoading])
+  }, [address, isConnected, setSignMessageLoading, signMessageLoading]);
 
   useEffect(() => {
     // if (window.Telegram.WebApp.initData) return
-    if (!address) return
+    if (!address) return;
 
     if (
       ownUser.wallets.find(
         (item) => item.walletAddress?.toLowerCase() === address?.toLowerCase()
       )
     ) {
-      setSignMessageLoading(false)
-      return
+      setSignMessageLoading(false);
+      return;
     }
 
     if (message.message) {
@@ -99,7 +100,7 @@ export const Info = ({ userInfo }: Props) => {
         account: address,
       })
         .then((res) => {
-          const hasWallet = !!ownUser.wallets.length
+          const hasWallet = !!ownUser.wallets.length;
 
           axiosClient.post(
             hasWallet ? "/auth/change-wallets/" : "/auth/add-wallets/",
@@ -108,29 +109,29 @@ export const Info = ({ userInfo }: Props) => {
               signature: res,
               nonce: message.nonce,
             }
-          )
+          );
         })
         .catch((err) => {
-          handleApiError(err, toast)
-          console.warn(err)
+          handleApiError(err, toast);
+          console.warn(err);
         })
-        .finally(() => {})
+        .finally(() => {});
     }
-  }, [message, ownUser, signMessageLoading, toast])
+  }, [message, ownUser, signMessageLoading, toast]);
 
   const onConnectWallet = () => {
-    setSignMessageLoading(true)
-  }
+    setSignMessageLoading(true);
+  };
 
   return (
     <Card>
-      <VStack position="relative" boxSize="92px" justifyContent="center">
+      <VStack position="relative" boxSize="102px" justifyContent="center">
         <CircularProgress
           value={40}
           top={0}
           left={0}
-          size="92px"
-          thickness="2px" /* Adjust border thickness */
+          size="102px"
+          thickness="2px"
           color={grade.color}
           trackColor="gray.600"
           position="absolute"
@@ -140,8 +141,8 @@ export const Info = ({ userInfo }: Props) => {
           borderRadius="full"
           alt="avatar"
           src={userInfo?.image || "/assets/images/profile/Avatar.svg"}
-          width={`80px`}
-          height={`80px`}
+          boxSize={"80px"}
+          fit="cover"
         />
         <VStack
           boxSize="32px"
@@ -157,11 +158,12 @@ export const Info = ({ userInfo }: Props) => {
       </VStack>
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
-          {userInfo?.first_name + userInfo?.last_name || `user_${userInfo?.pk}`}
+          {userInfo.username}
         </Text>
         {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
-            {ownUser.username}
+            {userInfo?.first_name + userInfo?.last_name ||
+              `user_${userInfo?.pk}`}
           </Text>
         )}
       </VStack>
@@ -293,5 +295,5 @@ export const Info = ({ userInfo }: Props) => {
         </Flex>
       )}
     </Card>
-  )
-}
+  );
+};

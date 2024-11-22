@@ -1,4 +1,4 @@
-import { Button, Text, useToast, Box } from "@chakra-ui/react"
+import { Button, Text, useToast, Box, VStack } from "@chakra-ui/react"
 import { useProfile, useProfileDispatch } from "../hooks"
 import { CardSection } from "./CardSection"
 import { ConnectionCard } from "./ConnectionCard"
@@ -21,26 +21,25 @@ export const Connections = () => {
   })
 
   return (
-    <CardSection mt="3">
+    <CardSection>
       <Text fontWeight="bold" color="gray.10" fontSize="xl">
         Socials
       </Text>
 
-      <TelegramConnection />
+      <VStack w="full" gap="16px">
+        <TelegramConnection />
 
-      <div className="mt-5"></div>
-      <TwitterConnection onRemove={setFocusedConnection} />
-      <div className="mt-5"></div>
-      <FarcasterConnection onRemove={setFocusedConnection} />
-      <div className="mt-5"></div>
-      <DiscordConnection onRemove={setFocusedConnection} />
+        <TwitterConnection onRemove={setFocusedConnection} />
+        <FarcasterConnection onRemove={setFocusedConnection} />
+        <DiscordConnection onRemove={setFocusedConnection} />
 
-      <RemoveConnectionCard
-        isOpen={!!focusedConnection.name}
-        name={focusedConnection.name}
-        onClose={() => setFocusedConnection({ name: "", url: "" })}
-        url={focusedConnection.url}
-      />
+        <RemoveConnectionCard
+          isOpen={!!focusedConnection.name}
+          name={focusedConnection.name}
+          onClose={() => setFocusedConnection({ name: "", url: "" })}
+          url={focusedConnection.url}
+        />
+      </VStack>
     </CardSection>
   )
 }
