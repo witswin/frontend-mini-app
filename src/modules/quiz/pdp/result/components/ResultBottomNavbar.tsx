@@ -1,23 +1,29 @@
-import { Button, HStack } from "@chakra-ui/react";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import { HomeAngle2 } from "solar-icon-set";
-import { useFinishedData } from "../hooks";
+import { Button, HStack } from '@chakra-ui/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { HomeAngle2 } from 'solar-icon-set';
+import { useFinishedData } from '../hooks';
+import { useQuestionData } from '@/modules/question/hooks';
 
 export const ResultBottomNavbar = () => {
   const finishedDataInfo = useFinishedData();
+  const { quiz } = useQuestionData();
 
   const handleShareClaimTwitter = () => {
     const twitterUrl = !!finishedDataInfo?.winner
       ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `I won ${finishedDataInfo?.quizStats?.prizeToWin} from @@wits.win among ${finishedDataInfo?.quizStats?.usersParticipating} participants. 🤩🎉
-    Try your luck to win valuable prizes at `
+          `I won ${
+            finishedDataInfo?.quizStats?.prizeToWin / 10 ** quiz?.tokenDecimals
+          } from @@wits.win among ${
+            finishedDataInfo?.quizStats?.totalParticipantsCount
+          } participants. 🤩🎉
+    Try your luck to win valuable prizes at `,
         )}&url=${encodeURIComponent(`wits.win`)}`
       : `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          ``
+          ``,
         )}&url=${encodeURIComponent(`wits.win`)}`;
-    window.open(twitterUrl, "_blank");
+    window.open(twitterUrl, '_blank');
   };
   if (!!finishedDataInfo?.finishedData && !!finishedDataInfo?.quizStats) {
     return (
