@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card } from "./Card";
+import React, { useEffect, useState } from 'react';
+import { Card } from './Card';
 import {
   Badge,
   CircularProgress,
@@ -11,20 +11,20 @@ import {
   Link as ChakraLink,
   Image,
   useToast,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import { SettingsMinimalistic, WalletMoney } from "solar-icon-set";
-import Link from "next/link";
-import { handleApiError, textTruncator } from "@/utils";
-import { profileInfo } from "@/globalTypes";
-import { useAuth } from "@/hooks/useAuthorization";
-import { getGrade, GradeBadge } from "./Grading";
-import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from "./icons";
-import { SignableMessage } from "viem";
-import { useAccount, useSignMessage } from "wagmi";
-import { axiosClient } from "@/configs/axios";
-import { useQuery } from "@tanstack/react-query";
-import { Integrations, UserConnection } from "@/modules/settings/types";
+import { SettingsMinimalistic, WalletMoney } from 'solar-icon-set';
+import Link from 'next/link';
+import { handleApiError, textTruncator } from '@/utils';
+import { profileInfo } from '@/globalTypes';
+import { useAuth } from '@/hooks/useAuthorization';
+import { getGrade, GradeBadge } from './Grading';
+import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from './icons';
+import { SignableMessage } from 'viem';
+import { useAccount, useSignMessage } from 'wagmi';
+import { axiosClient } from '@/configs/axios';
+import { useQuery } from '@tanstack/react-query';
+import { Integrations, UserConnection } from '@/modules/settings/types';
 
 interface Props {
   userInfo: profileInfo;
@@ -43,21 +43,19 @@ export const Info = ({ userInfo }: Props) => {
   const [message, setMessage] = useState<{
     message: SignableMessage;
     nonce: string;
-  }>({ message: null, nonce: "" });
+  }>({ message: null, nonce: '' });
   const { signMessageAsync } = useSignMessage();
   const toast = useToast();
   const integrationsFetch = useQuery({
     initialData: undefined,
     refetchOnMount: true,
-    queryKey: ["fetch-integrations", userInfo.pk],
+    queryKey: ['fetch-integrations', userInfo.pk],
     queryFn: () =>
       axiosClient.get(`/auth/users/${userInfo.pk}/connections/`).then((res) => {
         const data = res.data as UserConnection[];
 
         const transformedData = data.reduce((prev, curr) => {
           const name = Object.keys(curr)[0];
-
-          if (!curr[name].isConnected) return prev;
 
           prev[name] = curr[name];
           return prev;
@@ -72,7 +70,7 @@ export const Info = ({ userInfo }: Props) => {
 
     if (isConnected && address) {
       axiosClient
-        .post("/auth/create-message/", {
+        .post('/auth/create-message/', {
           address,
         })
         .then(({ data }) => {
@@ -87,7 +85,7 @@ export const Info = ({ userInfo }: Props) => {
 
     if (
       ownUser.wallets.find(
-        (item) => item.walletAddress?.toLowerCase() === address?.toLowerCase()
+        (item) => item.walletAddress?.toLowerCase() === address?.toLowerCase(),
       )
     ) {
       setSignMessageLoading(false);
@@ -103,12 +101,12 @@ export const Info = ({ userInfo }: Props) => {
           const hasWallet = !!ownUser.wallets.length;
 
           axiosClient.post(
-            hasWallet ? "/auth/change-wallets/" : "/auth/add-wallets/",
+            hasWallet ? '/auth/change-wallets/' : '/auth/add-wallets/',
             {
               address: address,
               signature: res,
               nonce: message.nonce,
-            }
+            },
           );
         })
         .catch((err) => {
@@ -140,8 +138,8 @@ export const Info = ({ userInfo }: Props) => {
         <Image
           borderRadius="full"
           alt="avatar"
-          src={userInfo?.image || "/assets/images/profile/Avatar.svg"}
-          boxSize={"80px"}
+          src={userInfo?.image || '/assets/images/profile/Avatar.svg'}
+          boxSize={'80px'}
           fit="cover"
         />
         <VStack
@@ -208,7 +206,7 @@ export const Info = ({ userInfo }: Props) => {
             justifyContent="center"
             as={ChakraLink}
             isExternal
-            href={""}
+            href={''}
           >
             <VStack justifyContent="center">
               <BrandFarcaster />
@@ -289,7 +287,7 @@ export const Info = ({ userInfo }: Props) => {
           >
             <WalletMoney color="gray.20" size={20} iconStyle="Bold" />
             <Text fontSize="md" fontWeight={600} color="gray.20">
-              {userInfo.wallets.length ? "Change Wallet" : "Connect Wallet"}
+              {userInfo.wallets.length ? 'Change Wallet' : 'Connect Wallet'}
             </Text>
           </HStack>
         </Flex>
