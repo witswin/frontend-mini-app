@@ -35,7 +35,7 @@ export const Info = ({ userInfo }: Props) => {
 
   const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false;
   // const isOwnProfile = userInfo.pk === ownUser.pk;
-  const grade = getGrade(userInfo.neuron);
+  const grade = getGrade(userInfo?.neuron);
 
   const { isConnected, address } = useAccount();
 
@@ -130,7 +130,7 @@ export const Info = ({ userInfo }: Props) => {
           left={0}
           size="102px"
           thickness="2px"
-          color={grade.color}
+          color={grade?.color}
           trackColor="gray.600"
           position="absolute"
           transform="rotate(225deg)"
@@ -151,7 +151,7 @@ export const Info = ({ userInfo }: Props) => {
           bottom={0}
           left={0}
         >
-          {grade.icon}
+          {grade?.icon}
         </VStack>
       </VStack>
       <VStack gap="0">
