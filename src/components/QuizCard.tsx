@@ -1,7 +1,7 @@
-import { Card } from "@/components/Card";
-import { useCheckEnrolled } from "@/modules/home/hooks";
-import { useSelectedQuizDispatch } from "@/modules/quiz/hooks";
-import { CARD_STATE, QuizCardProps } from "@/types";
+import { Card } from "@/components/Card"
+import { useCheckEnrolled } from "@/modules/home/hooks"
+import { useSelectedQuizDispatch } from "@/modules/quiz/hooks"
+import { CARD_STATE, QuizCardProps } from "@/types"
 import {
   Badge,
   Box,
@@ -13,20 +13,20 @@ import {
   // Tag,
   Text,
   VStack,
-} from "@chakra-ui/react";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import { forwardRef, LegacyRef, memo, ReactElement, useMemo } from "react";
-import { DoubleAltArrowRight } from "solar-icon-set";
+} from "@chakra-ui/react"
+import dynamic from "next/dynamic"
+import { useRouter } from "next/router"
+import { forwardRef, LegacyRef, memo, ReactElement, useMemo } from "react"
+import { DoubleAltArrowRight } from "solar-icon-set"
 // import { Swiper, SwiperSlide } from "swiper/react";
 
 const CountDown = dynamic(
   () => import("@/components/CountDown").then((modules) => modules.CountDown),
   { ssr: false }
-);
+)
 interface QuizPrizeProps {
-  prize: number;
-  unitPrize: string;
+  prize: number
+  unitPrize: string
 }
 export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
   return (
@@ -55,8 +55,8 @@ export const QuizPrize = ({ prize, unitPrize }: QuizPrizeProps) => {
         <Text fontSize="xs">{unitPrize?.toUpperCase()}</Text>
       </Text>
     </HStack>
-  );
-};
+  )
+}
 
 // const ChakraSwiper = chakra(Swiper);
 const QuizCard = forwardRef(
@@ -64,25 +64,25 @@ const QuizCard = forwardRef(
     { state, quiz, colored, onOpen, isLarge }: QuizCardProps,
     ref: LegacyRef<HTMLDivElement>
   ) => {
-    const selectedQuizDispatch = useSelectedQuizDispatch();
-    const checkIsEnrolled = useCheckEnrolled();
-    const isQuizFinished = quiz?.isFinished;
+    const selectedQuizDispatch = useSelectedQuizDispatch()
+    const checkIsEnrolled = useCheckEnrolled()
+    const isQuizFinished = quiz?.isFinished
 
-    const router = useRouter();
+    const router = useRouter()
     const selectedCTA: {
       [key in CARD_STATE]: {
-        icon?: ReactElement;
-        variant: string;
-        text: string;
-        onClick: () => void;
-      };
+        icon?: ReactElement
+        variant: string
+        text: string
+        onClick: () => void
+      }
     } = useMemo(
       () => ({
         [CARD_STATE.join]: {
           variant: "solid",
           text: "Join Now",
           onClick: () => {
-            router.push(`/quiz/${quiz.id}/match`);
+            router.push(`/quiz/${quiz.id}/match`)
           },
           icon: (
             <DoubleAltArrowRight
@@ -96,7 +96,7 @@ const QuizCard = forwardRef(
           variant: "solid",
           text: "Go to Quiz Lobby",
           onClick: () => {
-            router.push(`/quiz/${quiz.id}/match`);
+            router.push(`/quiz/${quiz.id}/match`)
           },
           icon: (
             <DoubleAltArrowRight
@@ -110,7 +110,7 @@ const QuizCard = forwardRef(
           variant: "solid",
           text: "Dive into Resources",
           onClick: () => {
-            router.push(`/quiz/${quiz.id}/resources`);
+            router.push(`/quiz/${quiz.id}/resources`)
           },
         },
         [CARD_STATE.watch]: {
@@ -118,9 +118,9 @@ const QuizCard = forwardRef(
           text: quiz?.isFinished ? "Check Winners" : "Watch as spectator",
           onClick: () => {
             if (quiz?.isFinished) {
-              router.push(`/quiz/${quiz.id}/result`);
+              router.push(`/quiz/${quiz.id}/result`)
             } else {
-              router.push(`/quiz/${quiz.id}/match`);
+              router.push(`/quiz/${quiz.id}/match`)
             }
           },
         },
@@ -128,13 +128,13 @@ const QuizCard = forwardRef(
           variant: "solid",
           text: "Enroll",
           onClick: () => {
-            selectedQuizDispatch(quiz);
-            onOpen();
+            selectedQuizDispatch(quiz)
+            onOpen()
           },
         },
       }),
       []
-    );
+    )
     return (
       <VStack ref={ref} width="full">
         <Card
@@ -152,7 +152,10 @@ const QuizCard = forwardRef(
           {quiz?.prizeAmount && quiz?.token && quiz?.details && (
             <VStack mb="8px" rowGap="0">
               <Center>
-                <QuizPrize prize={quiz?.prizeAmount} unitPrize={quiz?.token} />
+                <QuizPrize
+                  prize={quiz?.formattedPrize}
+                  unitPrize={quiz?.token}
+                />
               </Center>
               <Text
                 textAlign="center"
@@ -257,8 +260,8 @@ const QuizCard = forwardRef(
               size="lg"
               variant={selectedCTA[state].variant}
               onClick={(e) => {
-                e.stopPropagation();
-                selectedCTA[state].onClick();
+                e.stopPropagation()
+                selectedCTA[state].onClick()
               }}
               {...("icon" in selectedCTA[state] && {
                 rightIcon: selectedCTA[state].icon,
@@ -276,10 +279,10 @@ const QuizCard = forwardRef(
           )}
         </Card>
       </VStack>
-    );
+    )
   }
-);
+)
 
-QuizCard.displayName = "QuizCard";
-const MemoizedQuizCard = memo(QuizCard);
-export { MemoizedQuizCard as QuizCard };
+QuizCard.displayName = "QuizCard"
+const MemoizedQuizCard = memo(QuizCard)
+export { MemoizedQuizCard as QuizCard }
