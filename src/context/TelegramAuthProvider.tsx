@@ -60,7 +60,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       tg.BackButton.show(); // Show the Telegram Back Button
 
       const onBack = () => {
-        router.back();
+        history.back();
       };
 
       tg.BackButton.onClick(onBack);
