@@ -6,6 +6,8 @@ import Image from "next/image"
 import { axiosClient } from "@/configs/axios"
 import { handleApiError } from "@/utils"
 import { colors } from "@/theme/colors"
+import { FC, useState } from "react"
+import { RemoveConnectionCard } from "./RemoveConnectionCard"
 
 export const getTwitterOAuthUrlApi = async (): Promise<string> => {
   const res = await axiosClient.get("/auth/twitter/")
@@ -13,6 +15,11 @@ export const getTwitterOAuthUrlApi = async (): Promise<string> => {
 }
 
 export const Connections = () => {
+  const [focusedConnection, setFocusedConnection] = useState({
+    name: "",
+    url: "",
+  })
+
   return (
     <CardSection mt="3">
       <Text fontWeight="bold" color="gray.10" fontSize="xl">
@@ -22,14 +29,23 @@ export const Connections = () => {
       <TelegramConnection />
 
       <div className="mt-5"></div>
-      <TwitterConnection />
+      <TwitterConnection onRemove={setFocusedConnection} />
       <div className="mt-5"></div>
-      <FarcasterConnection />
+      <FarcasterConnection onRemove={setFocusedConnection} />
       <div className="mt-5"></div>
-      <DiscordConnection />
+      <DiscordConnection onRemove={setFocusedConnection} />
+
+      <RemoveConnectionCard
+        isOpen={!!focusedConnection.name}
+        name={focusedConnection.name}
+        onClose={() => setFocusedConnection({ name: "", url: "" })}
+        url={focusedConnection.url}
+      />
     </CardSection>
   )
 }
+
+export type OnPromptRemove = (arg: { url: string; name: string }) => void
 
 export const TelegramConnection = () => {
   const { connections } = useProfile()
@@ -90,7 +106,9 @@ export const TelegramConnection = () => {
   )
 }
 
-export const TwitterConnection = () => {
+export const TwitterConnection: FC<{ onRemove: OnPromptRemove }> = ({
+  onRemove,
+}) => {
   const { connections } = useProfile()
 
   const onConnect = () => {
@@ -100,6 +118,7 @@ export const TwitterConnection = () => {
   return (
     <ConnectionCard
       onConnect={onConnect}
+      onDisconnect={() => onRemove({ name: "Twitter", url: "/auth/twitter" })}
       connectedText={
         <>
           <Image
@@ -124,7 +143,9 @@ export const TwitterConnection = () => {
   )
 }
 
-export const DiscordConnection = () => {
+export const DiscordConnection: FC<{ onRemove: OnPromptRemove }> = ({
+  onRemove,
+}) => {
   const { connections } = useProfile()
 
   const onConnect = async () => {
@@ -139,6 +160,7 @@ export const DiscordConnection = () => {
 
   return (
     <ConnectionCard
+      onDisconnect={() => onRemove({ name: "Discord", url: "/auth/discord/" })}
       onConnect={onConnect}
       connectedText={
         <>
@@ -164,7 +186,9 @@ export const DiscordConnection = () => {
   )
 }
 
-export const FarcasterConnection = () => {
+export const FarcasterConnection: FC<{ onRemove: OnPromptRemove }> = ({
+  onRemove,
+}) => {
   const { connections, profile } = useProfile()
   const setState = useProfileDispatch()
 
@@ -193,6 +217,9 @@ export const FarcasterConnection = () => {
 
   return (
     <ConnectionCard
+      onDisconnect={() =>
+        onRemove({ name: "Farcaster", url: "/auth/user/disconnect/farcaster/" })
+      }
       onConnect={onConnect}
       connectedText={
         <>
