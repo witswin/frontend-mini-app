@@ -102,7 +102,7 @@ export const TopNavbar = () => {
                 }, 0);
               }
 
-              router.push('/profile/' + authInfo.pk);
+              router.push('/profile/' + authInfo?.pk);
             }}
             position="relative"
           >
