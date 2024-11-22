@@ -121,6 +121,7 @@ export declare type question = {
   totalParticipantsCount: number
   correct: correctChoice | null
   selectedChoice: number
+  creator:string;
 }
 
 export declare type quizStats = {
