@@ -66,15 +66,17 @@ export const Info = ({ userInfo }: Props) => {
   const messageFetch = useQuery({
     initialData: undefined,
     queryKey: ['message-sign', address],
-    enabled: !!address,
+    // enabled: !!address,
     queryFn: () =>
-      axiosClient
-        .post('/auth/create-message/', {
-          address,
-        })
-        .then(({ data }) => {
-          return { message: data.message, nonce: data.nonce };
-        }),
+      address
+        ? axiosClient
+            .post('/auth/create-message/', {
+              address,
+            })
+            .then(({ data }) => {
+              return { message: data.message, nonce: data.nonce };
+            })
+        : undefined,
   });
 
   useEffect(() => {
