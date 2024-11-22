@@ -186,7 +186,7 @@ export const CountDown = ({
           {shows.sec && (
             <TimerBox
               isDisabled={completed}
-              isComplete={minutes === 0 && seconds <= 10 && !completed}
+              isComplete={minutes === 0 && hours === 0 && !completed}
               topText={seconds}
               bottomText="Sec"
               background="cardBackground"

@@ -93,6 +93,8 @@ export const Result = () => {
                     fontWeight="600"
                     lineHeight="20px"
                     fontSize="13px"
+                    textAlign="center"
+                    width="full"
                   >
                     Tough quiz! Nobody won, but don&apos;t lose heart.See you in
                     the next one!

@@ -1,19 +1,25 @@
-import { Divider, VStack } from "@chakra-ui/react";
-import { Button, Text, useToast, Box } from "@chakra-ui/react";
-import { useProfile, useProfileDispatch } from "../hooks";
-import { CardSection } from "./CardSection";
-import { ConnectionCard } from "./ConnectionCard";
-import Image from "next/image";
-import { axiosClient } from "@/configs/axios";
-import { handleApiError } from "@/utils";
-import { colors } from "@/theme/colors";
+import { Button, Text, useToast, Box, VStack } from "@chakra-ui/react"
+import { useProfile, useProfileDispatch } from "../hooks"
+import { CardSection } from "./CardSection"
+import { ConnectionCard } from "./ConnectionCard"
+import Image from "next/image"
+import { axiosClient } from "@/configs/axios"
+import { handleApiError } from "@/utils"
+import { colors } from "@/theme/colors"
+import { FC, useState } from "react"
+import { RemoveConnectionCard } from "./RemoveConnectionCard"
 
 export const getTwitterOAuthUrlApi = async (): Promise<string> => {
-  const res = await axiosClient.get("/auth/twitter/");
-  return res.data.url as string;
-};
+  const res = await axiosClient.get("/auth/twitter/")
+  return res.data.url as string
+}
 
 export const Connections = () => {
+  const [focusedConnection, setFocusedConnection] = useState({
+    name: "",
+    url: "",
+  })
+
   return (
     <CardSection>
       <Text fontWeight="bold" color="gray.10" fontSize="xl">
@@ -23,31 +29,38 @@ export const Connections = () => {
       <VStack w="full" gap="16px">
         <TelegramConnection />
 
-        <Divider borderColor="gray.400" />
+        <TwitterConnection onRemove={setFocusedConnection} />
+        <FarcasterConnection onRemove={setFocusedConnection} />
+        <DiscordConnection onRemove={setFocusedConnection} />
 
-        <TwitterConnection />
-        <FarcasterConnection />
-        <DiscordConnection />
+        <RemoveConnectionCard
+          isOpen={!!focusedConnection.name}
+          name={focusedConnection.name}
+          onClose={() => setFocusedConnection({ name: "", url: "" })}
+          url={focusedConnection.url}
+        />
       </VStack>
     </CardSection>
-  );
-};
+  )
+}
+
+export type OnPromptRemove = (arg: { url: string; name: string }) => void
 
 export const TelegramConnection = () => {
-  const { connections } = useProfile();
-  const dispatch = useProfileDispatch();
+  const { connections } = useProfile()
+  const dispatch = useProfileDispatch()
 
-  const toast = useToast();
+  const toast = useToast()
 
   const onToggle = () => {
     axiosClient.post("/auth/telegram/private/").then(() => {
-      dispatch(undefined);
+      dispatch(undefined)
       toast({
         description: "Telegram privacy updated sucecssfully",
         status: "success",
-      });
-    });
-  };
+      })
+    })
+  }
   if (connections.Telegram)
     return (
       <CardSection
@@ -78,7 +91,7 @@ export const TelegramConnection = () => {
           </Button>
         </Box>
       </CardSection>
-    );
+    )
 
   return (
     <CardSection background={colors.glassBackground}>
@@ -89,19 +102,22 @@ export const TelegramConnection = () => {
         </small>
       </Box>
     </CardSection>
-  );
-};
+  )
+}
 
-export const TwitterConnection = () => {
-  const { connections } = useProfile();
+export const TwitterConnection: FC<{ onRemove: OnPromptRemove }> = ({
+  onRemove,
+}) => {
+  const { connections } = useProfile()
 
   const onConnect = () => {
-    getTwitterOAuthUrlApi().then((res) => (window.location.href = res));
-  };
+    getTwitterOAuthUrlApi().then((res) => (window.location.href = res))
+  }
 
   return (
     <ConnectionCard
       onConnect={onConnect}
+      onDisconnect={() => onRemove({ name: "Twitter", url: "/auth/twitter" })}
       connectedText={
         <>
           <Image
@@ -123,24 +139,27 @@ export const TwitterConnection = () => {
       />
       <span>Twitter</span>
     </ConnectionCard>
-  );
-};
+  )
+}
 
-export const DiscordConnection = () => {
-  const { connections } = useProfile();
+export const DiscordConnection: FC<{ onRemove: OnPromptRemove }> = ({
+  onRemove,
+}) => {
+  const { connections } = useProfile()
 
   const onConnect = async () => {
     try {
-      const response = await axiosClient.get("/auth/discord/");
+      const response = await axiosClient.get("/auth/discord/")
 
-      window.location.href = response.data.data;
+      window.location.href = response.data.data
     } catch (error) {
-      console.error("Error making API request:", error);
+      console.error("Error making API request:", error)
     }
-  };
+  }
 
   return (
     <ConnectionCard
+      onDisconnect={() => onRemove({ name: "Discord", url: "/auth/discord/" })}
       onConnect={onConnect}
       connectedText={
         <>
@@ -163,22 +182,24 @@ export const DiscordConnection = () => {
       />
       <span>Discord</span>
     </ConnectionCard>
-  );
-};
+  )
+}
 
-export const FarcasterConnection = () => {
-  const { connections, profile } = useProfile();
-  const setState = useProfileDispatch();
+export const FarcasterConnection: FC<{ onRemove: OnPromptRemove }> = ({
+  onRemove,
+}) => {
+  const { connections, profile } = useProfile()
+  const setState = useProfileDispatch()
 
-  const toast = useToast();
+  const toast = useToast()
 
   const onConnect = async () => {
     if (!profile.wallets.length) {
       toast({
         description: "Connect your wallet first!",
         status: "error",
-      });
-      return;
+      })
+      return
     }
 
     axiosClient
@@ -186,15 +207,18 @@ export const FarcasterConnection = () => {
         userWalletAddress: profile.wallets.at(0).walletAddress,
       })
       .then(() => {
-        setState(undefined);
+        setState(undefined)
       })
       .catch((e) => {
-        handleApiError(e, toast);
-      });
-  };
+        handleApiError(e, toast)
+      })
+  }
 
   return (
     <ConnectionCard
+      onDisconnect={() =>
+        onRemove({ name: "Farcaster", url: "/auth/user/disconnect/farcaster/" })
+      }
       onConnect={onConnect}
       connectedText={
         <>
@@ -217,5 +241,5 @@ export const FarcasterConnection = () => {
       />
       <span>Farcaster</span>
     </ConnectionCard>
-  );
-};
+  )
+}

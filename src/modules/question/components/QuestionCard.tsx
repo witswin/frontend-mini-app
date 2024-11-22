@@ -4,11 +4,10 @@ import { ProgressTimer } from "@/components/ProgressTimer";
 import { useCounter, useHints, useQuestionData } from "../hooks";
 import { ChoiceButton } from "@/components/ChoiceButton";
 import { useEffect, useState } from "react";
-import { Text, useDisclosure } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { HINTS, QUESTION_STATE } from "@/types";
 import { Rest } from "./Rest";
 import { useWebSocket } from "@/hooks/useWebSocket";
-import { GameOverModal } from "./GameOverModal";
 
 export const QuestionCard = () => {
   const { question, quiz } = useQuestionData();
@@ -29,24 +28,6 @@ export const QuestionCard = () => {
 
   const { socket } = useWebSocket();
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const [isShowedBefore, setIsShowedBefore] = useState(false);
-  useEffect(() => {
-    if (question?.correct) {
-      if (
-        question?.selectedChoice !== +question?.correct?.answerId &&
-        !isShowedBefore
-      ) {
-        onOpen();
-        setIsShowedBefore(true);
-      }
-    }
-  }, [question?.correct, question?.selectedChoice]);
-
-  console.log({
-    selected: question?.selectedChoice,
-    correct: question?.correct?.answerId,
-  });
 
   useEffect(() => {
     if (!socket.current.client) return;
@@ -99,11 +80,10 @@ export const QuestionCard = () => {
             />
           ))}
           <Text color="gray.200" fontSize="xs">
-            By Adams Sandler
+            By {question?.creator}
           </Text>
         </Card>
       )}
-      <GameOverModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 };

@@ -1,13 +1,13 @@
-import { Box, HStack, Text, useMediaQuery, VStack } from "@chakra-ui/react";
-import HeaderBg from "@/assets/QuestionHeaderBg.svg";
-import Image from "next/image";
-import { ColorFullText } from "@/components/ColorFullText";
-import { useQuestionData } from "../hooks";
+import { Box, HStack, Text, useMediaQuery, VStack } from "@chakra-ui/react"
+import HeaderBg from "@/assets/QuestionHeaderBg.svg"
+import Image from "next/image"
+import { ColorFullText } from "@/components/ColorFullText"
+import { useQuestionData } from "../hooks"
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)");
+  const [isLarge] = useMediaQuery("(min-width: 500px)")
 
-  const { question, quiz } = useQuestionData();
+  const { question, quiz, quizStats } = useQuestionData()
 
   return (
     <HStack
@@ -69,19 +69,19 @@ export const TopNavbar = () => {
           </Text>
           <HStack gap="4px">
             <Text color="gray.0" fontSize="lg" fontWeight={700}>
-              {!!question?.remainParticipantsCount
-                ? question?.remainParticipantsCount
+              {!!quizStats?.usersParticipating
+                ? quizStats?.usersParticipating
                 : 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
               /{" "}
-              {!!question?.totalParticipantsCount
-                ? question?.totalParticipantsCount
+              {!!quizStats?.totalParticipantsCount
+                ? quizStats?.totalParticipantsCount
                 : 0}
             </Text>
           </HStack>
         </VStack>
       </HStack>
     </HStack>
-  );
-};
+  )
+}

@@ -1,10 +1,13 @@
-import { Text, VStack } from "@chakra-ui/react";
+import { Text, useDisclosure, VStack } from "@chakra-ui/react";
 import { QuestionCard } from "../components/QuestionCard";
 import { AnimatePresence, motion } from "framer-motion";
 import { useHints, useQuestionData } from "../hooks";
 import { QUESTION_STATE } from "@/types";
 import { HintButton } from "@/components/HintButtons";
 import { selectedHint } from "../types";
+import { useEffect, useState } from "react";
+import { GameOverModal } from "./GameOverModal";
+import { useCheckEnrolled } from "@/modules/home/hooks";
 
 interface HintContentProps {
   hint: selectedHint;
@@ -21,6 +24,24 @@ export const QuizPage = () => {
   const { question } = useQuestionData();
 
   const selectedHints = useHints().selectedHints;
+  const checkIsEnrolled = useCheckEnrolled();
+
+  const isEnrolled = checkIsEnrolled(question?.competition);
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [isShowedBefore, setIsShowedBefore] = useState(false);
+  useEffect(() => {
+    if (question?.correct) {
+      if (
+        question?.selectedChoice !== +question?.correct?.answerId &&
+        !isShowedBefore &&
+        isEnrolled
+      ) {
+        onOpen();
+        setIsShowedBefore(true);
+      }
+    }
+  }, [question?.correct, question?.selectedChoice, isEnrolled]);
+
   return (
     <VStack height="full" position="relative" width="full">
       {/* {questions.map((item, index, array) => (
@@ -80,6 +101,8 @@ export const QuizPage = () => {
           // transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
         >
           <QuestionCard />
+          <GameOverModal isOpen={isOpen} onClose={onClose} />
+
           {!question.isEligible && (
             <Text
               mt="8px !important"
