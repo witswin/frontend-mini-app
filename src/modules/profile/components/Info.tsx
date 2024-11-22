@@ -11,6 +11,7 @@ import {
   Link as ChakraLink,
   Image,
   useToast,
+  useClipboard,
 } from '@chakra-ui/react';
 
 import { SettingsMinimalistic, WalletMoney } from 'solar-icon-set';
@@ -131,6 +132,14 @@ export const Info = ({ userInfo }: Props) => {
       connect();
     }, 0);
   };
+
+  const { onCopy, value, setValue, hasCopied } = useClipboard('');
+
+  useEffect(() => {
+    if (!value) {
+      setValue(userInfo?.wallets?.[0]?.walletAddress);
+    }
+  }, [userInfo?.wallets]);
 
   return (
     <Card>
@@ -257,9 +266,17 @@ export const Info = ({ userInfo }: Props) => {
             </Badge>
           )}
         {!!userInfo?.wallets?.length && (
-          <Badge variant="glass" size="md">
+          <Badge
+            onClick={() => {
+              onCopy();
+            }}
+            variant="glass"
+            size="md"
+          >
             <Text fontSize="md" fontWeight={600} color="gray.0" mx="4px">
-              {textTruncator(userInfo?.wallets[0].walletAddress)}
+              {hasCopied
+                ? 'Copied!'
+                : textTruncator(userInfo?.wallets?.[0].walletAddress)}
             </Text>
           </Badge>
         )}
