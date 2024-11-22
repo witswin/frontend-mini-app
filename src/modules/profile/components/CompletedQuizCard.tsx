@@ -1,4 +1,4 @@
-import { Card } from "@/components/Card";
+import { Card } from '@/components/Card';
 import {
   Badge,
   Button,
@@ -8,16 +8,18 @@ import {
   Spinner,
   Text,
   useMediaQuery,
+  useToast,
   VStack,
-} from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { ArrowRightUp, ConfettiMinimalistic } from "solar-icon-set";
-import USDC_img from "@/assets/tokens/USDC.svg";
-import Image from "next/image";
-import { axiosClient } from "@/configs/axios";
-import { useQuery } from "@tanstack/react-query";
-import { userQuiz } from "@/globalTypes";
-import { RewardsClaimedModal } from "./RewardsClaimedModal";
+} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { ArrowRightUp, ConfettiMinimalistic } from 'solar-icon-set';
+import USDC_img from '@/assets/tokens/USDC.svg';
+import Image from 'next/image';
+import { axiosClient } from '@/configs/axios';
+import { useQuery } from '@tanstack/react-query';
+import { userQuiz } from '@/globalTypes';
+import { RewardsClaimedModal } from './RewardsClaimedModal';
+import { useAuth } from '@/hooks/useAuthorization';
 
 export const CompletedQuizCard = ({
   amountWon,
@@ -44,14 +46,18 @@ export const CompletedQuizCard = ({
   profileId: string;
   quizId: number;
 }) => {
-  const [isLarge] = useMediaQuery("(min-width: 480px)");
+  const [isLarge] = useMediaQuery('(min-width: 480px)');
   // token and chain are hard coded for this phase, for next phases of the project they are likely to change
   const [isRewardsClaimedOpen, setIsRewardsClaimedOpen] = useState(false);
-  const token = "USDC";
-  const chain = "Arbitrum";
+  const token = 'USDC';
+  const chain = 'Arbitrum';
   const showClaim = isSelfUser && isWinner;
   const [claimRewardLoading, setClaimRewardLoading] =
     useState(isClaimTriggered);
+  const auth = useAuth();
+  const toast = useToast();
+
+  const isWalletConnected = auth.wallets?.length > 0;
 
   const [localTxHash, setLocalTxHash] = useState(txHash);
 
@@ -61,19 +67,19 @@ export const CompletedQuizCard = ({
   }, [txHash, isClaimTriggered]);
 
   const dateString = new Date(date)
-    .toLocaleString("default", {
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
+    .toLocaleString('default', {
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
     })
-    .split(",");
+    .split(',');
 
   const [pollingEnabled, setPollingEnabled] = useState(false);
 
   useQuery<userQuiz[]>({
-    queryKey: ["user_quizzes", profileId], // Use a unique key for the query
+    queryKey: ['user_quizzes', profileId], // Use a unique key for the query
     queryFn: async () =>
       await axiosClient.get(`/quiz/${profileId}/competitions/`).then((res) => {
         if (
@@ -84,8 +90,8 @@ export const CompletedQuizCard = ({
           setClaimRewardLoading(false);
           setLocalTxHash(
             res.data.filter(
-              (quiz: userQuiz) => quiz.competition.id === quizId
-            )[0].txHash
+              (quiz: userQuiz) => quiz.competition.id === quizId,
+            )[0].txHash,
           );
           setIsRewardsClaimedOpen(true);
         }
@@ -97,15 +103,22 @@ export const CompletedQuizCard = ({
   });
 
   const triggerClaim = () => {
-    axiosClient
-      .post("/quiz/claim-prize/", { user_competition_id })
-      .then(({ data }) => {
-        console.log(data);
-        setClaimRewardLoading(true);
-      })
-      .finally(() => {
-        setPollingEnabled(true);
+    if (isWalletConnected) {
+      axiosClient
+        .post('/quiz/claim-prize/', { user_competition_id })
+        .then(({ data }) => {
+          console.log(data);
+          setClaimRewardLoading(true);
+        })
+        .finally(() => {
+          setPollingEnabled(true);
+        });
+    } else {
+      toast({
+        description: 'Your wallet is not Connected. connect your wallet first.',
+        status: 'error',
       });
+    }
   };
 
   return (
@@ -131,7 +144,7 @@ export const CompletedQuizCard = ({
           {title}
         </Text>
         <Text color="gray.60" fontSize="sm" fontWeight="500" textAlign="center">
-          {dateString[0] + " . " + dateString[1]}
+          {dateString[0] + ' . ' + dateString[1]}
         </Text>
       </VStack>
 
@@ -156,7 +169,7 @@ export const CompletedQuizCard = ({
               fontSize="sm"
               fontWeight={600}
               color="gray.40"
-              {...(!isLarge && { fontSize: "xs" })}
+              {...(!isLarge && { fontSize: 'xs' })}
             >{`${token} on ${chain}`}</Text>
           </HStack>
         </HStack>
@@ -198,7 +211,12 @@ export const CompletedQuizCard = ({
         (claimRewardLoading ? (
           <Spinner size="md" color="gray.40" />
         ) : !localTxHash ? (
-          <Button variant="outline" size="mini" w="full">
+          <Button
+            variant="outline"
+            size="mini"
+            w="full"
+            onClick={() => triggerClaim()}
+          >
             Claim
           </Button>
         ) : (
