@@ -1,9 +1,9 @@
-import { axiosClient } from "@/configs/axios"
-import { ACCESS_TOKEN_COOKIE_KEY } from "@/constants"
-import { useAuth, useAuthDispatch } from "@/hooks/useAuthorization"
-import { UserProfile } from "@/types"
-import { setCookie } from "cookies-next"
-import { useRouter } from "next/router"
+import { axiosClient } from '@/configs/axios';
+import { ACCESS_TOKEN_COOKIE_KEY } from '@/constants';
+import { useAuth, useAuthDispatch } from '@/hooks/useAuthorization';
+import { UserProfile } from '@/types';
+import { setCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 import {
   createContext,
   FC,
@@ -11,90 +11,90 @@ import {
   useCallback,
   useEffect,
   useState,
-} from "react"
+} from 'react';
 
 export const TelegramAuthContext = createContext({
   isWebApp: false,
   isLoginLoading: true,
-})
+});
 
 export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [isWebApp, setIsWebApp] = useState(false)
-  const [isLoginLoading, setIsLoginLoading] = useState(false)
-  const dispatch = useAuthDispatch()
-  const auth = useAuth()
-  const router = useRouter()
+  const [isWebApp, setIsWebApp] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const dispatch = useAuthDispatch();
+  const auth = useAuth();
+  const router = useRouter();
 
   // const loginWithTelegramWidget = () => {}
 
   const loginWithTelegramWebApp = useCallback(() => {
     if (!window.Telegram?.WebApp)
-      throw new Error("[T] Telegram Web App must be injected")
+      throw new Error('[T] Telegram Web App must be injected');
 
-    setIsLoginLoading(true)
-    const payload = window.Telegram.WebApp.initData
+    setIsLoginLoading(true);
+    const payload = window.Telegram.WebApp.initData;
 
     axiosClient
-      .post<UserProfile>("/auth/telegram-login/", { telegramData: payload })
+      .post<UserProfile>('/auth/telegram-login/', { telegramData: payload })
       .then(({ data }) => {
-        setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token)
+        setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token);
 
-        dispatch(data)
+        dispatch(data);
       })
-      .finally(() => setIsLoginLoading(false))
-  }, [dispatch])
+      .finally(() => setIsLoginLoading(false));
+  }, [dispatch]);
 
   const onRouteChange = useCallback(() => {
-    const tg = window.Telegram?.WebApp
+    const tg = window.Telegram?.WebApp;
 
     const canGoBack = () => {
-      return history.length > 0
-    }
+      return history.length > 0;
+    };
 
-    if (router.asPath === "/") {
-      tg.BackButton.hide() // Hide the button on unmount
+    if (router.asPath === '/') {
+      tg.BackButton.hide(); // Hide the button on unmount
 
-      return
+      return;
     }
 
     if (canGoBack()) {
-      tg.BackButton.show() // Show the Telegram Back Button
+      tg.BackButton.show(); // Show the Telegram Back Button
 
       const onBack = () => {
-        router.back()
-      }
+        router.back();
+      };
 
-      tg.BackButton.onClick(onBack)
+      tg.BackButton.onClick(onBack);
 
       return () => {
-        tg.BackButton.offClick(onBack) // Cleanup listener
-        tg.BackButton.hide() // Hide the button on unmount
-      }
+        tg.BackButton.offClick(onBack); // Cleanup listener
+        tg.BackButton.hide(); // Hide the button on unmount
+      };
     } else {
-      tg.BackButton.hide() // Hide the button if back is not available
+      tg.BackButton.hide(); // Hide the button if back is not available
     }
-  }, [router])
+  }, [router]);
 
   useEffect(() => {
-    const tg = window.Telegram?.WebApp
+    const tg = window.Telegram?.WebApp;
 
-    if (!tg) return
+    if (!tg) return;
 
-    router.events.on("routeChangeComplete", onRouteChange)
+    router.events.on('routeChangeComplete', onRouteChange);
 
     return () => {
-      router.events.off("routeChangeComplete", onRouteChange)
-    }
-  }, [onRouteChange, router])
+      router.events.off('routeChangeComplete', onRouteChange);
+    };
+  }, [onRouteChange, router]);
 
   useEffect(() => {
-    if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return
+    if (!window.Telegram?.WebApp || !window.Telegram.WebApp.initData) return;
 
-    setIsWebApp(true)
+    setIsWebApp(true);
 
-    if (auth) return
-    loginWithTelegramWebApp()
-  }, [auth, loginWithTelegramWebApp])
+    // if (auth) return
+    loginWithTelegramWebApp();
+  }, [auth, loginWithTelegramWebApp]);
 
   return (
     <TelegramAuthContext.Provider
@@ -105,5 +105,5 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     >
       {children}
     </TelegramAuthContext.Provider>
-  )
-}
+  );
+};
