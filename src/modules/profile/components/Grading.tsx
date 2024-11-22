@@ -1,5 +1,5 @@
-import { HStack, Text } from "@chakra-ui/react";
-import React from "react";
+import { HStack, Text } from '@chakra-ui/react';
+import React from 'react';
 import {
   CrownStar,
   MedalRibbon,
@@ -8,8 +8,8 @@ import {
   MedalStar,
   MedalStarCircle,
   MedalStarSquare,
-} from "solar-icon-set";
-import { Neuron } from "./icons";
+} from 'solar-icon-set';
+import { Neuron } from './icons';
 
 interface GradeType {
   text: string;
@@ -19,45 +19,45 @@ interface GradeType {
 }
 
 const grades = {
-  200: {
-    text: "Legend",
-    color: "#E5AF19",
+  600: {
+    text: 'Legend',
+    color: '#E5AF19',
     icon: <CrownStar iconStyle="Bold" color="#E5AF19" size={24} />,
     badgeIcon: <CrownStar iconStyle="Bold" size={20} />,
   },
-  150: {
-    text: "Grandmasters",
-    color: "#FFA947",
+  500: {
+    text: 'Grandmasters',
+    color: '#FFA947',
     icon: <MedalStar iconStyle="Bold" color="#FFA947" size={24} />,
     badgeIcon: <MedalStar iconStyle="Bold" color="gray.0" size={20} />,
   },
-  100: {
-    text: "Master",
-    color: "#F56788",
+  400: {
+    text: 'Master',
+    color: '#F56788',
     icon: <MedalStarSquare iconStyle="Bold" color="#F56788" size={24} />,
     badgeIcon: <MedalStarSquare iconStyle="Bold" color="gray.0" size={20} />,
   },
-  50: {
-    text: "Expert",
-    color: "#7B60F2",
+  300: {
+    text: 'Expert',
+    color: '#7B60F2',
     icon: <MedalStarCircle iconStyle="Bold" color="#7B60F2" size={24} />,
     badgeIcon: <MedalStarCircle iconStyle="Bold" color="gray.0" size={20} />,
   },
-  25: {
-    text: "Student",
-    color: "#4A92FF",
+  200: {
+    text: 'Student',
+    color: '#4A92FF',
     icon: <MedalRibbonsStar iconStyle="Bold" color="#4A92FF" size={24} />,
     badgeIcon: <MedalRibbonsStar iconStyle="Bold" color="gray.0" size={20} />,
   },
-  10: {
-    text: "Beginner",
-    color: "#14BFCC",
+  100: {
+    text: 'Beginner',
+    color: '#14BFCC',
     icon: <MedalRibbonStar iconStyle="Bold" color="#14BFCC" size={24} />,
     badgeIcon: <MedalRibbonStar iconStyle="Bold" color="gray.0" size={20} />,
   },
   0: {
-    text: "Trainee",
-    color: "#00BD89",
+    text: 'Trainee',
+    color: '#00BD89',
     icon: <MedalRibbon iconStyle="Bold" color="#00BD89" size={24} />,
     badgeIcon: <MedalRibbon iconStyle="Bold" color="gray.0" size={20} />,
   },
@@ -67,7 +67,7 @@ export const getGrade = (count: number) => {
   const key = parseInt(
     Object.keys(grades)
       .reverse()
-      .find((key) => parseInt(key) <= count)
+      .find((key) => parseInt(key) <= count),
   );
 
   return grades[key as keyof typeof grades];
@@ -103,7 +103,7 @@ export const GradeBadge = ({
         {grade.badgeIcon}
       </HStack>
 
-      <HStack mr="10px" ml='6px' alignItems="center" gap='4px'>
+      <HStack mr="10px" ml="6px" alignItems="center" gap="4px">
         <Text fontSize="lg" fontWeight={800} color={grade.color}>
           {neuronCount}
         </Text>
