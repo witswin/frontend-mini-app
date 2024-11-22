@@ -114,7 +114,7 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
           console.warn(err);
         });
     }
-  }, [message]);
+  }, [message, state]);
 
   return (
     <AuthState.Provider value={state}>
