@@ -1,17 +1,17 @@
-import { FC, PropsWithChildren, ReactNode } from "react"
-import { CardSection } from "./CardSection"
-import { Box, Button } from "@chakra-ui/react"
-import { colors } from "@/theme/colors"
-import { TrashBinTrash } from "solar-icon-set"
+import { FC, PropsWithChildren, ReactNode } from "react";
+import { CardSection } from "./CardSection";
+import { Box, Button } from "@chakra-ui/react";
+import { colors } from "@/theme/colors";
+import { TrashBinTrash } from "solar-icon-set";
 
 export const ConnectionCard: FC<
   {
-    isConnected: boolean
-    onConnect?: () => void
-    onDisconnect?: () => void
-    connectedText?: ReactNode
-    preventRemove?: boolean
-    preventAdd?: boolean
+    isConnected: boolean;
+    onConnect?: () => void;
+    onDisconnect?: () => void;
+    connectedText?: ReactNode;
+    preventRemove?: boolean;
+    preventAdd?: boolean;
   } & PropsWithChildren
 > = ({
   isConnected,
@@ -29,6 +29,8 @@ export const ConnectionCard: FC<
         overflow="hidden"
         position={"relative"}
         background={colors.glassBackground}
+        py="0"
+        px="12px"
       >
         <Box display="flex" gap={3} alignItems="center" width="full">
           {connectedText}
@@ -55,17 +57,31 @@ export const ConnectionCard: FC<
           )}
         </Box>
       </CardSection>
-    )
+    );
   }
 
   return (
-    <CardSection background={colors.glassBackground}>
-      <Box display="flex" gap={3} alignItems="center" width="full">
+    <CardSection
+      background={colors.glassBackground}
+      h="60px"
+      p="0"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Box
+        zIndex={1}
+        display="flex"
+        gap={3}
+        alignItems="center"
+        width="full"
+        px="12px"
+        h="full"
+      >
         {children}
         {preventAdd || (
           <Button
             ml="auto"
-            size="sm"
+            size="mini"
             variant="outline"
             gap="8px"
             onClick={onConnect}
@@ -75,5 +91,5 @@ export const ConnectionCard: FC<
         )}
       </Box>
     </CardSection>
-  )
-}
+  );
+};

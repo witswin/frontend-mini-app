@@ -2,33 +2,33 @@ import { HINTS } from "./types"
 import { QUESTION_STATE } from "./types"
 
 export declare type userQuiz = {
-  isWinner: boolean,
-  amountWon: number,
-  hintCount: number,
-  isClaimTriggered: boolean,
-  registeredHints: hintType[],
-  userProfile: number,
-  txHash: string,
-  competition: quizType,
-  id: number          
+  isWinner: boolean
+  amountWon: number
+  hintCount: number
+  isClaimTriggered: boolean
+  registeredHints: hintType[]
+  userProfile: number
+  txHash: string
+  competition: quizType
+  id: number
 }
 
 export declare type profileInfo = {
-  pk: number;
-  username: string;
+  pk: number
+  username: string
   wallets: {
-    walletAddress: string;
-    createdAt: string;
-  }[];
-  image?: string;
-  neuron: number;
-  first_name: string;
-  last_name: string;
+    walletAddress: string
+    createdAt: string
+  }[]
+  image?: string
+  neuron: number
+  first_name: string
+  last_name: string
 }
 
 export declare type profileStats = {
-  rank: number,
-  winrate: number,
+  rank: number
+  winrate: number
   quizCount: number
 }
 
@@ -49,6 +49,7 @@ export declare type hintType = {
 }
 
 export declare type quizType = {
+  formattedPrize: number
   id: number
   questions: Record<"pk" | "number", number>[]
   sponsors: sponsorType[]
@@ -121,7 +122,7 @@ export declare type question = {
   totalParticipantsCount: number
   correct: correctChoice | null
   selectedChoice: number
-  creator:string;
+  creator: string
 }
 
 export declare type quizStats = {

@@ -49,7 +49,7 @@ export const Button = {
   },
   variants: {
     outline: {
-      backgroundColor: "gray.900",
+      backgroundColor: "gray.600",
       color: "gray.20",
       position: "relative",
       border: "none",
@@ -92,14 +92,14 @@ export const Button = {
         },
       },
       _hover: {
-        bg: "glassBackground",
+        bg: "rgba(110, 129, 238, 0.32)",
         border: "1px solid",
         borderColor: "blue",
         boxShadow:
           "0px 1px 0px 0px var(--chakra-colors-cyan), 0px 0px 0px 0px #6E81EE52",
         _before: {
           display: "none",
-        },
+        },          
       },
     },
     solid: {
@@ -143,7 +143,7 @@ export const Button = {
       },
     },
     gray: {
-      backgroundColor: "gray.500",
+      backgroundColor: "rgba(32, 32, 51, 0.6)",
       color: "gray.20",
       borderStyle: "solid",
       borderTopWidth: "1px",
