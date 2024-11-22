@@ -1,27 +1,24 @@
-import { userQuiz } from "@/globalTypes";
-import { HStack, Text, VStack } from "@chakra-ui/react";
-import Image from "next/image";
-import { Confetti } from "solar-icon-set";
-import { CompletedQuizCard } from "./CompletedQuizCard";
-import Sleepy from "@/assets/sleepy.svg";
-import { useAuth } from "@/hooks/useAuthorization";
-import { useRouter } from "next/router";
+import { userQuiz } from '@/globalTypes';
+import { HStack, Text, VStack } from '@chakra-ui/react';
+import Image from 'next/image';
+import { Confetti } from 'solar-icon-set';
+import { CompletedQuizCard } from './CompletedQuizCard';
+import Sleepy from '@/assets/sleepy.svg';
+import { useAuth } from '@/hooks/useAuthorization';
+import { useRouter } from 'next/router';
 
 export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
   const isEmpty = quizzes.length === 0;
-  const unClaimedRewards =
-    quizzes.filter((quiz) => quiz.txHash === "").length > 0;
+  const unClaimedRewards = quizzes.filter((quiz) => !quiz.txHash).length > 0;
   const selfUser = useAuth();
   const router = useRouter();
 
-  const isSelfUser = selfUser?.pk
-    ? router.query.id === selfUser?.pk.toString()
-    : false;
+  const isSelfUser = selfUser?.pk.toString() === router.query.id;
 
   const showClaim = isSelfUser && unClaimedRewards;
 
   return (
-    <VStack w="full" gap="16px" py={isEmpty ? "24px" : "0"}>
+    <VStack w="full" gap="16px" py={isEmpty ? '24px' : '0'}>
       {isEmpty ? (
         <>
           <Image src={Sleepy} alt="sleepy" />
@@ -42,15 +39,15 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
               position="relative"
               _before={{
                 content: "''",
-                position: "absolute",
-                top: "-1px",
-                left: "-1px",
-                right: "-1px",
-                height: "calc(100% + 2px)",
-                width: "calc(100% + 2px)",
-                background: "var(--chakra-colors-primaryRadial)",
+                position: 'absolute',
+                top: '-1px',
+                left: '-1px',
+                right: '-1px',
+                height: 'calc(100% + 2px)',
+                width: 'calc(100% + 2px)',
+                background: 'var(--chakra-colors-primaryRadial)',
                 zIndex: -1,
-                borderRadius: "10px",
+                borderRadius: '10px',
               }}
             >
               <HStack>
