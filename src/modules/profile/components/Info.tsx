@@ -20,11 +20,11 @@ import { profileInfo } from '@/globalTypes';
 import { useAuth } from '@/hooks/useAuthorization';
 import { getGrade, GradeBadge } from './Grading';
 import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from './icons';
-import { SignableMessage } from 'viem';
 import { useAccount, useSignMessage } from 'wagmi';
 import { axiosClient } from '@/configs/axios';
 import { useQuery } from '@tanstack/react-query';
 import { Integrations, UserConnection } from '@/modules/settings/types';
+import { useWalletConnection } from '@/hooks/useWalletConnection';
 
 interface Props {
   userInfo: profileInfo;
@@ -35,15 +35,12 @@ export const Info = ({ userInfo }: Props) => {
 
   const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false;
   // const isOwnProfile = userInfo.pk === ownUser.pk;
-  const grade = getGrade(userInfo.neuron);
+  const grade = getGrade(userInfo?.neuron);
 
-  const { isConnected, address } = useAccount();
+  const { address } = useAccount();
+  const { connect, disconnect } = useWalletConnection();
 
   const [signMessageLoading, setSignMessageLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    message: SignableMessage;
-    nonce: string;
-  }>({ message: null, nonce: '' });
   const { signMessageAsync } = useSignMessage();
   const toast = useToast();
   const integrationsFetch = useQuery({
@@ -65,23 +62,23 @@ export const Info = ({ userInfo }: Props) => {
       }),
   });
 
-  useEffect(() => {
-    if (!signMessageLoading) return;
-
-    if (isConnected && address) {
+  const messageFetch = useQuery({
+    initialData: undefined,
+    queryKey: ['message-sign', address],
+    enabled: !!address,
+    queryFn: () =>
       axiosClient
         .post('/auth/create-message/', {
           address,
         })
         .then(({ data }) => {
-          setMessage({ message: data.message, nonce: data.nonce });
-        });
-    }
-  }, [address, isConnected, setSignMessageLoading, signMessageLoading]);
+          return { message: data.message, nonce: data.nonce };
+        }),
+  });
 
   useEffect(() => {
     // if (window.Telegram.WebApp.initData) return
-    if (!address) return;
+    if (!address || !signMessageLoading) return;
 
     if (
       ownUser.wallets.find(
@@ -92,7 +89,9 @@ export const Info = ({ userInfo }: Props) => {
       return;
     }
 
-    if (message.message) {
+    const message = messageFetch.data;
+
+    if (messageFetch.data?.message) {
       signMessageAsync({
         message: message.message,
         account: address,
@@ -115,10 +114,22 @@ export const Info = ({ userInfo }: Props) => {
         })
         .finally(() => {});
     }
-  }, [message, ownUser, signMessageLoading, toast]);
+  }, [
+    address,
+    messageFetch.data,
+    ownUser,
+    signMessageAsync,
+    signMessageLoading,
+    toast,
+  ]);
 
   const onConnectWallet = () => {
+    disconnect();
     setSignMessageLoading(true);
+
+    setTimeout(() => {
+      connect();
+    }, 0);
   };
 
   return (
@@ -130,7 +141,7 @@ export const Info = ({ userInfo }: Props) => {
           left={0}
           size="102px"
           thickness="2px"
-          color={grade.color}
+          color={grade?.color}
           trackColor="gray.600"
           position="absolute"
           transform="rotate(225deg)"
@@ -151,19 +162,19 @@ export const Info = ({ userInfo }: Props) => {
           bottom={0}
           left={0}
         >
-          {grade.icon}
+          {grade?.icon}
         </VStack>
       </VStack>
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
           {userInfo.username}
         </Text>
-        {isOwnProfile && (
+        {/* {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
             {userInfo?.first_name + userInfo?.last_name ||
               `user_${userInfo?.pk}`}
           </Text>
-        )}
+        )} */}
       </VStack>
 
       <GradeBadge neuronCount={userInfo.neuron} grade={grade} />
