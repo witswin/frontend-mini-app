@@ -1,37 +1,37 @@
-import { Button, HStack, Text, useToast, VStack } from "@chakra-ui/react";
-import { ProfilePicture } from "../components/ProfilePicture";
-import { ProfileInfo } from "../components/ProfileInfo";
-import { Connections } from "../components/Connections";
-import { useEffect, useMemo, useState } from "react";
-import { axiosClient } from "@/configs/axios";
-import { useProfile, useProfileDispatch } from "../hooks";
-import { AxiosError } from "axios";
-import { handleApiError } from "@/utils";
-import { UserProfile } from "@/types";
-import { useRouter } from "next/router";
+import { Button, Text, useToast, VStack } from "@chakra-ui/react"
+import { ProfilePicture } from "../components/ProfilePicture"
+import { ProfileInfo } from "../components/ProfileInfo"
+import { Connections } from "../components/Connections"
+import { useEffect, useMemo, useState } from "react"
+import { axiosClient } from "@/configs/axios"
+import { useProfile, useProfileDispatch } from "../hooks"
+import { AxiosError } from "axios"
+import { handleApiError } from "@/utils"
+import { UserProfile } from "@/types"
+import { useRouter } from "next/router"
 // import { BottomModal } from "@/components/BottomModal";
 
 export const SettingsPage = () => {
-  const toast = useToast();
-  const { profile } = useProfile();
-  const setState = useProfileDispatch();
+  const toast = useToast()
+  const { profile } = useProfile()
+  const setState = useProfileDispatch()
   const [formState, setFormState] = useState(
     (profile ?? {}) as Partial<UserProfile>
-  );
-  const [loading, setLoading] = useState(false);
-  const [hasChange, setHasChange] = useState(false);
-  const [isError, setIsError] = useState(false);
+  )
+  const [loading, setLoading] = useState(false)
+  const [hasChange, setHasChange] = useState(false)
+  const [isError, setIsError] = useState(false)
   // const [saveChangesModal, setSaveChangesModal] = useState(false);
   // const [pendingRoute, setPendingRoute] = useState(null);
   // const [allowNavigation, setAllowNavigation] = useState(true);
 
-  const formData = useMemo(() => new FormData(), []);
-  const router = useRouter();
+  const formData = useMemo(() => new FormData(), [])
+  const router = useRouter()
 
   useEffect(() => {
-    setFormState(profile ?? {});
-    setHasChange(false);
-  }, [profile]);
+    setFormState(profile ?? {})
+    setHasChange(false)
+  }, [profile])
 
   // useEffect(() => {
   //   hasChange && setAllowNavigation(true);
@@ -57,45 +57,45 @@ export const SettingsPage = () => {
   // }, [router]);
 
   const onSubmitChanges = () => {
-    console.log("after submit");
+    console.log("after submit")
 
     formData.forEach((value, key) => {
-      console.log(key, value);
-    });
+      console.log(key, value)
+    })
 
-    formData.append("username", formState.username);
-    setLoading(true);
+    formData.append("username", formState.username)
+    setLoading(true)
 
     axiosClient
       .put("/auth/info/", formData)
       .then(() => {
-        setState(undefined);
-        setHasChange(false);
+        setState(undefined)
+        setHasChange(false)
         toast({
           title: "Changes Saved",
           description: "Your changes have been saved successfully.",
           status: "success",
-        });
+        })
       })
       .catch((e) => {
-        console.error("Something happened on updating user profile !", e);
+        console.error("Something happened on updating user profile !", e)
 
         if (e instanceof AxiosError) {
-          handleApiError(e, toast);
+          handleApiError(e, toast)
         } else {
           toast({
             title: "Unable to Save Changes",
             description:
               "An error occurred while saving your changes. Please try again.",
             status: "error",
-          });
+          })
         }
       })
       .finally(() => {
-        setLoading(false);
-        router.push(`/profile/${profile.pk}`);
-      });
-  };
+        setLoading(false)
+        router.push(`/profile/${profile.pk}`)
+      })
+  }
 
   return (
     <VStack gap="16px" pb="60px" position="relative">
@@ -210,5 +210,5 @@ export const SettingsPage = () => {
         </VStack>
       )}
     </VStack>
-  );
-};
+  )
+}
