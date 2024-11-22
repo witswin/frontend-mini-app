@@ -5,49 +5,47 @@ import {
   Text,
   useMediaQuery,
   VStack,
-} from "@chakra-ui/react"
-import HeaderBg from "@/assets/HeaderBgImage.svg"
-import Logo from "@/assets/Logo.svg"
-import Image from "next/image"
-import { WalletMoney } from "solar-icon-set"
-import { useWalletConnection } from "@/hooks/useWalletConnection"
-import { useAuth } from "@/hooks/useAuthorization"
-import { useAccount } from "wagmi"
-import { textTruncator } from "@/utils"
-import { useRouter } from "next/router"
+} from '@chakra-ui/react';
+import HeaderBg from '@/assets/HeaderBgImage.svg';
+import Logo from '@/assets/Logo.svg';
+import Image from 'next/image';
+import { WalletMoney } from 'solar-icon-set';
+import { useWalletConnection } from '@/hooks/useWalletConnection';
+import { useAuth } from '@/hooks/useAuthorization';
+import { textTruncator } from '@/utils';
+import { useRouter } from 'next/router';
 
 const WalletStatus = () => {
-  const authInfo = useAuth()
+  const authInfo = useAuth();
   return (
     <Badge
-      variant={!!authInfo ? "green" : "red"}
+      variant={!!authInfo ? 'green' : 'red'}
       size="xs"
       position="absolute"
       left="0"
       bottom="0"
     />
-  )
-}
+  );
+};
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)")
-  const authInfo = useAuth()
-  const router = useRouter()
+  const [isLarge] = useMediaQuery('(min-width: 500px)');
+  const authInfo = useAuth();
+  const router = useRouter();
 
-  const { connect } = useWalletConnection()
+  const { connect, disconnect } = useWalletConnection();
 
-  const { address } = useAccount()
-  console.log({ authInfo })
+  console.log({ authInfo });
 
   return (
     <HStack
-      h={isLarge ? "120px" : "90px"}
+      h={isLarge ? '120px' : '90px'}
       w="full"
       justifyContent="center"
       alignItems="center"
       position="relative"
       mt="-10px"
-      px={isLarge ? "16px" : "0"}
+      px={isLarge ? '16px' : '0'}
     >
       <Box position="absolute" zIndex="base" width="100%" height="100%">
         <Image
@@ -62,7 +60,7 @@ export const TopNavbar = () => {
         w="full"
         justifyContent="space-between"
         px="12px"
-        pt={isLarge ? "20px" : "4px"}
+        pt={isLarge ? '20px' : '4px'}
       >
         <VStack w="82px">
           <HStack gap="2px">
@@ -97,9 +95,14 @@ export const TopNavbar = () => {
           <Box
             cursor="pointer"
             onClick={() => {
-              if (!authInfo || !authInfo.wallets.length) connect()
+              if (!authInfo || !authInfo.wallets.length) {
+                disconnect?.();
+                setTimeout(() => {
+                  connect();
+                }, 0);
+              }
 
-              router.push("/profile/" + authInfo.pk)
+              router.push('/profile/' + authInfo.pk);
             }}
             position="relative"
           >
@@ -112,13 +115,15 @@ export const TopNavbar = () => {
           </Box>
           <Text
             color="gray.40"
-            fontSize={authInfo && address ? "10px" : "sm"}
+            fontSize={authInfo && authInfo.wallets.length ? '10px' : 'sm'}
             fontWeight="bold"
           >
-            {authInfo && address && textTruncator(address)}
+            {!!authInfo &&
+              !!authInfo.wallets.length &&
+              textTruncator(authInfo.wallets[0].walletAddress)}
           </Text>
         </VStack>
       </HStack>
     </HStack>
-  )
-}
+  );
+};
