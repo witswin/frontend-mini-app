@@ -1,6 +1,6 @@
 import { axiosClient } from '@/configs/axios';
 import { ACCESS_TOKEN_COOKIE_KEY } from '@/constants';
-import { useAuth, useAuthDispatch } from '@/hooks/useAuthorization';
+import { useAuthDispatch } from '@/hooks/useAuthorization';
 import { UserProfile } from '@/types';
 import { setCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
@@ -22,7 +22,6 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isWebApp, setIsWebApp] = useState(false);
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const dispatch = useAuthDispatch();
-  const auth = useAuth();
   const router = useRouter();
 
   // const loginWithTelegramWidget = () => {}
@@ -94,7 +93,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
     // if (auth) return
     loginWithTelegramWebApp();
-  }, [auth, loginWithTelegramWebApp]);
+  }, [loginWithTelegramWebApp]);
 
   return (
     <TelegramAuthContext.Provider
