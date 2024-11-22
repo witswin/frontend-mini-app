@@ -1,4 +1,4 @@
-import { Button, Text, useToast, VStack } from "@chakra-ui/react";
+import { Button, HStack, Text, useToast, VStack } from "@chakra-ui/react";
 import { ProfilePicture } from "../components/ProfilePicture";
 import { ProfileInfo } from "../components/ProfileInfo";
 import { Connections } from "../components/Connections";
@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import { handleApiError } from "@/utils";
 import { UserProfile } from "@/types";
 import { useRouter } from "next/router";
+// import { BottomModal } from "@/components/BottomModal";
 
 export const SettingsPage = () => {
   const toast = useToast();
@@ -20,6 +21,9 @@ export const SettingsPage = () => {
   const [loading, setLoading] = useState(false);
   const [hasChange, setHasChange] = useState(false);
   const [isError, setIsError] = useState(false);
+  // const [saveChangesModal, setSaveChangesModal] = useState(false);
+  // const [pendingRoute, setPendingRoute] = useState(null);
+  // const [allowNavigation, setAllowNavigation] = useState(true);
 
   const formData = useMemo(() => new FormData(), []);
   const router = useRouter();
@@ -28,6 +32,29 @@ export const SettingsPage = () => {
     setFormState(profile ?? {});
     setHasChange(false);
   }, [profile]);
+
+  // useEffect(() => {
+  //   hasChange && setAllowNavigation(true);
+  // }, [hasChange]);
+
+  // useEffect(() => {
+  //   const handleRouteChangeStart = (url) => {
+  //     if (allowNavigation) {
+  //       setSaveChangesModal(true); // Open the custom modal
+  //       setPendingRoute(url); // Store the route the user wants to navigate to
+  //       router.events.emit("routeChangeError");
+  //       throw "routeChange aborted"; // Prevent the navigation temporarily
+  //     }
+  //   };
+
+  //   // Attach the event listener
+  //   router.events.on("routeChangeStart", handleRouteChangeStart);
+
+  //   // Clean up the event listener
+  //   return () => {
+  //     router.events.off("routeChangeStart", handleRouteChangeStart);
+  //   };
+  // }, [router]);
 
   const onSubmitChanges = () => {
     console.log("after submit");
@@ -103,6 +130,63 @@ export const SettingsPage = () => {
         setIsError={setIsError}
       />
       <Connections />
+
+      {/* <BottomModal
+        isOpen={saveChangesModal}
+        onClose={() => setSaveChangesModal(false)}
+        haveHeader={false}
+      >
+        <VStack w="full" gap="24px">
+          <Text
+            fontFamily="kanit"
+            fontSize="2xl"
+            fontWeight="600"
+            textAlign="center"
+            width="full"
+            color="gray.0"
+            lineHeight="28px"
+            maxWidth="199px"
+            mx="auto"
+          >
+            Unsaved Changes
+          </Text>
+          <Text
+            textAlign="center"
+            fontSize="lg"
+            fontWeight="bold"
+            color="gray.40"
+          >
+            You have unsaved changes. Do you want to save before leaving?
+          </Text>
+          <HStack w="full" alignItems="center" gap="16px">
+            <Button
+              variant="gray"
+              size="md"
+              flex={1}
+              h="42px"
+              onClick={() => {
+                setSaveChangesModal(false);
+                setAllowNavigation(false);
+                router.push(pendingRoute); // Proceed with navigation
+              }}
+            >
+              {"Don't Save"}
+            </Button>
+            <Button
+              size="md"
+              flex={1}
+              h="42px"
+              onClick={() => {
+                onSubmitChanges();
+                setSaveChangesModal(true);
+                router.push(pendingRoute); // Proceed with navigation
+              }}
+            >
+              {"Save Changes"}
+            </Button>
+          </HStack>
+        </VStack>
+      </BottomModal> */}
 
       {hasChange && (
         <VStack

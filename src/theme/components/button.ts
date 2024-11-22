@@ -143,7 +143,7 @@ export const Button = {
       },
     },
     gray: {
-      backgroundColor: "gray.500",
+      backgroundColor: "rgba(32, 32, 51, 0.6)",
       color: "gray.20",
       borderStyle: "solid",
       borderTopWidth: "1px",
