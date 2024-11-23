@@ -1,28 +1,42 @@
-import { ColorFullText } from "@/components/ColorFullText";
-import { chakra, Text, VStack } from "@chakra-ui/react";
-import { EffectCoverflow } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { EnrolledCard } from "../components/EnrolledCard";
-import { axiosClient } from "@/configs/axios";
-import { useQuery } from "@tanstack/react-query";
-import { quizType } from "@/globalTypes";
-import dynamic from "next/dynamic";
+import { ColorFullText } from '@/components/ColorFullText';
+import { chakra, Text, VStack } from '@chakra-ui/react';
+import { EffectCoverflow } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EnrolledCard } from '../components/EnrolledCard';
+import { axiosClient } from '@/configs/axios';
+import { useQuery } from '@tanstack/react-query';
+import { quizType } from '@/globalTypes';
+import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
 
 const MemoizedSwiperItem = dynamic(
   () =>
-    import("../components/QuizItem").then(
-      (modules) => modules.MemoizedSwiperItem
+    import('../components/QuizItem').then(
+      (modules) => modules.MemoizedSwiperItem,
     ),
-  { ssr: false }
+  { ssr: false },
 );
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
   const { data } = useQuery({
-    queryKey: ["competitions"],
+    queryKey: ['competitions'],
     queryFn: async () =>
-      await axiosClient.get("/quiz/competitions/").then((res) => res.data),
+      await axiosClient.get('/quiz/competitions/').then((res) => res.data),
   });
+
+  const centeredQuizzes = useMemo(() => {
+    const activeQuizzes =
+      data?.results?.filter((quiz: quizType) => !quiz.isFinished) ?? [];
+    const inactiveQuizzes =
+      data?.results?.filter((quiz: quizType) => quiz.isFinished) ?? [];
+
+    const midIndex = Math.ceil(inactiveQuizzes.length / 2);
+    const leftInactive = inactiveQuizzes.slice(0, midIndex);
+    const rightInactive = inactiveQuizzes.slice(midIndex);
+
+    return [...leftInactive, ...activeQuizzes, ...rightInactive];
+  }, [data]);
 
   return (
     <VStack
@@ -64,14 +78,14 @@ export const QuizPLP = () => {
           slideShadows: false,
         }}
         sx={{
-          ".swiper-slide": {
-            mr: "0 !important",
-            px: "4px",
+          '.swiper-slide': {
+            mr: '0 !important',
+            px: '4px',
           },
         }}
       >
-        {data?.results?.map((quiz: quizType) => (
-          <SwiperSlide key={quiz?.id} style={{ maxWidth: "318px" }}>
+        {centeredQuizzes?.map((quiz: quizType) => (
+          <SwiperSlide key={quiz?.id} style={{ maxWidth: '318px' }}>
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}
