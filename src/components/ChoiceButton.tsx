@@ -145,7 +145,8 @@ export const ChoiceButton = ({
           variant={variant[question?.state]}
           color="gray.0"
           size="md"
-          minHeight="54px"
+          minH="54px"
+          height="fit-content"
           width="full"
           onClick={handleClick}
           isDisabled={
@@ -158,6 +159,7 @@ export const ChoiceButton = ({
           }
           as={motion.button}
           key={question?.state}
+          whiteSpace="break-spaces"
           {...buttonProps}
           {...(+question?.selectedChoice === +choice?.id &&
             question?.state === QUESTION_STATE.freeze && {
