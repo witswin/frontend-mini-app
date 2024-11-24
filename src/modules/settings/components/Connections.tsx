@@ -89,7 +89,6 @@ export const TelegramConnection = () => {
         <HStack
           alignItems="center"
           width="full"
-          px="12px"
           gap="8px"
           justifyContent="space-between"
         >
