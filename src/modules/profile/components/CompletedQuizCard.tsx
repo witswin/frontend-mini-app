@@ -63,7 +63,7 @@ export const CompletedQuizCard = ({
 
   useEffect(() => {
     setLocalTxHash(txHash);
-    setIsRewardsClaimedOpen(isClaimTriggered);
+    // setIsRewardsClaimedOpen(isClaimTriggered);
   }, [txHash, isClaimTriggered]);
 
   const dateString = new Date(date)
@@ -220,7 +220,12 @@ export const CompletedQuizCard = ({
             Claim
           </Button>
         ) : (
-          <HStack gap="2px" as={Link} isExternal href={localTxHash}>
+          <HStack
+            gap="2px"
+            as={Link}
+            isExternal
+            href={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+          >
             <Text
               fontSize="sm"
               fontWeight={600}
