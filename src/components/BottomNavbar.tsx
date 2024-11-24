@@ -1,13 +1,13 @@
-import { useAuth } from "@/hooks/useAuthorization";
-import { Box, HStack, Text, VStack } from "@chakra-ui/react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useAuth } from '@/hooks/useAuthorization';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import {
   HomeAngle2,
   NotebookMinimalistic,
   SliderVertical,
   User,
-} from "solar-icon-set";
+} from 'solar-icon-set';
 
 export const BottomNavbar = () => {
   const router = useRouter();
@@ -16,56 +16,56 @@ export const BottomNavbar = () => {
   const routes = [
     {
       id: 0,
-      title: "Home",
-      href: "/",
+      title: 'Home',
+      href: '/',
       icon: (isActive: boolean) => (
         <HomeAngle2
           color={
             isActive
-              ? "var(--chakra-colors-blue)"
-              : "var(--chakra-colors-gray-0)"
+              ? 'var(--chakra-colors-blue)'
+              : 'var(--chakra-colors-gray-0)'
           }
-          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          iconStyle={isActive ? 'Bold' : 'BoldDuotone'}
           size={24}
         />
       ),
     },
     {
       id: 1,
-      href: "/quiz",
-      title: "Quiz",
+      href: '/quiz',
+      title: 'Quiz',
       icon: (isActive: boolean) => (
         <SliderVertical
           color={
             isActive
-              ? "var(--chakra-colors-blue)"
-              : "var(--chakra-colors-gray-0)"
+              ? 'var(--chakra-colors-blue)'
+              : 'var(--chakra-colors-gray-0)'
           }
-          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          iconStyle={isActive ? 'Bold' : 'BoldDuotone'}
           size={24}
         />
       ),
     },
     {
       id: 2,
-      href: "/learn",
-      title: "Learn",
+      href: '/learn',
+      title: 'Learn',
       icon: (isActive: boolean) => (
         <Box
           sx={{
             path: {
               fill: isActive
-                ? "var(--chakra-colors-blue)"
-                : "var(--chakra-colors-gray-0)",
+                ? 'var(--chakra-colors-blue)'
+                : 'var(--chakra-colors-gray-0)',
             },
           }}
           color={
             isActive
-              ? "var(--chakra-colors-blue)"
-              : "var(--chakra-colors-gray-0)"
+              ? 'var(--chakra-colors-blue)'
+              : 'var(--chakra-colors-gray-0)'
           }
           as={NotebookMinimalistic}
-          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          iconStyle={isActive ? 'Bold' : 'BoldDuotone'}
           size={24}
         />
       ),
@@ -73,15 +73,15 @@ export const BottomNavbar = () => {
     {
       id: 3,
       href: `/profile/${authInfo?.pk}`,
-      title: "Profile",
+      title: 'Profile',
       icon: (isActive: boolean) => (
         <User
           color={
             isActive
-              ? "var(--chakra-colors-blue)"
-              : "var(--chakra-colors-gray-0)"
+              ? 'var(--chakra-colors-blue)'
+              : 'var(--chakra-colors-gray-0)'
           }
-          iconStyle={isActive ? "Bold" : "BoldDuotone"}
+          iconStyle={isActive ? 'Bold' : 'BoldDuotone'}
           size={24}
         />
       ),
@@ -113,8 +113,9 @@ export const BottomNavbar = () => {
         mx="auto"
       >
         {routes.map((route) => {
-          // source of problem
-          const isActive = router.asPath === route.href;
+          const basePath = router.asPath.split(/[?#]/)[0];
+
+          const isActive = basePath === route.href;
 
           return (
             <Link href={route.href} key={route.id}>

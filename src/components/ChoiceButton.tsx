@@ -1,14 +1,14 @@
-import { choice } from "@/globalTypes";
-import { useWebSocket } from "@/hooks/useWebSocket";
+import { choice } from '@/globalTypes';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import {
   useHints,
   useQuestionData,
   useQuestionDataDispatch,
-} from "@/modules/question/hooks";
-import { HINTS, QUESTION_STATE } from "@/types";
-import { Button, ButtonProps, HStack, Text } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect, useMemo, useState } from "react";
+} from '@/modules/question/hooks';
+import { HINTS, QUESTION_STATE } from '@/types';
+import { Button, ButtonProps, HStack, Text } from '@chakra-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
 
 interface ChoiceButtonProps extends ButtonProps {
   choice: choice;
@@ -17,11 +17,11 @@ interface ChoiceButtonProps extends ButtonProps {
 
 const animate = {
   background: [
-    "rgba(256, 256, 256, 0.2)",
-    "rgba(256, 256, 256, 0.4)",
-    "rgba(256, 256, 256, 0.2)",
+    'rgba(256, 256, 256, 0.2)',
+    'rgba(256, 256, 256, 0.4)',
+    'rgba(256, 256, 256, 0.2)',
   ],
-  boxShadow: "0px 1px 0px 0px #FFFFFF, 0px 0px 0px 0px #FFFFFF66",
+  boxShadow: '0px 1px 0px 0px #FFFFFF, 0px 0px 0px 0px #FFFFFF66',
   transition: { duration: 0.5, repeat: Infinity, delay: 0.1 },
 };
 
@@ -38,15 +38,15 @@ export const ChoiceButton = ({
   const { socket } = useWebSocket();
 
   const timeHintSpecificForThisQuestion = hints.usedHints.find(
-    (item) => item.hintType === HINTS.time && question.id === item.questionId
+    (item) => item.hintType === HINTS.time && question.id === item.questionId,
   );
 
   useEffect(() => {
     if (!socket.current.client) return;
     const handleMessage = (e: MessageEvent) => {
-      if (e.data !== "PONG") {
+      if (e.data !== 'PONG') {
         const data = JSON.parse(e.data);
-        if (data.type === "hint_question") {
+        if (data.type === 'hint_question') {
           if (
             data.questionId === question.id &&
             data.hintType === HINTS.stats
@@ -58,10 +58,10 @@ export const ChoiceButton = ({
         }
       }
     };
-    socket.current.client.addEventListener("message", handleMessage);
+    socket.current.client.addEventListener('message', handleMessage);
 
     return () => {
-      socket.current.client?.removeEventListener("message", handleMessage);
+      socket.current.client?.removeEventListener('message', handleMessage);
     };
   }, [question.id, socket]);
 
@@ -81,24 +81,24 @@ export const ChoiceButton = ({
 
       socket.current.client?.send(
         JSON.stringify({
-          command: "ANSWER",
+          command: 'ANSWER',
           args: {
             questionId: question.id,
             selectedChoiceId: choice.id,
           },
-        })
+        }),
       );
       if (timeHintSpecificForThisQuestion && question?.selectedChoice) {
         socket.current.client?.send(
           JSON.stringify({
-            command: "GET_HINT",
+            command: 'GET_HINT',
             args: {
               questionId: question?.id,
               hintType: HINTS.time,
               hintId: String(timeHintSpecificForThisQuestion.dbId),
               selectedChoiceId: question?.selectedChoice,
             },
-          })
+          }),
         );
       }
     }
@@ -108,31 +108,30 @@ export const ChoiceButton = ({
     () =>
       hints.usedHints.find(
         (item) =>
-          item.hintType === HINTS.stats && item.questionId === question?.id
+          item.hintType === HINTS.stats && item.questionId === question?.id,
       ),
-    [question, hints.usedHints]
+    [question, hints.usedHints],
   );
   const variant = useMemo(
     () => ({
       [QUESTION_STATE.default]:
-        +question?.selectedChoice === +choice?.id ? "pressed" : "default",
-      [QUESTION_STATE.freeze]: "default",
+        +question?.selectedChoice === +choice?.id ? 'pressed' : 'default',
+      [QUESTION_STATE.freeze]: 'default',
       [QUESTION_STATE.answered]:
         +question?.selectedChoice === +choice?.id &&
         +question?.selectedChoice === question?.correct?.answerId
-          ? "rightAnswer"
+          ? 'rightAnswer'
           : +question?.selectedChoice === +choice?.id &&
             +question?.selectedChoice !== question?.correct?.answerId
-          ? "wrongAnswer"
+          ? 'wrongAnswer'
           : +question?.correct?.answerId === +choice?.id
-          ? "rightAnswer"
-          : "default",
+          ? 'rightAnswer'
+          : 'default',
       [QUESTION_STATE.alert]:
-        +question?.selectedChoice === +choice?.id ? "pressed" : "default",
+        +question?.selectedChoice === +choice?.id ? 'pressed' : 'default',
     }),
-    [question?.correct, question.selectedChoice]
+    [question?.correct, question.selectedChoice],
   );
-
 
   return (
     <HStack
@@ -160,7 +159,7 @@ export const ChoiceButton = ({
           }
           as={motion.button}
           key={question?.state}
-          whiteSpace='break-spaces'
+          whiteSpace="break-spaces"
           {...buttonProps}
           {...(+question?.selectedChoice === +choice?.id &&
             question?.state === QUESTION_STATE.freeze && {
@@ -177,19 +176,19 @@ export const ChoiceButton = ({
             <>
               <motion.div
                 style={{
-                  position: "absolute",
-                  left: "0",
-                  borderTopLeftRadius: "8px",
-                  borderBottomLeftRadius: "8px",
-                  borderTopRightRadius: !!statsHint ? "8px" : "0",
-                  borderBottomRightRadius: !!statsHint ? "8px" : "0",
+                  position: 'absolute',
+                  left: '0',
+                  borderTopLeftRadius: '8px',
+                  borderBottomLeftRadius: '8px',
+                  borderTopRightRadius: !!statsHint ? '8px' : '0',
+                  borderBottomRightRadius: !!statsHint ? '8px' : '0',
                   zIndex: -1,
-                  height: "100% ",
+                  height: '100% ',
                   width: 0,
                   background:
                     question?.selectedChoice === choice?.id
-                      ? "rgba(256, 256, 256, 0.2)"
-                      : "#6E81EE5C",
+                      ? 'rgba(256, 256, 256, 0.2)'
+                      : '#6E81EE5C',
                 }}
                 animate={{ width: `${statsHint?.data[choice.id]}%` }}
               />
