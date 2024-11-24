@@ -1,4 +1,12 @@
-import { Text, useToast, Box, VStack, Switch, HStack } from '@chakra-ui/react';
+import {
+  Text,
+  useToast,
+  Box,
+  VStack,
+  Switch,
+  HStack,
+  Divider,
+} from '@chakra-ui/react';
 import { useProfile, useProfileDispatch } from '../hooks';
 import { CardSection } from './CardSection';
 import { ConnectionCard } from './ConnectionCard';
@@ -6,7 +14,7 @@ import Image from 'next/image';
 import { axiosClient } from '@/configs/axios';
 import { handleApiError } from '@/utils';
 import { colors } from '@/theme/colors';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { RemoveConnectionCard } from './RemoveConnectionCard';
 
 export const getTwitterOAuthUrlApi = async (): Promise<string> => {
@@ -29,6 +37,8 @@ export const Connections = () => {
       <VStack w="full" gap="16px">
         <TelegramConnection />
 
+        <Divider borderColor="gray.600" />
+
         <TwitterConnection onRemove={setFocusedConnection} />
         <FarcasterConnection onRemove={setFocusedConnection} />
         <DiscordConnection onRemove={setFocusedConnection} />
@@ -49,13 +59,13 @@ export type OnPromptRemove = (arg: { url: string; name: string }) => void;
 export const TelegramConnection = () => {
   const { connections } = useProfile();
   const dispatch = useProfileDispatch();
-
+  const [isPrivate, setIsPrivate] = useState(connections.Telegram.isPrivate);
   const toast = useToast();
 
   const onToggle = () => {
     axiosClient
       .patch('/auth/telegram/private/', {
-        isPrivate: !connections.Telegram.isPrivate,
+        isPrivate: !isPrivate,
       })
       .then(() => {
         dispatch(undefined);
@@ -65,6 +75,10 @@ export const TelegramConnection = () => {
         });
       });
   };
+
+  useEffect(() => {
+    setIsPrivate(connections.Telegram.isPrivate);
+  }, [connections]);
 
   console.log({ connections });
 
@@ -76,20 +90,22 @@ export const TelegramConnection = () => {
         position={'relative'}
         background={colors.glassBackground}
       >
-        <Box display="flex" gap={3} alignItems="center" width="full">
-          <Image
-            src="/assets/images/connections/telegram.svg"
-            width={24}
-            height={24}
-            alt="Telegram"
-          />
-          <span>{connections.Telegram.username}</span>
+        <HStack alignItems="center" width="full" px="12px" gap="8px">
+          <HStack flex={1} gap="8px">
+            <Image
+              src="/assets/images/connections/telegram.svg"
+              width={24}
+              height={24}
+              alt="Telegram"
+            />
+            <span>{connections.Telegram.username}</span>
+          </HStack>
 
           <HStack>
-            <Text>{connections.Telegram.isPrivate ? 'Private' : 'Public'}</Text>
+            <Text>{isPrivate ? 'Private' : 'Public'}</Text>
             <Switch
-              onToggle={onToggle}
-              checked={!connections.Telegram.isPrivate}
+              onToggle={() => onToggle()}
+              checked={!isPrivate}
               style={{ backgroundColor: '#6E81EE', borderRadius: '12px' }}
             />
           </HStack>
@@ -110,7 +126,7 @@ export const TelegramConnection = () => {
               {connections.Telegram.isPrivate ? 'Make Public' : 'Make Private'}
             </Box>
           </Button> */}
-        </Box>
+        </HStack>
       </CardSection>
     );
 
