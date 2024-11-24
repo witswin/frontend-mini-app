@@ -3,10 +3,11 @@ import {
   useToast,
   Box,
   VStack,
-  // Switch,
+  Switch,
   HStack,
   Divider,
-  Button,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
 import { useProfile, useProfileDispatch } from '../hooks';
 import { CardSection } from './CardSection';
@@ -15,11 +16,7 @@ import Image from 'next/image';
 import { axiosClient } from '@/configs/axios';
 import { handleApiError } from '@/utils';
 import { colors } from '@/theme/colors';
-import {
-  FC,
-  //  useEffect,
-  useState,
-} from 'react';
+import { FC, useState } from 'react';
 import { RemoveConnectionCard } from './RemoveConnectionCard';
 
 export const getTwitterOAuthUrlApi = async (): Promise<string> => {
@@ -64,7 +61,6 @@ export type OnPromptRemove = (arg: { url: string; name: string }) => void;
 export const TelegramConnection = () => {
   const { connections } = useProfile();
   const dispatch = useProfileDispatch();
-  // const [isPrivate, setIsPrivate] = useState(connections.Telegram.isPrivate);
   const toast = useToast();
 
   const onToggle = () => {
@@ -81,12 +77,7 @@ export const TelegramConnection = () => {
       });
   };
 
-  // useEffect(() => {
-  //   setIsPrivate(connections.Telegram.isPrivate);
-  // }, [connections]);
-
   console.log({ connections });
-
   if (connections.Telegram)
     return (
       <CardSection
@@ -111,32 +102,20 @@ export const TelegramConnection = () => {
             />
             <span>{connections.Telegram.username}</span>
           </HStack>
-          {/* 
+
           <HStack>
-            <Text>{isPrivate ? 'Private' : 'Public'}</Text>
-            <Switch
-              onToggle={() => onToggle()}
-              checked={!isPrivate}
-              style={{ backgroundColor: '#6E81EE', borderRadius: '12px' }}
-            />
-          </HStack> */}
-          <Button
-            onClick={onToggle}
-            ml="auto"
-            background={colors.glassBackground}
-            _before={{
-              background: colors.glassBackground,
-            }}
-            borderRadius="12px"
-            size="sm"
-            fontWeight="normal"
-            variant="solid"
-            gap="8px"
-          >
-            <Box gap={1} display="flex" alignItems="center">
-              {connections.Telegram.isPrivate ? 'Make Public' : 'Make Private'}
-            </Box>
-          </Button>
+            <FormControl display="flex" alignItems="center">
+              <FormLabel htmlFor="private-toggle" mb="0">
+                {connections.Telegram.isPrivate ? 'Private' : 'Public'}
+              </FormLabel>
+              <Switch
+                id="private-toggle"
+                isChecked={!connections.Telegram.isPrivate}
+                onChange={onToggle}
+                style={{ backgroundColor: '#6E81EE', borderRadius: '12px' }}
+              />
+            </FormControl>
+          </HStack>
         </HStack>
       </CardSection>
     );
