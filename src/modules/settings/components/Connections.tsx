@@ -1,4 +1,4 @@
-import { Button, Text, useToast, Box, VStack } from '@chakra-ui/react';
+import { Text, useToast, Box, VStack, Switch, HStack } from '@chakra-ui/react';
 import { useProfile, useProfileDispatch } from '../hooks';
 import { CardSection } from './CardSection';
 import { ConnectionCard } from './ConnectionCard';
@@ -79,13 +79,21 @@ export const TelegramConnection = () => {
         <Box display="flex" gap={3} alignItems="center" width="full">
           <Image
             src="/assets/images/connections/telegram.svg"
-            width={16}
-            height={16}
+            width={24}
+            height={24}
             alt="Telegram"
           />
           <span>{connections.Telegram.username}</span>
 
-          <Button
+          <HStack>
+            <Text>{connections.Telegram.isPrivate ? 'Private' : 'Public'}</Text>
+            <Switch
+              onToggle={onToggle}
+              checked={!connections.Telegram.isPrivate}
+              style={{ backgroundColor: '#6E81EE', borderRadius: '12px' }}
+            />
+          </HStack>
+          {/* <Button
             onClick={onToggle}
             ml="auto"
             background={colors.glassBackground}
@@ -101,7 +109,7 @@ export const TelegramConnection = () => {
             <Box gap={1} display="flex" alignItems="center">
               {connections.Telegram.isPrivate ? 'Make Public' : 'Make Private'}
             </Box>
-          </Button>
+          </Button> */}
         </Box>
       </CardSection>
     );
@@ -111,8 +119,8 @@ export const TelegramConnection = () => {
       <Box display="flex" gap={3} alignItems="center" width="full">
         <Image
           src="/assets/images/connections/telegram.svg"
-          width={16}
-          height={16}
+          width={24}
+          height={24}
           alt="Telegram"
         />
         <span>Telegram</span>
@@ -141,8 +149,8 @@ export const TwitterConnection: FC<{ onRemove: OnPromptRemove }> = ({
         <>
           <Image
             src="/assets/images/connections/x.svg"
-            width={16}
-            height={16}
+            width={24}
+            height={24}
             alt="Telegram"
           />
           <span>{connections.Twitter?.username}</span>
@@ -152,8 +160,8 @@ export const TwitterConnection: FC<{ onRemove: OnPromptRemove }> = ({
     >
       <Image
         src="/assets/images/connections/x.svg"
-        width={16}
-        height={16}
+        width={24}
+        height={24}
         alt="Twitter"
       />
       <span>Twitter</span>
@@ -184,8 +192,8 @@ export const DiscordConnection: FC<{ onRemove: OnPromptRemove }> = ({
         <>
           <Image
             src="/assets/images/connections/discord.svg"
-            width={16}
-            height={16}
+            width={24}
+            height={24}
             alt="Discord"
           />
           <span>{connections.Discord?.username}</span>
@@ -195,8 +203,8 @@ export const DiscordConnection: FC<{ onRemove: OnPromptRemove }> = ({
     >
       <Image
         src="/assets/images/connections/discord.svg"
-        width={16}
-        height={16}
+        width={24}
+        height={24}
         alt="Discord"
       />
       <span>Discord</span>
@@ -243,8 +251,8 @@ export const FarcasterConnection: FC<{ onRemove: OnPromptRemove }> = ({
         <>
           <Image
             src="/assets/images/connections/farcaster.svg"
-            width={16}
-            height={16}
+            width={24}
+            height={24}
             alt="Telegram"
           />
           <span>Connected </span>
@@ -254,8 +262,8 @@ export const FarcasterConnection: FC<{ onRemove: OnPromptRemove }> = ({
     >
       <Image
         src="/assets/images/connections/farcaster.svg"
-        width={16}
-        height={16}
+        width={24}
+        height={24}
         alt="Farcaster"
       />
       <span>Farcaster</span>
