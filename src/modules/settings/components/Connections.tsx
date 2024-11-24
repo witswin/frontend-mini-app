@@ -77,7 +77,13 @@ export const TelegramConnection = () => {
         background={colors.glassBackground}
       >
         <Box display="flex" gap={3} alignItems="center" width="full">
-          {connections.Telegram.username}
+          <Image
+            src="/assets/images/connections/telegram.svg"
+            width={16}
+            height={16}
+            alt="Telegram"
+          />
+          <span>{connections.Telegram.username}</span>
 
           <Button
             onClick={onToggle}
