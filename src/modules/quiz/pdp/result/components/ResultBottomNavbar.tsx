@@ -8,13 +8,14 @@ import { useQuestionData } from '@/modules/question/hooks';
 
 export const ResultBottomNavbar = () => {
   const finishedDataInfo = useFinishedData();
-  const { quiz } = useQuestionData();
+  const questionData = useQuestionData();
 
   const handleShareClaimTwitter = () => {
     const twitterUrl = !!finishedDataInfo?.winner
       ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(
           `I won ${
-            finishedDataInfo?.quizStats?.prizeToWin / 10 ** quiz?.tokenDecimals
+            finishedDataInfo?.quizStats?.prizeToWin /
+            10 ** questionData?.quiz?.tokenDecimals
           } from @@wits.win among ${
             finishedDataInfo?.quizStats?.totalParticipantsCount
           } participants. 🤩🎉
