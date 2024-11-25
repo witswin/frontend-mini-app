@@ -1,6 +1,6 @@
-import { Box, Container } from "@chakra-ui/react";
-import { BottomNavbar } from "./BottomNavbar";
-import { ReactNode } from "react";
+import { Box, Container } from '@chakra-ui/react';
+import { BottomNavbar } from './BottomNavbar';
+import { ReactNode } from 'react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -20,6 +20,7 @@ export const Layout = ({ children }: LayoutProps) => {
       justifyContent="stretch"
       alignItems="stretch"
       pb="106px"
+      userSelect="none"
     >
       <Box px="16px" width="full">
         {children}
