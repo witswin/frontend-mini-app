@@ -1,23 +1,23 @@
-import { Divider, Flex, Text, VStack } from "@chakra-ui/react"
-import React from "react"
-import { Card } from "./Card"
-import { CheckCircle, Notes, Ranking } from "solar-icon-set"
-import { profileStats } from "@/globalTypes"
+import { Divider, Flex, Text, VStack } from '@chakra-ui/react';
+import React from 'react';
+import { Card } from './Card';
+import { CheckCircle, Notes } from 'solar-icon-set';
+import { profileStats } from '@/globalTypes';
 
 interface Props {
-  userStats: profileStats
+  userStats: profileStats;
 }
 
 export const Stat = ({ userStats }: Props) => {
-  if (!userStats) return null
+  if (!userStats) return null;
 
-  const { rank, quizCount, winrate } = userStats
+  const { quizCount, winrate } = userStats;
 
   return (
     <Card>
       <Flex w="full" h="full" gap="8px" p="0px">
-        <VStack gap="8px" flex={1}>
-          <VStack gap="2px">
+        {/* <VStack gap="8px" flex={1}> */}
+        {/* <VStack gap="2px">
             <Text
               textAlign="center"
               fontSize="2xl"
@@ -43,7 +43,7 @@ export const Stat = ({ userStats }: Props) => {
           />
         </VStack>
 
-        <Divider orientation="vertical" borderColor="gray.400" />
+        <Divider orientation="vertical" borderColor="gray.400" /> */}
 
         <VStack gap="8px" flex={1}>
           <VStack gap="2px">
@@ -102,5 +102,5 @@ export const Stat = ({ userStats }: Props) => {
         </VStack>
       </Flex>
     </Card>
-  )
-}
+  );
+};

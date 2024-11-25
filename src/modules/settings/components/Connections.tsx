@@ -41,7 +41,7 @@ export const Connections = () => {
 
         <Divider borderColor="gray.600" />
 
-        <TwitterConnection onRemove={setFocusedConnection} />
+        {/* <TwitterConnection onRemove={setFocusedConnection} /> */}
         <FarcasterConnection onRemove={setFocusedConnection} />
         <DiscordConnection onRemove={setFocusedConnection} />
 

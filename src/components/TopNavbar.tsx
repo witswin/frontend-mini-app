@@ -63,14 +63,14 @@ export const TopNavbar = () => {
         pt={isLarge ? '20px' : '4px'}
       >
         <VStack w="82px">
-          <HStack gap="2px">
-            {/* <Neuron size={24} /> */}
+          {/* <HStack gap="2px"> */}
+          {/* <Neuron size={24} /> */}
 
-            {/* <Badge size="sm" variant="glass">
+          {/* <Badge size="sm" variant="glass">
               {"x "}
               {health}
             </Badge> */}
-            <Image
+          {/* <Image
               src="/assets/images/home/Neuron.svg"
               alt="neuron"
               width={22}
@@ -84,7 +84,7 @@ export const TopNavbar = () => {
             fontWeight="bold"
           >
             {`${authInfo?.neuron ?? 0} Neurons`}
-          </Text>
+          </Text> */}
         </VStack>
 
         <VStack>

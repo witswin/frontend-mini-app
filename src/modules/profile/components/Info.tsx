@@ -233,7 +233,7 @@ export const Info = ({ userInfo }: Props) => {
           >
             <SettingsMinimalistic color="gray.20" size={20} iconStyle="Bold" />
             <Text fontSize="md" fontWeight={600} color="gray.20">
-              Account Setting
+              Account Settings
             </Text>
           </HStack>
           <Divider orientation="vertical" />

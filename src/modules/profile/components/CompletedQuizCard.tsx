@@ -191,7 +191,8 @@ export const CompletedQuizCard = ({
               gap="2px"
               as={Link}
               isExternal
-              href={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+              // href={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+              href={`https://optimistic.etherscan.io/tx/0x${localTxHash}`}
             >
               <Text
                 fontSize="sm"
@@ -224,7 +225,8 @@ export const CompletedQuizCard = ({
             gap="2px"
             as={Link}
             isExternal
-            href={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+            // href={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+            href={`https://optimistic.etherscan.io/tx/0x${localTxHash}`}
           >
             <Text
               fontSize="sm"
