@@ -1,11 +1,11 @@
-import { QuizPrize } from "@/components/QuizCard";
-import { Center, Flex, HStack, Text, VStack } from "@chakra-ui/react";
-import { STATUS_ENROLL_VALUE } from "../../types";
-import { Dispatch, SetStateAction, useMemo } from "react";
-import { useSelectedQuiz } from "../../hooks";
-import { HintCard } from "@/components/HintCards";
-import { useHints } from "@/modules/question/hooks";
-import { LightbulbBolt } from "solar-icon-set";
+import { QuizPrize } from '@/components/QuizCard';
+import { Center, Flex, HStack, Text, VStack } from '@chakra-ui/react';
+import { STATUS_ENROLL_VALUE } from '../../types';
+import { Dispatch, SetStateAction, useMemo } from 'react';
+import { useSelectedQuiz } from '../../hooks';
+import { HintCard } from '@/components/HintCards';
+import { useHints } from '@/modules/question/hooks';
+import { LightbulbBolt } from 'solar-icon-set';
 
 interface ValueCardProps {
   title: string | number;
@@ -71,16 +71,16 @@ export const QuizInfo = ({
         bg="var(--chakra-colors-glassBackground)"
         width="full"
         sx={{
-          "&>div:first-of-type, span": {
-            width: "fit-content",
-            textAlign: "center",
-            mx: "auto",
+          '&>div:first-of-type, span': {
+            width: 'fit-content',
+            textAlign: 'center',
+            mx: 'auto',
           },
         }}
       >
         <QuizPrize
           prize={
-            selectedQuiz?.prizeAmount ? selectedQuiz?.prizeAmount / 1e18 : 0
+            selectedQuiz?.prizeAmount ? selectedQuiz?.prizeAmount / 1e6 : 0
           }
           unitPrize={selectedQuiz?.token}
         />
@@ -113,8 +113,14 @@ export const QuizInfo = ({
           </Text>
         </HStack>
         <Flex width="full" columnGap="12px">
-          <HintCard setHintModal={setHintModal} hint={hints?.selectedHints?.[0]} />
-          <HintCard setHintModal={setHintModal} hint={hints?.selectedHints?.[1]} />
+          <HintCard
+            setHintModal={setHintModal}
+            hint={hints?.selectedHints?.[0]}
+          />
+          <HintCard
+            setHintModal={setHintModal}
+            hint={hints?.selectedHints?.[1]}
+          />
         </Flex>
       </VStack>
     </Flex>

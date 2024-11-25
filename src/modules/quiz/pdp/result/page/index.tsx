@@ -7,11 +7,11 @@ import {
   Spinner,
   Text,
   VStack,
-} from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { PrizeCard } from "../components/PrizeCard";
-import { QuizWinners } from "../components/QuizWinners";
-import { useFinishedData } from "../hooks";
+} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { PrizeCard } from '../components/PrizeCard';
+import { QuizWinners } from '../components/QuizWinners';
+import { useFinishedData } from '../hooks';
 
 export const Result = () => {
   const [isLoading, setLoading] = useState(true);
@@ -49,9 +49,9 @@ export const Result = () => {
         </VStack>
       ) : (
         <Grid
-          rowGap={{ base: "8px", sm: "16px" }}
+          rowGap={{ base: '8px', sm: '16px' }}
           gridTemplateRows={
-            !!finishedDataInfo?.winner ? "fit-content 1fr" : "1fr"
+            !!finishedDataInfo?.winner ? 'fit-content 1fr' : '1fr'
           }
           w="full"
           h="full"
@@ -63,7 +63,7 @@ export const Result = () => {
                 isSelfWinner={!!isJustSelfUserWinner}
                 prizeCount={
                   finishedDataInfo?.quizStats?.prizeToWin
-                    ? finishedDataInfo?.quizStats?.prizeToWin / 1e18
+                    ? finishedDataInfo?.quizStats?.prizeToWin / 1e6
                     : 0
                 }
               />
@@ -71,7 +71,7 @@ export const Result = () => {
           )}
           {!isJustSelfUserWinner && (
             <GridItem
-              p={{ base: "8px", sm: "16px" }}
+              p={{ base: '8px', sm: '16px' }}
               bg="glassBackground"
               borderRadius="16px"
               h="full"
@@ -105,14 +105,14 @@ export const Result = () => {
                   <Text
                     width="full"
                     textAlign="center"
-                    fontSize={{ base: "xl", sm: "2xl" }}
+                    fontSize={{ base: 'xl', sm: '2xl' }}
                     fontWeight={500}
                     color="gray.0"
                   >
                     Quiz Winners
                   </Text>
                   <Text
-                    my={{ base: "4px", sm: "16px" }}
+                    my={{ base: '4px', sm: '16px' }}
                     width="full"
                     textAlign="center"
                     fontSize="sm"

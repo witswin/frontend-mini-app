@@ -1,22 +1,22 @@
-import { Box, HStack, Text, useMediaQuery, VStack } from "@chakra-ui/react"
-import HeaderBg from "@/assets/QuestionHeaderBg.svg"
-import Image from "next/image"
-import { ColorFullText } from "@/components/ColorFullText"
-import { useQuestionData } from "../hooks"
+import { Box, HStack, Text, useMediaQuery, VStack } from '@chakra-ui/react';
+import HeaderBg from '@/assets/QuestionHeaderBg.svg';
+import Image from 'next/image';
+import { ColorFullText } from '@/components/ColorFullText';
+import { useQuestionData } from '../hooks';
 
 export const TopNavbar = () => {
-  const [isLarge] = useMediaQuery("(min-width: 500px)")
+  const [isLarge] = useMediaQuery('(min-width: 500px)');
 
-  const { question, quiz, quizStats } = useQuestionData()
+  const { question, quiz, quizStats } = useQuestionData();
 
   return (
     <HStack
-      h={isLarge ? "120px" : "90px"}
+      h={isLarge ? '120px' : '90px'}
       w="full"
       justifyContent="center"
       alignItems="center"
       position="relative"
-      px={isLarge ? "16px" : "0"}
+      px={isLarge ? '16px' : '0'}
       pb="38px"
     >
       <Box
@@ -56,11 +56,11 @@ export const TopNavbar = () => {
             fontWeight={700}
             textContent={
               question?.amountWonPerUser
-                ? String(question?.amountWonPerUser / 1e18)
-                : "0"
+                ? String(question?.amountWonPerUser / 1e6)
+                : '0'
             }
           />
-          <ColorFullText fontSize="xs" fontWeight={700} textContent={"USDT"} />
+          <ColorFullText fontSize="xs" fontWeight={700} textContent={'USDT'} />
         </HStack>
 
         <VStack alignItems="end">
@@ -74,7 +74,7 @@ export const TopNavbar = () => {
                 : 0}
             </Text>
             <Text color="gray.80" fontSize="xs" fontWeight="bold">
-              /{" "}
+              /{' '}
               {!!quizStats?.totalParticipantsCount
                 ? quizStats?.totalParticipantsCount
                 : 0}
@@ -83,5 +83,5 @@ export const TopNavbar = () => {
         </VStack>
       </HStack>
     </HStack>
-  )
-}
+  );
+};
