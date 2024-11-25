@@ -4,18 +4,15 @@ import Link from 'next/link';
 import React from 'react';
 import { HomeAngle2 } from 'solar-icon-set';
 import { useFinishedData } from '../hooks';
-import { useQuestionData } from '@/modules/question/hooks';
 
 export const ResultBottomNavbar = () => {
   const finishedDataInfo = useFinishedData();
-  const questionData = useQuestionData();
 
   const handleShareClaimTwitter = () => {
     const twitterUrl = !!finishedDataInfo?.winner
       ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(
           `I won ${
-            finishedDataInfo?.quizStats?.prizeToWin /
-            10 ** questionData?.quiz?.tokenDecimals
+            finishedDataInfo?.quizStats?.prizeToWin / 10 ** 6
           } from @@wits.win among ${
             finishedDataInfo?.quizStats?.totalParticipantsCount
           } participants. 🤩🎉
