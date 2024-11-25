@@ -49,8 +49,9 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     const canGoBack = () => {
       return history.length > 0 && router.asPath !== '/';
     };
+    const basePath = router.asPath.split(/[?#]/)[0];
 
-    if (router.asPath === '/') {
+    if (basePath === '/') {
       tg.BackButton.hide(); // Hide the button on unmount
 
       return;
