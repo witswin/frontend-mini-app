@@ -49,13 +49,6 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     const canGoBack = () => {
       return history.length > 0 && router.asPath !== '/';
     };
-    const basePath = router.asPath.split(/[?#]/)[0];
-
-    if (basePath === '/') {
-      tg.BackButton.hide(); // Hide the button on unmount
-
-      return;
-    }
 
     if (canGoBack()) {
       tg.BackButton.show(); // Show the Telegram Back Button
@@ -80,10 +73,28 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
     if (!tg) return;
 
-    router.events.on('routeChangeComplete', onRouteChange);
+    tg.onEvent('backButtonClicked', onRouteChange);
+    return () => tg.offEvent('backButtonClicked', onRouteChange);
+  }, [onRouteChange, router]);
 
+  //handle close button
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp;
+    const basePath = router.pathname;
+    if (!tg) return;
+    if (basePath === '/') {
+      tg.BackButton.hide();
+      tg.BackButton.hide();
+      tg.MainButton.onClick(() => {
+        tg.close();
+      });
+    } else {
+      tg.MainButton.hide();
+    }
     return () => {
-      router.events.off('routeChangeComplete', onRouteChange);
+      if (tg) {
+        tg.offEvent('backButtonClicked', onRouteChange);
+      }
     };
   }, [onRouteChange, router]);
 
