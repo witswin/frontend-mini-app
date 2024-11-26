@@ -98,31 +98,33 @@ export const QuizInfo = ({
         />
       </Flex>
 
-      <VStack
-        borderRadius="8px"
-        border="1px solid"
-        borderColor="gray.400"
-        bg="glassBackground"
-        p="12px"
-        width="full"
-      >
-        <HStack gap="4px" alignItems="start">
-          <LightbulbBolt iconStyle="Bold" size={25} />
-          <Text fontSize="3xl" fontWeight="700">
-            Hints
-          </Text>
-        </HStack>
-        <Flex width="full" columnGap="12px">
-          <HintCard
-            setHintModal={setHintModal}
-            hint={hints?.selectedHints?.[0]}
-          />
-          <HintCard
-            setHintModal={setHintModal}
-            hint={hints?.selectedHints?.[1]}
-          />
-        </Flex>
-      </VStack>
+      {selectedQuiz?.builtInHints?.length !== 0 && (
+        <VStack
+          borderRadius="8px"
+          border="1px solid"
+          borderColor="gray.400"
+          bg="glassBackground"
+          p="12px"
+          width="full"
+        >
+          <HStack gap="4px" alignItems="start">
+            <LightbulbBolt iconStyle="Bold" size={25} />
+            <Text fontSize="3xl" fontWeight="700">
+              Hints
+            </Text>
+          </HStack>
+          <Flex width="full" columnGap="12px">
+            <HintCard
+              setHintModal={setHintModal}
+              hint={hints?.selectedHints?.[0]}
+            />
+            <HintCard
+              setHintModal={setHintModal}
+              hint={hints?.selectedHints?.[1]}
+            />
+          </Flex>
+        </VStack>
+      )}
     </Flex>
   );
 };
