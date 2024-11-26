@@ -46,6 +46,14 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const onRouteChange = useCallback(() => {
     const tg = window.Telegram?.WebApp;
 
+    const basePath = router.asPath.split(/[?#]/)[0];
+
+    if (basePath === '/') {
+      tg.BackButton.hide(); // Hide the button on unmount
+
+      return;
+    }
+
     const canGoBack = () => {
       return history.length > 0 && router.asPath !== '/';
     };
@@ -80,7 +88,8 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
   //handle close button
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
-    const basePath = router.pathname;
+    const basePath = router.asPath.split(/[?#]/)[0];
+
     if (!tg) return;
     if (basePath === '/') {
       tg.BackButton.hide();
@@ -90,6 +99,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
       });
     } else {
       tg.MainButton.hide();
+      tg.BackButton.show();
     }
     return () => {
       if (tg) {
