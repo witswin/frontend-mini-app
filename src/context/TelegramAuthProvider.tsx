@@ -61,16 +61,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     if (canGoBack()) {
       tg.BackButton.show(); // Show the Telegram Back Button
 
-      const onBack = () => {
-        history.back();
-      };
-
-      tg.BackButton.onClick(onBack);
-
-      return () => {
-        tg.BackButton.offClick(onBack); // Cleanup listener
-        tg.BackButton.hide(); // Hide the button on unmount
-      };
+      router.back();
     } else {
       tg.BackButton.hide(); // Hide the button if back is not available
     }
