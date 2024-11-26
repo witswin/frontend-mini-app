@@ -11,6 +11,10 @@ import {
   Link as ChakraLink,
   Image,
   useClipboard,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
 } from '@chakra-ui/react';
 
 import { SettingsMinimalistic, WalletMoney } from 'solar-icon-set';
@@ -24,6 +28,7 @@ import { axiosClient } from '@/configs/axios';
 import { useQuery } from '@tanstack/react-query';
 import { Integrations, UserConnection } from '@/modules/settings/types';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
+import { WarningIcon } from '@chakra-ui/icons';
 
 interface Props {
   userInfo: profileInfo;
@@ -232,7 +237,11 @@ export const Info = ({ userInfo }: Props) => {
             flex={1}
           >
             <SettingsMinimalistic color="gray.20" size={20} iconStyle="Bold" />
-            <Text fontSize="md" fontWeight={600} color="gray.20">
+            <Text
+              fontSize={{ base: 'sm', sm: 'md' }}
+              fontWeight={600}
+              color="gray.20"
+            >
               Account Settings
             </Text>
           </HStack>
@@ -242,13 +251,43 @@ export const Info = ({ userInfo }: Props) => {
             gap="6px"
             justifyContent="center"
             alignItems="center"
-            cursor="pointer"
-            onClick={onConnectWallet}
           >
-            <WalletMoney color="gray.20" size={20} iconStyle="Bold" />
-            <Text fontSize="md" fontWeight={600} color="gray.20">
-              {userInfo.wallets.length ? 'Change Wallet' : 'Connect Wallet'}
-            </Text>
+            <HStack cursor="pointer" onClick={onConnectWallet}>
+              <WalletMoney color="gray.20" size={20} iconStyle="Bold" />
+              <Text
+                fontSize={{ base: 'sm', sm: 'md' }}
+                fontWeight={600}
+                color="gray.20"
+              >
+                {userInfo.wallets.length ? 'Change Wallet' : 'Connect Wallet'}
+              </Text>
+            </HStack>
+            {userInfo.wallets.length === 0 && (
+              <Popover trigger="click">
+                <PopoverTrigger>
+                  <WarningIcon
+                    color="orange.300"
+                    cursor="pointer"
+                    fontSize="12px"
+                  />
+                </PopoverTrigger>
+                <PopoverContent bg="gray.600" border="none">
+                  <PopoverBody fontSize="sm" color="gray.0">
+                    You can also use the{' '}
+                    <ChakraLink
+                      fontSize="md"
+                      fontWeight="bold"
+                      color="blue"
+                      href="https://wits.win"
+                      isExternal
+                    >
+                      website
+                    </ChakraLink>{' '}
+                    to connect your wallet.
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            )}
           </HStack>
         </Flex>
       )}

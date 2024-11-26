@@ -1,4 +1,4 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ColorFullText } from '@/components/ColorFullText';
@@ -103,31 +103,36 @@ export const PrizeCard = ({
             : "Awesome, you're a winner!"
         }
       />
-      <HStack>
+      <span style={{ textAlign: 'center' }}>
         <Text
+          as="span"
           whiteSpace="nowrap"
           color="green.400"
           fontSize={{ base: 'sm', sm: 'lg' }}
           fontWeight={700}
+          wordBreak="normal"
         >
-          {`${prizeCount} USDT`}
+          {`${prizeCount} USDT `}
         </Text>
         <Text
+          as="span"
           color="green.0"
           fontSize={{ base: 'sm', sm: 'lg' }}
           fontWeight={700}
+          wordBreak="normal"
         >
-          has been added to your account.
+          has been added to your account.{' '}
         </Text>
 
         <Text
+          as="span"
           color="green.0"
           fontSize={{ base: 'sm', sm: 'lg' }}
           fontWeight={700}
         >
           You can claim the rewards by navigating to your profile page.
         </Text>
-      </HStack>
+      </span>
     </VStack>
   );
 };
