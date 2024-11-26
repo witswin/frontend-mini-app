@@ -15,7 +15,7 @@ export const QuizWinners = ({ finishedData }: QuizWinnersProps) => {
         <WinnerCard
           userId={user?.pk}
           key={user?.pk}
-          name={user?.firstName}
+          name={user?.firstName ?? user?.username}
           walletAddress={user?.wallets?.[0]?.walletAddress}
           isSelfUser={user?.pk === authInfo?.pk}
           username={user?.username}
