@@ -1,20 +1,20 @@
-import { Text, useDisclosure, VStack } from "@chakra-ui/react";
-import { QuestionCard } from "../components/QuestionCard";
-import { AnimatePresence, motion } from "framer-motion";
-import { useHints, useQuestionData } from "../hooks";
-import { QUESTION_STATE } from "@/types";
-import { HintButton } from "@/components/HintButtons";
-import { selectedHint } from "../types";
-import { useEffect, useState } from "react";
-import { GameOverModal } from "./GameOverModal";
-import { useCheckEnrolled } from "@/modules/home/hooks";
+import { Spinner, Text, useDisclosure, VStack } from '@chakra-ui/react';
+import { QuestionCard } from '../components/QuestionCard';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useHints, useQuestionData } from '../hooks';
+import { QUESTION_STATE } from '@/types';
+import { HintButton } from '@/components/HintButtons';
+import { selectedHint } from '../types';
+import { useEffect, useState } from 'react';
+import { GameOverModal } from './GameOverModal';
+import { useCheckEnrolled } from '@/modules/home/hooks';
 
 interface HintContentProps {
   hint: selectedHint;
 }
 const HintContent = ({ hint }: HintContentProps) => {
   const isDisabled = useHints().usedHints.find(
-    (item) => item.hintId === hint.localId
+    (item) => item.hintId === hint.localId,
   );
 
   return <HintButton hint={hint} isDisabled={!!isDisabled} />;
@@ -34,7 +34,8 @@ export const QuizPage = () => {
       if (
         question?.selectedChoice !== +question?.correct?.answerId &&
         !isShowedBefore &&
-        isEnrolled
+        isEnrolled &&
+        question?.isEligible
       ) {
         onOpen();
         setIsShowedBefore(true);
@@ -78,51 +79,55 @@ export const QuizPage = () => {
           </Card>
         </Box>
       ))} */}
-      <AnimatePresence mode="popLayout">
-        <motion.div
-          // key={question?.id}
-          style={{
-            paddingTop: `${question?.number * 8}px`,
-            width: "100%",
-            paddingBottom: "36px",
-          }}
-          // initial={{
-          //   opacity: 0,
-          //   scale: 0,
-          // }}
-          // animate={{
-          //   scale: 1,
-          //   opacity: 1,
-          // }}
-          // exit={{
-          //   scale: 0,
-          //   opacity: 0,
-          // }}
-          // transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
-        >
-          <QuestionCard />
-          <GameOverModal isOpen={isOpen} onClose={onClose} />
+      {!!question?.id ? (
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            // key={question?.id}
+            style={{
+              paddingTop: `${question?.number * 8}px`,
+              width: '100%',
+              paddingBottom: '36px',
+            }}
+            // initial={{
+            //   opacity: 0,
+            //   scale: 0,
+            // }}
+            // animate={{
+            //   scale: 1,
+            //   opacity: 1,
+            // }}
+            // exit={{
+            //   scale: 0,
+            //   opacity: 0,
+            // }}
+            // transition={{ duration: 2, ease: [0.43, 0.13, 0.23, 0.96] }}
+          >
+            <QuestionCard />
+            <GameOverModal isOpen={isOpen} onClose={onClose} />
 
-          {!question.isEligible && (
-            <Text
-              mt="8px !important"
-              backgroundClip="text"
-              background="glassBackground"
-              sx={{
-                WebkitTextFillColor: "transparent",
-                WebkitBackgroundClip: "text",
-              }}
-              textAlign="center"
-              fontSize="24px"
-              fontWeight="700"
-              fontFamily="Kanit"
-              width="full"
-            >
-              Spectator Mode
-            </Text>
-          )}
-        </motion.div>
-      </AnimatePresence>
+            {!question.isEligible && (
+              <Text
+                mt="8px !important"
+                backgroundClip="text"
+                background="glassBackground"
+                sx={{
+                  WebkitTextFillColor: 'transparent',
+                  WebkitBackgroundClip: 'text',
+                }}
+                textAlign="center"
+                fontSize="24px"
+                fontWeight="700"
+                fontFamily="Kanit"
+                width="full"
+              >
+                Spectator Mode
+              </Text>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      ) : (
+        <Spinner color="cyan" size="md" />
+      )}
       <AnimatePresence>
         {question?.state !== QUESTION_STATE.freeze &&
           question?.state !== QUESTION_STATE.rest &&
@@ -142,13 +147,13 @@ export const QuizPage = () => {
                 opacity: 0,
               }}
               style={{
-                position: "sticky",
-                bottom: "0",
-                left: "0",
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                columnGap: "8px",
+                position: 'sticky',
+                bottom: '0',
+                left: '0',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                columnGap: '8px',
               }}
             >
               {selectedHints.map((item) => (

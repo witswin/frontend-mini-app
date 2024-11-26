@@ -149,7 +149,7 @@ const QuizCard = forwardRef(
           }}
           colored={colored}
         >
-          {quiz?.prizeAmount && quiz?.token && quiz?.details && (
+          {quiz?.formattedPrize && quiz?.token && quiz?.details && (
             <VStack mb="8px" rowGap="0">
               <Center>
                 <QuizPrize

@@ -1,26 +1,26 @@
-import { axiosClient } from "@/configs/axios";
-import { LOBBY_THRESHOLD } from "@/constants";
-import { enrolledCompetition, quizType } from "@/globalTypes";
-import { useAuth } from "@/hooks/useAuthorization";
-import { INFO_CARD_STATE } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { axiosClient } from '@/configs/axios';
+import { LOBBY_THRESHOLD } from '@/constants';
+import { enrolledCompetition, quizType } from '@/globalTypes';
+import { useAuth } from '@/hooks/useAuthorization';
+import { INFO_CARD_STATE } from '@/types';
+import { useQuery } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { useEffect, useState } from 'react';
 
 export const useCheckEnrolled = () => {
   const authInfo = useAuth();
 
   const { data: enrolledCompetitions } = useQuery({
-    queryKey: ["enrolledCompetition", authInfo?.token],
+    queryKey: ['enrolledCompetition', authInfo?.token],
     queryFn: async () =>
       await axiosClient
         .get<string, AxiosResponse<enrolledCompetition[]>>(
-          "/quiz/competitions/enroll/",
+          '/quiz/competitions/enroll/',
           {
             headers: {
               Authorization: `TOKEN ${authInfo?.token}`,
             },
-          }
+          },
         )
         .then((res) => res.data),
     enabled: !!authInfo?.token,
@@ -32,7 +32,7 @@ export const useCheckEnrolled = () => {
 
   return (competitionId: number) =>
     enrolledCompetitions?.find(
-      (competition) => competition.competition === competitionId
+      (competition) => competition.competition === competitionId,
     );
 };
 
@@ -53,13 +53,13 @@ export const useGetHomeCardState = (competition: quizType) => {
     const interval = setInterval(() => {
       const calculatedTime = convertedStartAt - new Date().getTime();
       if (calculatedTime > LOBBY_THRESHOLD) {
-        setTimeState("default");
+        setTimeState('default');
       } else if (calculatedTime <= LOBBY_THRESHOLD && calculatedTime > 10000) {
-        setTimeState("lobby");
+        setTimeState('lobby');
       } else if (calculatedTime <= 10000 && calculatedTime >= 0) {
-        setTimeState("close");
+        setTimeState('close');
       } else {
-        setTimeState("expired");
+        setTimeState('expired');
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -69,12 +69,14 @@ export const useGetHomeCardState = (competition: quizType) => {
     if (!isEnrolled) {
       setCompetitionState(INFO_CARD_STATE.welcome);
     } else {
-      if (timeState === "default" && competition.resources.length !== 0) {
+      if (timeState === 'default' && competition.resources.length !== 0) {
         setCompetitionState(INFO_CARD_STATE.resource);
-      } else if (timeState === "lobby") {
+      } else if (timeState === 'lobby') {
         setCompetitionState(INFO_CARD_STATE.lobby);
-      } else if (timeState === "close") {
+      } else if (timeState === 'close') {
         setCompetitionState(INFO_CARD_STATE.join);
+      } else if (competition.isFinished) {
+        setCompetitionState(INFO_CARD_STATE.welcome);
       } else {
         setCompetitionState(INFO_CARD_STATE.watch);
       }

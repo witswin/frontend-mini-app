@@ -66,18 +66,18 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
           {quizzes.map((quiz) => {
             return (
               <CompletedQuizCard
-                key={quiz.competition.id}
-                title={quiz.competition.title}
-                amountWon={quiz.amountWon}
-                date={new Date(quiz.competition?.startAt).getTime()}
-                imgAddress={quiz.competition.image}
-                isWinner={quiz.isWinner}
-                user_competition_id={quiz.id}
-                isClaimTriggered={quiz.isClaimTriggered}
-                txHash={quiz.txHash}
+                key={quiz?.competition?.id}
+                title={quiz?.competition?.title}
+                amountWon={quiz?.amountWon ? quiz?.amountWon / 1e6 : 0}
+                date={new Date(quiz?.competition?.startAt).getTime()}
+                imgAddress={quiz?.competition?.image}
+                isWinner={quiz?.isWinner}
+                user_competition_id={quiz?.id}
+                isClaimTriggered={quiz?.isClaimTriggered}
+                txHash={quiz?.txHash}
                 isSelfUser={isSelfUser}
-                quizId={quiz.competition.id}
-                profileId={router.query.id as string}
+                quizId={quiz?.competition.id}
+                profileId={router?.query?.id as string}
               />
             );
           })}
