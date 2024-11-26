@@ -208,7 +208,7 @@ export const QuizInfo = () => {
             </Box>
             <VStack alignItems="flex-end" rowGap="0">
               <QuizPrize
-                prize={data?.prizeAmount ? data?.prizeAmount / 1e6 : 0}
+                prize={data?.formattedPrize ? data?.formattedPrize : 0}
                 unitPrize={data?.token}
               />
               <Text

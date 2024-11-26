@@ -80,7 +80,7 @@ export const QuizInfo = ({
       >
         <QuizPrize
           prize={
-            selectedQuiz?.prizeAmount ? selectedQuiz?.prizeAmount / 1e6 : 0
+            selectedQuiz?.formattedPrize ? selectedQuiz?.formattedPrize : 0
           }
           unitPrize={selectedQuiz?.token}
         />
