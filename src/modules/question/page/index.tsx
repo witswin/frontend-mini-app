@@ -136,7 +136,7 @@ export const Question = () => {
     return () => {
       socket.current.client?.removeEventListener("message", handleMessage);
     };
-  }, [socket]);
+  }, [socket?.current?.client]);
 
   useEffect(() => {
     const interval = setInterval(() => {

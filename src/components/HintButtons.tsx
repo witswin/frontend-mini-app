@@ -115,7 +115,7 @@ export const HintButton = ({
     isUsedTimeHint,
     question?.id,
     question?.selectedChoice,
-    socket,
+    socket?.current?.client,
   ]);
 
   return (

@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuthorization";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
-export const QuizFinishedInfo = createContext<{
+export const  QuizFinishedInfo = createContext<{
   finishedData: quizFinishedData[];
   quizStats: quizStats;
   winner: quizFinishedData;
@@ -58,7 +58,7 @@ export const QuizFinishedInfoProvider = ({
     return () => {
       socket.current.client?.removeEventListener("message", handleMessage);
     };
-  }, [socket, winner]);
+  }, [socket?.current?.client]);
 
   console.log({ state });
 

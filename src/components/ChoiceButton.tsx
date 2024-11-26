@@ -130,7 +130,7 @@ export const ChoiceButton = ({
       [QUESTION_STATE.alert]:
         +question?.selectedChoice === +choice?.id ? 'pressed' : 'default',
     }),
-    [question?.correct, question.selectedChoice],
+    [question?.correct, question.selectedChoice, socket?.current?.client],
   );
 
   return (

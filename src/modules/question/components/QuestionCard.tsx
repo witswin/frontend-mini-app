@@ -47,7 +47,7 @@ export const QuestionCard = () => {
     return () => {
       socket.current.client?.removeEventListener("message", handleMessage);
     };
-  }, [hints.usedHints, question, socket]);
+  }, [hints.usedHints, question, socket?.current?.client]);
 
   return (
     <>
