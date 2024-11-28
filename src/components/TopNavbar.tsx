@@ -10,7 +10,7 @@ import HeaderBg from '@/assets/HeaderBgImage.svg';
 import Logo from '@/assets/Logo.svg';
 import Image from 'next/image';
 import { WalletMoney } from 'solar-icon-set';
-import { useWalletConnection } from '@/hooks/useWalletConnection';
+// import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { useAuth } from '@/hooks/useAuthorization';
 import { textTruncator } from '@/utils';
 import { useRouter } from 'next/router';
@@ -33,7 +33,7 @@ export const TopNavbar = () => {
   const authInfo = useAuth();
   const router = useRouter();
 
-  const { connect, disconnect } = useWalletConnection();
+  // const { connect, disconnect } = useWalletConnection();
 
   console.log({ authInfo });
 
@@ -95,12 +95,12 @@ export const TopNavbar = () => {
           <Box
             cursor="pointer"
             onClick={() => {
-              if (!authInfo || !authInfo.wallets.length) {
-                disconnect?.();
-                setTimeout(() => {
-                  connect();
-                }, 0);
-              }
+              // if (!authInfo || !authInfo.wallets.length) {
+              //   disconnect?.();
+              //   setTimeout(() => {
+              //     connect();
+              //   }, 0);
+              // }
 
               router.push('/profile/' + authInfo?.pk);
             }}
