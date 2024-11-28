@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
   const isEmpty = quizzes?.length === 0;
   const unClaimedRewards =
-    quizzes.filter((quiz) => !quiz.txHash && quiz.isWinner)?.length > 0;
+    quizzes?.filter((quiz) => !quiz.txHash && quiz.isWinner)?.length > 0;
   const selfUser = useAuth();
   const router = useRouter();
 
@@ -63,7 +63,7 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
               </Button> */}
             </HStack>
           )}
-          {quizzes.map((quiz) => {
+          {quizzes?.map((quiz) => {
             return (
               <CompletedQuizCard
                 key={quiz?.competition?.id}

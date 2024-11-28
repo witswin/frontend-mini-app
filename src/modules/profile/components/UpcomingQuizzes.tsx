@@ -28,7 +28,7 @@ export const UpcomingQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
           </Button>
         </>
       ) : (
-        quizzes.map((quiz) => (
+        quizzes?.map((quiz) => (
           <QuizAndState quiz={quiz.competition} key={quiz.competition.id} />
         ))
       )}

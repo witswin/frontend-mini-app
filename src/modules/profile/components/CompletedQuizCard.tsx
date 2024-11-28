@@ -86,13 +86,13 @@ export const CompletedQuizCard = ({
     queryFn: async () =>
       await axiosClient.get(`/quiz/${profileId}/competitions/`).then((res) => {
         if (
-          res.data.filter((quiz: userQuiz) => quiz.competition.id === quizId)[0]
+          res?.data?.filter((quiz: userQuiz) => quiz.competition.id === quizId)[0]
             .txHash
         ) {
           setPollingEnabled(false);
           setClaimRewardLoading(false);
           setLocalTxHash(
-            res.data.filter(
+            res?.data?.filter(
               (quiz: userQuiz) => quiz.competition.id === quizId,
             )[0].txHash,
           );
