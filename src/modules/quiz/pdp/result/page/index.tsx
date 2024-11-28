@@ -57,18 +57,18 @@ export const Result = () => {
           h="full"
           mb="16px"
         >
-          {/* {!!finishedDataInfo?.winner && ( */}
-          <GridItem>
-            <PrizeCard
-              isSelfWinner={!!isJustSelfUserWinner}
-              prizeCount={
-                finishedDataInfo?.quizStats?.prizeToWin
-                  ? finishedDataInfo?.quizStats?.prizeToWin / 1e6
-                  : 0
-              }
-            />
-          </GridItem>
-          {/* )} */}
+          {!!finishedDataInfo?.winner && (
+            <GridItem>
+              <PrizeCard
+                isSelfWinner={!!isJustSelfUserWinner}
+                prizeCount={
+                  finishedDataInfo?.quizStats?.prizeToWin
+                    ? finishedDataInfo?.quizStats?.prizeToWin / 1e6
+                    : 0
+                }
+              />
+            </GridItem>
+          )}
           {!isJustSelfUserWinner && (
             <GridItem
               p={{ base: '8px', sm: '16px' }}
