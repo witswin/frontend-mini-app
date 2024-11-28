@@ -1,14 +1,13 @@
 import { Card } from '@/modules/profile/components/Card';
 import {
   Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerOverlay,
   FormControl,
   FormLabel,
   HStack,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
   Text,
   useDisclosure,
   useToast,
@@ -155,29 +154,9 @@ const Wallet = () => {
           </HStack>
         </CardSection>
       </Card>
-      <Drawer
-        isOpen={isOpen}
-        placement="bottom"
-        onClose={onClose}
-        closeOnOverlayClick={false}
-      >
-        <DrawerOverlay />
-
-        <DrawerContent
-          width="538px"
-          mx="auto"
-          borderStartStartRadius="24px"
-          borderStartEndRadius="24px"
-          borderTop="2px solid"
-          borderColor="cyan"
-          background="var(--chakra-colors-cardBackground)"
-          backdropFilter="blur(50px)"
-          boxShadow="0 5px 0px rgb(32,32,51), 1px 0px 0px   rgb(32,32,51), -1px 0px 0px rgb(32,32,51)"
-          p="16px"
-          gap="16px"
-          position="fixed"
-        >
-          <DrawerBody>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalContent position='fixed' margin="0" bottom="0">
+          <ModalBody margin="0" zIndex={1000} >
             <VStack rowGap="24px">
               <Text
                 fontSize="19px"
@@ -235,9 +214,9 @@ const Wallet = () => {
                 </Button>
               </HStack>
             </VStack>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </VStack>
   );
 };
