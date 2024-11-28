@@ -7,8 +7,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { getCookie } from 'cookies-next';
-import { ACCESS_TOKEN_COOKIE_KEY } from '@/constants';
 import { UserProfile } from '@/types';
 
 export const AuthState = createContext<UserProfile>(undefined);
@@ -26,17 +24,17 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
     axiosClient
       .get('/auth/info/', {
         headers: {
-          Authorization: `TOKEN ${getCookie(ACCESS_TOKEN_COOKIE_KEY)}`,
+          Authorization: `TOKEN ${state?.token}`,
         },
       })
       .then((res) => {
-        setState({ ...res.data, token: getCookie(ACCESS_TOKEN_COOKIE_KEY) });
+        setState({ ...res.data, token: state?.token });
       })
 
       .catch((err) => {
         console.warn(err);
       });
-  }, [state, getCookie(ACCESS_TOKEN_COOKIE_KEY)]);
+  }, [state]);
 
   return (
     <AuthState.Provider value={state}>
