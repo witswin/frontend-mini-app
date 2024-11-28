@@ -155,8 +155,8 @@ const Wallet = () => {
         </CardSection>
       </Card>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent position='fixed' margin="0" bottom="0">
-          <ModalBody margin="0" zIndex={1000} >
+        <ModalContent>
+          <ModalBody margin="0" zIndex={1000}>
             <VStack rowGap="24px">
               <Text
                 fontSize="19px"
