@@ -20,20 +20,21 @@ export const AuthProvider = ({ children, auth }: AuthProvider) => {
   const [state, setState] = useState(auth);
 
   useEffect(() => {
-    if (state) return;
-    axiosClient
-      .get('/auth/info/', {
-        headers: {
-          Authorization: `TOKEN ${state?.token}`,
-        },
-      })
-      .then((res) => {
-        setState({ ...res.data, token: state?.token });
-      })
+    if (!state) {
+      axiosClient
+        .get('/auth/info/', {
+          headers: {
+            Authorization: `TOKEN ${state?.token}`,
+          },
+        })
+        .then((res) => {
+          setState({ ...res.data, token: state?.token });
+        })
 
-      .catch((err) => {
-        console.warn(err);
-      });
+        .catch((err) => {
+          console.warn(err);
+        });
+    }
   }, [state]);
 
   return (
