@@ -7,6 +7,7 @@ import {
   Link,
   Spinner,
   Text,
+  useDisclosure,
   useMediaQuery,
   useToast,
   VStack,
@@ -20,6 +21,8 @@ import { useQuery } from '@tanstack/react-query';
 import { userQuiz } from '@/globalTypes';
 import { RewardsClaimedModal } from './RewardsClaimedModal';
 import { useAuth } from '@/hooks/useAuthorization';
+import { WalletModal } from '@/components/WalletModal';
+import { Address } from 'viem';
 
 export const CompletedQuizCard = ({
   amountWon,
@@ -57,7 +60,7 @@ export const CompletedQuizCard = ({
   const auth = useAuth();
   const toast = useToast();
 
-  const isWalletConnected = auth.wallets?.length > 0;
+  // const isWalletConnected = auth.wallets?.length > 0;
 
   const [localTxHash, setLocalTxHash] = useState(txHash);
 
@@ -102,8 +105,8 @@ export const CompletedQuizCard = ({
     refetchInterval: pollingEnabled ? 10000 : false,
   });
 
-  const triggerClaim = () => {
-    if (isWalletConnected) {
+  const triggerClaim = (walletAddress: Address) => {
+    if (walletAddress) {
       axiosClient
         .post('/quiz/claim-prize/', { user_competition_id })
         .then(() => {
@@ -119,6 +122,8 @@ export const CompletedQuizCard = ({
       });
     }
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Card position="relative">
@@ -180,7 +185,13 @@ export const CompletedQuizCard = ({
             <Button
               variant="outline"
               size="mini"
-              onClick={() => triggerClaim()}
+              onClick={() => {
+                if (auth?.wallets?.length === 0) {
+                  onOpen();
+                } else {
+                  triggerClaim(auth?.wallets?.[0]?.walletAddress);
+                }
+              }}
               isDisabled={!!localTxHash}
             >
               Claim
@@ -215,7 +226,7 @@ export const CompletedQuizCard = ({
             variant="outline"
             size="mini"
             w="full"
-            onClick={() => triggerClaim()}
+            onClick={() => triggerClaim(auth?.wallets?.[0]?.walletAddress)}
           >
             Claim
           </Button>
@@ -243,6 +254,11 @@ export const CompletedQuizCard = ({
         link={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
         isOpen={isRewardsClaimedOpen}
         onClose={() => setIsRewardsClaimedOpen(false)}
+      />
+      <WalletModal
+        isOpen={isOpen}
+        onClose={onClose}
+        callback={(walletAddress: Address) => triggerClaim(walletAddress)}
       />
     </Card>
   );
