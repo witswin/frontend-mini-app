@@ -12,7 +12,7 @@ const QuizAndState = ({ quiz }: { quiz: quizType }) => {
 };
 
 export const UpcomingQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
-  const isEmpty = quizzes.length === 0;
+  const isEmpty = quizzes?.length === 0;
 
   return (
     <VStack w="full" gap="16px" py={isEmpty ? "24px" : "0"}>
