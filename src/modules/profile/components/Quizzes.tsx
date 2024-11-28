@@ -1,5 +1,5 @@
-import React from "react";
-import { Card } from "./Card";
+import React from 'react';
+import { Card } from './Card';
 import {
   Tab,
   TabIndicator,
@@ -8,10 +8,10 @@ import {
   TabPanels,
   Tabs,
   Text,
-} from "@chakra-ui/react";
-import { userQuiz } from "@/globalTypes";
-import { UpcomingQuizzes } from "./UpcomingQuizzes";
-import { CompletedQuizzes } from "./CompletedQuizzes";
+} from '@chakra-ui/react';
+import { userQuiz } from '@/globalTypes';
+import { UpcomingQuizzes } from './UpcomingQuizzes';
+import { CompletedQuizzes } from './CompletedQuizzes';
 
 interface Props {
   quizzes: userQuiz[];
@@ -19,18 +19,19 @@ interface Props {
 
 export const Quizzes = ({ quizzes }: Props) => {
   const upcomingQuizzes = quizzes.filter(
-    (quiz) => quiz.competition.isFinished === false
+    (quiz) => quiz.competition.isFinished === false,
   );
-  const completedQuizzes = quizzes.filter(
-    (quiz) => quiz.competition.isFinished === true
-  );
+  const completedQuizzes = quizzes
+    .filter((quiz) => quiz.competition.isFinished === true)
+    .sort((a, b) => (a.txHash ? 1 : 0) - (b.txHash ? 1 : 0));
+
   return (
     <Card gap="16px">
       <Text fontSize="2xl" fontWeight={700} color="gray.0">
         Quizzes
       </Text>
 
-      <Tabs isFitted w="full" variant="unstyled">
+      <Tabs defaultIndex={1} isFitted w="full" variant="unstyled">
         <TabList h="46px" p="4px" bg="glassBackground" rounded="10px" mb="16px">
           <Tab>Upcoming</Tab>
           <Tab>Completed</Tab>
