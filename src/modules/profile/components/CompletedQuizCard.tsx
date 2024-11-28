@@ -106,8 +106,7 @@ export const CompletedQuizCard = ({
     if (isWalletConnected) {
       axiosClient
         .post('/quiz/claim-prize/', { user_competition_id })
-        .then(({ data }) => {
-          console.log(data);
+        .then(() => {
           setClaimRewardLoading(true);
         })
         .finally(() => {

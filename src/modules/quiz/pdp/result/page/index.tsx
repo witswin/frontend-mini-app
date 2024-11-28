@@ -28,7 +28,6 @@ export const Result = () => {
     }
   }, [finishedDataInfo, isLoading]);
 
-  console.log({ finishedDataInfo });
 
   const isJustSelfUserWinner =
     finishedDataInfo?.finishedData?.length === 1 && finishedDataInfo?.winner;

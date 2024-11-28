@@ -77,7 +77,6 @@ export const TelegramConnection = () => {
       });
   };
 
-  console.log({ connections });
   if (connections.Telegram)
     return (
       <CardSection

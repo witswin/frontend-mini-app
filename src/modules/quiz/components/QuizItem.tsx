@@ -31,7 +31,6 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
     }
   }, [isIntersecting]);
 
-  console.log(cardState);
   
 
   return (

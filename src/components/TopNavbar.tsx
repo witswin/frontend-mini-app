@@ -35,7 +35,6 @@ export const TopNavbar = () => {
 
   // const { connect, disconnect } = useWalletConnection();
 
-  console.log({ authInfo });
 
   return (
     <HStack

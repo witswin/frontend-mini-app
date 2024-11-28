@@ -60,7 +60,6 @@ export const EnrolledCard = () => {
             },
           }
         )
-        .then((res) => console.log(res.data));
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({

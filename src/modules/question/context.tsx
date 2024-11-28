@@ -57,7 +57,6 @@ export const QuestionDataProvider = ({
     return () => clearInterval(interval)
   }, [state?.question?.id])
 
-  console.log(state?.question?.state)
 
   useEffect(() => {
     if (state?.question?.state === QUESTION_STATE.freeze) {

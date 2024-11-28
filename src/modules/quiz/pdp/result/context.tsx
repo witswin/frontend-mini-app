@@ -60,7 +60,6 @@ export const QuizFinishedInfoProvider = ({
     };
   }, [socket?.current?.client]);
 
-  console.log({ state });
 
   return (
     <QuizFinishedInfo.Provider value={state}>

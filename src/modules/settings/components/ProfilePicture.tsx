@@ -44,16 +44,11 @@ export const ProfilePicture = ({
     inputRef.current.value = "";
     setHasChange(true);
 
-    console.log(formData.get("image"));
 
     if (!!formData.get("image")) {
       formData.delete("image");
     }
     formData.append("image", "");
-
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
   };
 
   const onUploadImage = (file: File) => {

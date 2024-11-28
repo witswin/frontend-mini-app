@@ -80,7 +80,6 @@ export const QuizInfo = () => {
             Authorization: `TOKEN ${authInfo?.token}`,
           },
         })
-        .then((res) => console.log(res.data));
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({
