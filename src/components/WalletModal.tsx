@@ -19,9 +19,15 @@ import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { Address, isAddress } from 'viem';
 
-interface WalletModalProps extends UseDisclosureProps {}
+interface WalletModalProps extends UseDisclosureProps {
+  callback?: (arg:Address) => void;
+}
 
-export const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
+export const WalletModal = ({
+  isOpen,
+  onClose,
+  callback,
+}: WalletModalProps) => {
   const authInfo = useAuth();
 
   const authInfoDispatch = useAuthDispatch();
@@ -91,6 +97,12 @@ export const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
             status: 'success',
           });
           onClose();
+          return res.data
+        })
+        .then((res) => {
+          if (typeof callback !== 'undefined') {
+            callback(res.walletAddress);
+          }
         })
         .catch((error: AxiosError<{ message: string }>) => {
           toast({ description: error.response.data.message, status: 'error' });
