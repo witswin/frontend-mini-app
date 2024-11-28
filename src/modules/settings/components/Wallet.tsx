@@ -1,6 +1,10 @@
 import { Card } from '@/modules/profile/components/Card';
 import {
   Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
   FormControl,
   FormLabel,
   HStack,
@@ -14,7 +18,6 @@ import { CardSection } from './CardSection';
 import { useAuth, useAuthDispatch } from '@/hooks/useAuthorization';
 import { textTruncator } from '@/utils';
 import { Pen2 } from 'solar-icon-set';
-import { BottomModal } from '@/components/BottomModal';
 import { useState } from 'react';
 import { Address, isAddress } from 'viem';
 import { axiosClient } from '@/configs/axios';
@@ -101,7 +104,7 @@ const Wallet = () => {
   };
 
   return (
-    <>
+    <VStack width="full" position="relative" bottom="0" left="0">
       <Card>
         <Text
           color="gray.0"
@@ -152,56 +155,90 @@ const Wallet = () => {
           </HStack>
         </CardSection>
       </Card>
-      <BottomModal isOpen={isOpen} onClose={onClose}>
-        <VStack rowGap="24px">
-          <Text
-            fontSize="19px"
-            fontWeight="600"
-            color="gray.0"
-            width="full"
-            textAlign="center"
-          >
-            Connect Your EVM Wallet
-          </Text>
-          <FormControl isInvalid={!isAddress(walletAddress)}>
-            <FormLabel>Wallet Address</FormLabel>
-            <Input
-              placeholder={`e.g., 0x1234...ABCD`}
-              height="46px"
-              variant="outline"
-              value={walletAddress}
-              onChange={(e) => {
-                setWalletAddress(e.target.value as Address);
-              }}
-            />
-            {!isAddress(walletAddress) ? (
-              <Text mt="6px" fontSize="13px" fontWeight="500" color="red.400">
-                Please enter a valid Ethereum wallet address (42 characters,
-                starting with &apos;0x&apos;)
+      <Drawer
+        isOpen={isOpen}
+        placement="bottom"
+        onClose={onClose}
+        closeOnOverlayClick={false}
+      >
+        <DrawerOverlay />
+
+        <DrawerContent
+          width="538px"
+          mx="auto"
+          borderStartStartRadius="24px"
+          borderStartEndRadius="24px"
+          borderTop="2px solid"
+          borderColor="cyan"
+          background="var(--chakra-colors-cardBackground)"
+          backdropFilter="blur(50px)"
+          boxShadow="0 5px 0px rgb(32,32,51), 1px 0px 0px   rgb(32,32,51), -1px 0px 0px rgb(32,32,51)"
+          p="16px"
+          gap="16px"
+          position="fixed"
+        >
+          <DrawerBody>
+            <VStack rowGap="24px">
+              <Text
+                fontSize="19px"
+                fontWeight="600"
+                color="gray.0"
+                width="full"
+                textAlign="center"
+              >
+                Connect Your EVM Wallet
               </Text>
-            ) : (
-              <Text mt="6px" color="gray.60" fontSize="13px" fontWeight="500">
-                Public address only. Never share your private key.
-              </Text>
-            )}
-          </FormControl>
-          <HStack width="full" columnGap="16px">
-            <Button size="md" onClick={onClose} variant="gray" width="full">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleClick}
-              isLoading={isLoading}
-              size="md"
-              isDisabled={!isAddress(walletAddress) || isLoading}
-              width="full"
-            >
-              Save
-            </Button>
-          </HStack>
-        </VStack>
-      </BottomModal>
-    </>
+              <FormControl isInvalid={!isAddress(walletAddress)}>
+                <FormLabel>Wallet Address</FormLabel>
+                <Input
+                  placeholder={`e.g., 0x1234...ABCD`}
+                  height="46px"
+                  variant="outline"
+                  value={walletAddress}
+                  onChange={(e) => {
+                    setWalletAddress(e.target.value as Address);
+                  }}
+                />
+                {!isAddress(walletAddress) ? (
+                  <Text
+                    mt="6px"
+                    fontSize="13px"
+                    fontWeight="500"
+                    color="red.400"
+                  >
+                    Please enter a valid Ethereum wallet address (42 characters,
+                    starting with &apos;0x&apos;)
+                  </Text>
+                ) : (
+                  <Text
+                    mt="6px"
+                    color="gray.60"
+                    fontSize="13px"
+                    fontWeight="500"
+                  >
+                    Public address only. Never share your private key.
+                  </Text>
+                )}
+              </FormControl>
+              <HStack width="full" columnGap="16px">
+                <Button size="md" onClick={onClose} variant="gray" width="full">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleClick}
+                  isLoading={isLoading}
+                  size="md"
+                  isDisabled={!isAddress(walletAddress) || isLoading}
+                  width="full"
+                >
+                  Save
+                </Button>
+              </HStack>
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </VStack>
   );
 };
 
