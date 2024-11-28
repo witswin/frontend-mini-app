@@ -3,7 +3,7 @@ import { Card } from './Card';
 import {
   Badge,
   CircularProgress,
-  Divider,
+  // Divider,
   Flex,
   HStack,
   Text,
@@ -11,13 +11,16 @@ import {
   Link as ChakraLink,
   Image,
   useClipboard,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
+  // Popover,
+  // PopoverTrigger,
+  // PopoverContent,
+  // PopoverBody,
 } from '@chakra-ui/react';
 
-import { SettingsMinimalistic, WalletMoney } from 'solar-icon-set';
+import {
+  SettingsMinimalistic,
+  //  WalletMoney
+} from 'solar-icon-set';
 import Link from 'next/link';
 import { textTruncator } from '@/utils';
 import { profileInfo } from '@/globalTypes';
@@ -27,8 +30,8 @@ import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from './icons';
 import { axiosClient } from '@/configs/axios';
 import { useQuery } from '@tanstack/react-query';
 import { Integrations, UserConnection } from '@/modules/settings/types';
-import { useWalletConnection } from '@/hooks/useWalletConnection';
-import { WarningIcon } from '@chakra-ui/icons';
+// import { useWalletConnection } from '@/hooks/useWalletConnection';
+// import { WarningIcon } from '@chakra-ui/icons';
 
 interface Props {
   userInfo: profileInfo;
@@ -41,7 +44,7 @@ export const Info = ({ userInfo }: Props) => {
   // const isOwnProfile = userInfo.pk === ownUser.pk;
   const grade = getGrade(userInfo?.neuron);
 
-  const { connect, disconnect } = useWalletConnection();
+  // const { connect, disconnect } = useWalletConnection();
 
   const integrationsFetch = useQuery({
     initialData: undefined,
@@ -62,13 +65,13 @@ export const Info = ({ userInfo }: Props) => {
       }),
   });
 
-  const onConnectWallet = () => {
-    disconnect();
+  // const onConnectWallet = () => {
+  //   disconnect();
 
-    setTimeout(() => {
-      connect();
-    }, 0);
-  };
+  //   setTimeout(() => {
+  //     connect();
+  //   }, 0);
+  // };
 
   const { onCopy, value, setValue, hasCopied } = useClipboard('');
 
@@ -245,7 +248,7 @@ export const Info = ({ userInfo }: Props) => {
               Account Settings
             </Text>
           </HStack>
-          <Divider orientation="vertical" />
+          {/* <Divider orientation="vertical" />
           <HStack
             flex={1}
             gap="6px"
@@ -288,7 +291,7 @@ export const Info = ({ userInfo }: Props) => {
                 </PopoverContent>
               </Popover>
             )}
-          </HStack>
+          </HStack> */}
         </Flex>
       )}
     </Card>

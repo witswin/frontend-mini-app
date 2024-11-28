@@ -9,6 +9,7 @@ import { AxiosError } from 'axios';
 import { handleApiError } from '@/utils';
 import { UserProfile } from '@/types';
 import { useRouter } from 'next/router';
+import Wallet from '../components/Wallet';
 // import { BottomModal } from "@/components/BottomModal";
 
 export const SettingsPage = () => {
@@ -137,6 +138,7 @@ export const SettingsPage = () => {
         isError={isError}
         setIsError={setIsError}
       />
+      <Wallet />
       <Connections />
 
       {/* <BottomModal

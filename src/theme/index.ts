@@ -4,6 +4,7 @@ import { Button } from "./components/button";
 import { Tag } from "./components/tag";
 import { Badge } from "./components/badge";
 import { fontSizes } from "./fontsize";
+import { Input } from "./components/input";
 
 export const baseTheme = extendTheme({
   colors,
@@ -12,6 +13,7 @@ export const baseTheme = extendTheme({
     Button,
     Tag,
     Badge,
+    Input
   },
   styles: {
     global: {
