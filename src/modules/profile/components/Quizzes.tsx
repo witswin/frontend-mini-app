@@ -18,12 +18,12 @@ interface Props {
 }
 
 export const Quizzes = ({ quizzes }: Props) => {
-  const upcomingQuizzes = quizzes.filter(
-    (quiz) => quiz.competition.isFinished === false,
+  const upcomingQuizzes = quizzes?.filter(
+    (quiz) => quiz?.competition?.isFinished === false,
   );
   const completedQuizzes = quizzes
-    .filter((quiz) => quiz.competition.isFinished === true)
-    .sort((a, b) => (a.txHash ? 1 : 0) - (b.txHash ? 1 : 0));
+    ?.filter((quiz) => quiz?.competition?.isFinished === true)
+    ?.sort((a, b) => (a?.txHash ? 1 : 0) - (b?.txHash ? 1 : 0));
 
   return (
     <Card gap="16px">
