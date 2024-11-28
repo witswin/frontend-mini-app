@@ -18,8 +18,6 @@ import { BottomModal } from '@/components/BottomModal';
 import { useState } from 'react';
 import { Address, isAddress } from 'viem';
 import { axiosClient } from '@/configs/axios';
-import { getCookie } from 'cookies-next';
-import { ACCESS_TOKEN_COOKIE_KEY } from '@/constants';
 import { AxiosError } from 'axios';
 
 const Wallet = () => {
@@ -46,7 +44,7 @@ const Wallet = () => {
           },
           {
             headers: {
-              Authorization: `TOKEN ${getCookie(ACCESS_TOKEN_COOKIE_KEY)}`,
+              Authorization: `TOKEN ${authInfo?.token}`,
             },
           },
         )
@@ -77,7 +75,7 @@ const Wallet = () => {
           },
           {
             headers: {
-              Authorization: `TOKEN ${getCookie(ACCESS_TOKEN_COOKIE_KEY)}`,
+              Authorization: `TOKEN ${authInfo?.token}`,
             },
           },
         )
