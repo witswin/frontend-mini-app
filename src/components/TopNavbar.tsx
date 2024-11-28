@@ -3,6 +3,7 @@ import {
   Box,
   HStack,
   Text,
+  useDisclosure,
   useMediaQuery,
   VStack,
 } from '@chakra-ui/react';
@@ -14,6 +15,7 @@ import { WalletMoney } from 'solar-icon-set';
 import { useAuth } from '@/hooks/useAuthorization';
 import { textTruncator } from '@/utils';
 import { useRouter } from 'next/router';
+import { WalletModal } from './WalletModal';
 
 const WalletStatus = () => {
   const authInfo = useAuth();
@@ -30,46 +32,47 @@ const WalletStatus = () => {
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery('(min-width: 500px)');
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const authInfo = useAuth();
   const router = useRouter();
 
   // const { connect, disconnect } = useWalletConnection();
 
-
   return (
-    <HStack
-      h={isLarge ? '120px' : '90px'}
-      w="full"
-      justifyContent="center"
-      alignItems="center"
-      position="relative"
-      mt="-10px"
-      px={isLarge ? '16px' : '0'}
-    >
-      <Box position="absolute" zIndex="base" width="100%" height="100%">
-        <Image
-          src={HeaderBg}
-          alt="navbar background illustration."
-          layout="responsive"
-        />
-      </Box>
-
+    <>
       <HStack
-        zIndex="docked"
+        h={isLarge ? '120px' : '90px'}
         w="full"
-        justifyContent="space-between"
-        px="12px"
-        pt={isLarge ? '20px' : '4px'}
+        justifyContent="center"
+        alignItems="center"
+        position="relative"
+        mt="-10px"
+        px={isLarge ? '16px' : '0'}
       >
-        <VStack w="82px">
-          {/* <HStack gap="2px"> */}
-          {/* <Neuron size={24} /> */}
+        <Box position="absolute" zIndex="base" width="100%" height="100%">
+          <Image
+            src={HeaderBg}
+            alt="navbar background illustration."
+            layout="responsive"
+          />
+        </Box>
 
-          {/* <Badge size="sm" variant="glass">
+        <HStack
+          zIndex="docked"
+          w="full"
+          justifyContent="space-between"
+          px="12px"
+          pt={isLarge ? '20px' : '4px'}
+        >
+          <VStack w="82px">
+            {/* <HStack gap="2px"> */}
+            {/* <Neuron size={24} /> */}
+
+            {/* <Badge size="sm" variant="glass">
               {"x "}
               {health}
             </Badge> */}
-          {/* <Image
+            {/* <Image
               src="/assets/images/home/Neuron.svg"
               alt="neuron"
               width={22}
@@ -84,45 +87,52 @@ export const TopNavbar = () => {
           >
             {`${authInfo?.neuron ?? 0} Neurons`}
           </Text> */}
-        </VStack>
+          </VStack>
 
-        <VStack>
-          <Image src={Logo} alt="wits" />
-        </VStack>
+          <VStack>
+            <Image src={Logo} alt="wits" />
+          </VStack>
 
-        <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
-          <Box
-            cursor="pointer"
-            onClick={() => {
-              // if (!authInfo || !authInfo.wallets.length) {
-              //   disconnect?.();
-              //   setTimeout(() => {
-              //     connect();
-              //   }, 0);
-              // }
-
-              router.push('/profile/' + authInfo?.pk);
-            }}
-            position="relative"
-          >
-            <WalletMoney
-              iconStyle="BoldDuotone"
-              color="var(--chakra-colors-blue)"
-              size={24}
-            />
-            <WalletStatus />
-          </Box>
-          <Text
-            color="gray.40"
-            fontSize={authInfo && authInfo.wallets.length ? '10px' : 'sm'}
-            fontWeight="bold"
-          >
-            {!!authInfo &&
-              !!authInfo.wallets.length &&
-              textTruncator(authInfo.wallets[0].walletAddress)}
-          </Text>
-        </VStack>
+          <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
+            <Box
+              cursor="pointer"
+              onClick={() => {
+                // if (!authInfo || !authInfo.wallets.length) {
+                //   disconnect?.();
+                //   setTimeout(() => {
+                //     connect();
+                //   }, 0);
+                // }
+                if (authInfo) {
+                  if (authInfo?.wallets?.length === 0) {
+                    onOpen();
+                  } else {
+                    router.push('/profile/' + authInfo?.pk);
+                  }
+                }
+              }}
+              position="relative"
+            >
+              <WalletMoney
+                iconStyle="BoldDuotone"
+                color="var(--chakra-colors-blue)"
+                size={24}
+              />
+              <WalletStatus />
+            </Box>
+            <Text
+              color="gray.40"
+              fontSize={authInfo && authInfo.wallets.length ? '10px' : 'sm'}
+              fontWeight="bold"
+            >
+              {!!authInfo &&
+                !!authInfo.wallets.length &&
+                textTruncator(authInfo.wallets[0].walletAddress)}
+            </Text>
+          </VStack>
+        </HStack>
       </HStack>
-    </HStack>
+      <WalletModal isOpen={isOpen} onClose={onClose} />
+    </>
   );
 };
