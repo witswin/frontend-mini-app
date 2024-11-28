@@ -5,11 +5,20 @@ import { useAuth } from '@/hooks/useAuthorization';
 import { textTruncator } from '@/utils';
 import { Pen2 } from 'solar-icon-set';
 import { WalletModal } from '@/components/WalletModal';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const Wallet = () => {
   const authInfo = useAuth();
   const wallet = authInfo?.wallets?.[0]?.walletAddress;
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.query.popAddWalletModal) return;
+    else if (router.query.popAddWalletModal && !wallet) onOpen();
+  }, [onOpen, router.query, wallet]);
 
   return (
     <VStack width="full" position="relative" bottom="0" left="0">

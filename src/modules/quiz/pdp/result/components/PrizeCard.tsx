@@ -1,8 +1,10 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ColorFullText } from '@/components/ColorFullText';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuthorization';
+import Link from 'next/link';
 
 export const PrizeCard = ({
   prizeCount,
@@ -12,6 +14,8 @@ export const PrizeCard = ({
   isSelfWinner: boolean;
 }) => {
   const [prizeOpen, setPrizeOpen] = useState(false);
+  const authInfo = useAuth();
+
   useEffect(() => {
     const interval = setInterval(() => {
       setPrizeOpen(true);
@@ -133,6 +137,17 @@ export const PrizeCard = ({
           You can claim the rewards by navigating to your profile page.
         </Text>
       </span>
+      <Flex gap={3}>
+        {authInfo?.wallets?.length > 0 ? (
+          <Link href={`/profile/${authInfo?.pk}`}>
+            <Button>Claim Now on profile page</Button>
+          </Link>
+        ) : (
+          <Link href={`/settings?popAddWalletModal=1`}>
+            <Button>Add Wallet Before Claim</Button>
+          </Link>
+        )}
+      </Flex>
     </VStack>
   );
 };

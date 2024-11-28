@@ -48,6 +48,7 @@ export const BottomNavbar = () => {
     },
     {
       id: 2,
+      disabled: true,
       href: '/learn',
       title: 'Learn',
       icon: (isActive: boolean) => (
@@ -118,8 +119,17 @@ export const BottomNavbar = () => {
           const isActive = basePath === route.href;
 
           return (
-            <Link href={route.href} key={route.id}>
-              <VStack>
+            <Link
+              href={route.href}
+              key={route.id}
+              style={{
+                pointerEvents: route.disabled ? 'none' : 'auto',
+              }}
+            >
+              <VStack
+                opacity={route.disabled ? 0.6 : 1}
+                cursor={route.disabled ? 'not-allowed' : ''}
+              >
                 {route.icon(isActive)}
 
                 {isActive ? (

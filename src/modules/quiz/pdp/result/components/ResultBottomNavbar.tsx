@@ -8,21 +8,22 @@ import { useFinishedData } from '../hooks';
 export const ResultBottomNavbar = () => {
   const finishedDataInfo = useFinishedData();
 
-  const handleShareClaimTwitter = () => {
-    const twitterUrl = !!finishedDataInfo?.winner
-      ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          `I won ${
-            finishedDataInfo?.quizStats?.prizeToWin / 10 ** 6
-          } from @@wits.win among ${
-            finishedDataInfo?.quizStats?.totalParticipantsCount
-          } participants. 🤩🎉
-    Try your luck to win valuable prizes at `,
-        )}&url=${encodeURIComponent(`wits.win`)}`
-      : `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-          ``,
-        )}&url=${encodeURIComponent(`wits.win`)}`;
-    window.open(twitterUrl, '_blank');
-  };
+  // const handleShareClaimTwitter = () => {
+  //   const twitterUrl = !!finishedDataInfo?.winner
+  //     ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+  //         `I won ${
+  //           finishedDataInfo?.quizStats?.prizeToWin / 10 ** 6
+  //         } from @@wits.win among ${
+  //           finishedDataInfo?.quizStats?.totalParticipantsCount
+  //         } participants. 🤩🎉
+  //   Try your luck to win valuable prizes at `,
+  //       )}&url=${encodeURIComponent(`wits.win`)}`
+  //     : `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+  //         ``,
+  //       )}&url=${encodeURIComponent(`wits.win`)}`;
+  //   window.open(twitterUrl, '_blank');
+  // };
+
   if (!!finishedDataInfo?.finishedData && !!finishedDataInfo?.quizStats) {
     return (
       <HStack
@@ -54,7 +55,14 @@ export const ResultBottomNavbar = () => {
 
         <HStack w="full" gap="16px" paddingX="1px">
           <Button
-            onClick={handleShareClaimTwitter}
+            disabled
+            opacity={0.5}
+            _before={{
+              opacity: 0.5,
+            }}
+            cursor="not-allowed"
+            pointerEvents="none"
+            // onClick={handleShareClaimTwitter}
             w="full"
             variant="outline"
             size="sm"

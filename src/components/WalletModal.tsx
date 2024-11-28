@@ -16,11 +16,12 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Address, isAddress } from 'viem';
 
 interface WalletModalProps extends UseDisclosureProps {
-  callback?: (arg:Address) => void;
+  callback?: (arg: Address) => void;
 }
 
 export const WalletModal = ({
@@ -36,6 +37,8 @@ export const WalletModal = ({
   const [walletAddress, setWalletAddress] = useState<Address>(wallet);
 
   const [isLoading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const toast = useToast({
     position: 'bottom',
@@ -96,8 +99,14 @@ export const WalletModal = ({
             title: 'Wallet Address Saved',
             status: 'success',
           });
+
           onClose();
-          return res.data
+
+          if (router.query.popAddWalletModal) {
+            router.push(`/profile/${authInfo.pk}`);
+          }
+
+          return res.data;
         })
         .then((res) => {
           if (typeof callback !== 'undefined') {
