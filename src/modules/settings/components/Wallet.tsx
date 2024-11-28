@@ -25,7 +25,7 @@ import { AxiosError } from 'axios';
 const Wallet = () => {
   const authInfo = useAuth();
   const authInfoDispatch = useAuthDispatch();
-  const wallet = authInfo?.wallets?.[0].walletAddress;
+  const wallet = authInfo?.wallets?.[0]?.walletAddress;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [walletAddress, setWalletAddress] = useState<Address>(wallet);
@@ -71,7 +71,7 @@ const Wallet = () => {
     } else {
       axiosClient
         .post(
-          '/auth/add-wallet-unsafe//',
+          '/auth/add-wallet-unsafe/',
           {
             address: walletAddress,
           },
