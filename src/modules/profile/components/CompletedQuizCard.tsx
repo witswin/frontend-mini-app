@@ -86,8 +86,9 @@ export const CompletedQuizCard = ({
     queryFn: async () =>
       await axiosClient.get(`/quiz/${profileId}/competitions/`).then((res) => {
         if (
-          res?.data?.filter((quiz: userQuiz) => quiz.competition.id === quizId)[0]
-            .txHash
+          res?.data?.filter(
+            (quiz: userQuiz) => quiz.competition.id === quizId,
+          )[0].txHash
         ) {
           setPollingEnabled(false);
           setClaimRewardLoading(false);
@@ -226,7 +227,13 @@ export const CompletedQuizCard = ({
             variant="outline"
             size="mini"
             w="full"
-            onClick={() => triggerClaim(auth?.wallets?.[0]?.walletAddress)}
+            onClick={() => {
+              if (auth?.wallets?.length === 0) {
+                onOpen();
+              } else {
+                triggerClaim(auth?.wallets?.[0]?.walletAddress);
+              }
+            }}
           >
             Claim
           </Button>
