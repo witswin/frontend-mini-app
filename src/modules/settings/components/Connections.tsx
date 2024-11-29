@@ -160,6 +160,7 @@ export const TwitterConnection: FC<{ onRemove: OnPromptRemove }> = ({
           <span>{connections.Twitter?.username}</span>
         </>
       }
+      disabled
       isConnected={!!connections.Twitter && connections.Twitter.isConnected}
     >
       <Image
@@ -203,6 +204,7 @@ export const DiscordConnection: FC<{ onRemove: OnPromptRemove }> = ({
           <span>{connections.Discord?.username}</span>
         </>
       }
+      disabled
       isConnected={!!connections.Discord && connections.Discord.isConnected}
     >
       <Image
@@ -250,6 +252,7 @@ export const FarcasterConnection: FC<{ onRemove: OnPromptRemove }> = ({
       onDisconnect={() =>
         onRemove({ name: 'Farcaster', url: '/auth/user/disconnect/farcaster/' })
       }
+      disabled
       onConnect={onConnect}
       connectedText={
         <>

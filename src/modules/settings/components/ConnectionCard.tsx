@@ -1,8 +1,8 @@
-import { FC, PropsWithChildren, ReactNode } from "react";
-import { CardSection } from "./CardSection";
-import { Box, Button } from "@chakra-ui/react";
-import { colors } from "@/theme/colors";
-import { TrashBinTrash } from "solar-icon-set";
+import { FC, PropsWithChildren, ReactNode } from 'react';
+import { CardSection } from './CardSection';
+import { Box, Button } from '@chakra-ui/react';
+import { colors } from '@/theme/colors';
+import { TrashBinTrash } from 'solar-icon-set';
 
 export const ConnectionCard: FC<
   {
@@ -12,6 +12,7 @@ export const ConnectionCard: FC<
     connectedText?: ReactNode;
     preventRemove?: boolean;
     preventAdd?: boolean;
+    disabled?: boolean;
   } & PropsWithChildren
 > = ({
   isConnected,
@@ -21,13 +22,14 @@ export const ConnectionCard: FC<
   connectedText,
   preventRemove,
   preventAdd,
+  disabled,
 }) => {
   if (isConnected) {
     return (
       <CardSection
         borderLeft="4px solid #6E81EE"
         overflow="hidden"
-        position={"relative"}
+        position={'relative'}
         background={colors.glassBackground}
         py="0"
         px="12px"
@@ -81,6 +83,7 @@ export const ConnectionCard: FC<
         {preventAdd || (
           <Button
             ml="auto"
+            disabled={disabled}
             size="mini"
             variant="outline"
             gap="8px"
