@@ -55,9 +55,7 @@ export const TopNavbar = () => {
             fontSize="4xl"
             fontWeight={700}
             textContent={
-              question?.amountWonPerUser
-                ? String(question?.amountWonPerUser / 1e6)
-                : '0'
+              quizStats?.prizeToWin ? String(quizStats?.prizeToWin / 1e6) : '0'
             }
           />
           <ColorFullText fontSize="xs" fontWeight={700} textContent={'USDT'} />
