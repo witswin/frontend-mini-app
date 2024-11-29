@@ -258,7 +258,8 @@ export const CompletedQuizCard = ({
         ))}
       <RewardsClaimedModal
         count={Math.round((amountWon + Number.EPSILON) * 10e6) / 10e6}
-        link={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+        // link={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
+        link={`https://optimistic.etherscan.io/tx/0x${localTxHash}`}
         isOpen={isRewardsClaimedOpen}
         onClose={() => setIsRewardsClaimedOpen(false)}
       />
