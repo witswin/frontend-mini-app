@@ -36,9 +36,7 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     axiosClient
       .post<UserProfile>('/auth/telegram-login/', { telegramData: payload })
       .then(({ data }) => {
-        console.log({data});
-        
-        setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token??"test");
+        setCookie(ACCESS_TOKEN_COOKIE_KEY, data.token);
 
         dispatch(data);
       })
