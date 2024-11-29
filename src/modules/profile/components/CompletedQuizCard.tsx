@@ -257,7 +257,7 @@ export const CompletedQuizCard = ({
           </HStack>
         ))}
       <RewardsClaimedModal
-        count={amountWon}
+        count={Math.round((amountWon + Number.EPSILON) * 10e6) / 10e6}
         link={`https://testnet.bscscan.com/tx/0x${localTxHash}`}
         isOpen={isRewardsClaimedOpen}
         onClose={() => setIsRewardsClaimedOpen(false)}
