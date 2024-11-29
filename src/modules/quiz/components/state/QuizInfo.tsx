@@ -25,7 +25,7 @@ const ValueCard = ({ subTitle, title, status }: ValueCardProps) => {
       [STATUS_ENROLL_VALUE.TIME]: {
         title: (
           <Text fontSize="lg" color="gray.0" fontWeight="700">
-            {title}
+            {title} s
           </Text>
         ),
       },
