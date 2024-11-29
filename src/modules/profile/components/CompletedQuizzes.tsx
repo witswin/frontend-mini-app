@@ -1,11 +1,20 @@
 import { userQuiz } from '@/globalTypes';
-import { HStack, Text, VStack } from '@chakra-ui/react';
+import { HStack, keyframes, Text, VStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import { Confetti } from 'solar-icon-set';
 import { CompletedQuizCard } from './CompletedQuizCard';
 import Sleepy from '@/assets/sleepy.svg';
 import { useAuth } from '@/hooks/useAuthorization';
 import { useRouter } from 'next/router';
+
+const shineAnimation = keyframes`
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+`;
 
 export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
   const isEmpty = quizzes?.length === 0;
@@ -49,6 +58,7 @@ export const CompletedQuizzes = ({ quizzes }: { quizzes: userQuiz[] }) => {
                 background: 'var(--chakra-colors-primaryRadial)',
                 zIndex: -1,
                 borderRadius: '10px',
+                animation: `${shineAnimation} 3s linear infinite`,
               }}
             >
               <HStack>
