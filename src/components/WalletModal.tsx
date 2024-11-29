@@ -94,16 +94,22 @@ export const WalletModal = ({
             ...prev,
             wallets: [res.data],
           }));
-          toast({
-            description: 'Your wallet address has been saved.',
-            title: 'Wallet Address Saved',
-            status: 'success',
-          });
 
           onClose();
 
           if (router.query.popAddWalletModal) {
             router.push(`/profile/${authInfo.pk}`);
+            toast({
+              description: 'Now navigate to your quizzes and claim your prize.',
+              title: 'Wallet Address Saved',
+              status: 'success',
+            });
+          } else {
+            toast({
+              description: 'Your wallet address has been saved.',
+              title: 'Wallet Address Saved',
+              status: 'success',
+            });
           }
 
           return res.data;
