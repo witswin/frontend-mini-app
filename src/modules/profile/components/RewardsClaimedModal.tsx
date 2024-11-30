@@ -1,15 +1,15 @@
-import { BottomModal } from "@/components/BottomModal";
+import { BottomModal } from '@/components/BottomModal';
 import {
   HStack,
   Link,
   Text,
   UseDisclosureProps,
   VStack,
-} from "@chakra-ui/react";
-import Image from "next/image";
-import React from "react";
-import { ArrowRightUp } from "solar-icon-set";
-import USDC_img from "@/assets/tokens/USDC.svg";
+} from '@chakra-ui/react';
+import Image from 'next/image';
+import React from 'react';
+import { ArrowRightUp } from 'solar-icon-set';
+import USDC_img from '@/assets/tokens/USDC.svg';
 
 interface RewardProps {
   count: number;
@@ -72,7 +72,7 @@ export const RewardsClaimedModal = ({
       <VStack w="full" gap="24px">
         <Image
           alt="coin to wallet"
-          src={"/assets/images/profile/CoinToWallet.svg"}
+          src={'/assets/images/profile/CoinToWallet.svg'}
           width={190}
           height={145}
         />
@@ -87,7 +87,7 @@ export const RewardsClaimedModal = ({
           gap="16px"
           w="full"
         >
-          <Reward count={count} chain="Arbitrum" token="USDC" link={link} />
+          <Reward count={count} chain="Optimism" token="USDC" link={link} />
         </VStack>
       </VStack>
     </BottomModal>

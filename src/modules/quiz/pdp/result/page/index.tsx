@@ -63,7 +63,11 @@ export const Result = () => {
                 isSelfWinner={!!isJustSelfUserWinner}
                 prizeCount={
                   finishedDataInfo?.quizStats?.prizeToWin
-                    ? finishedDataInfo?.quizStats?.prizeToWin / 1e6
+                    ? Number(
+                        (finishedDataInfo?.quizStats?.prizeToWin / 1e6).toFixed(
+                          6,
+                        ),
+                      )
                     : 0
                 }
               />
