@@ -87,6 +87,7 @@ export const QuizPage = () => {
               paddingTop: `${question?.number * 8}px`,
               width: '100%',
               paddingBottom: '36px',
+              marginBottom: '16px',
             }}
             // initial={{
             //   opacity: 0,
@@ -147,13 +148,13 @@ export const QuizPage = () => {
                 opacity: 0,
               }}
               style={{
-                position: 'sticky',
-                bottom: '0',
-                left: '0',
-                width: '100%',
+                width: 'calc(100% - 32px)',
+                maxWidth: 'calc(538px - 32px)',
                 display: 'flex',
                 flexDirection: 'row',
                 columnGap: '8px',
+                position: 'fixed',
+                bottom: '16px',
               }}
             >
               {selectedHints.map((item) => (
