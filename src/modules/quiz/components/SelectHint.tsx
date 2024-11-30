@@ -1,11 +1,11 @@
-import { BottomModal } from "@/components/BottomModal";
-import { useHintsDispatch } from "@/modules/question/hooks";
-import { HINTS } from "@/types";
-import { Box, Button, HStack, Tag, Text, VStack } from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction, useId, useMemo } from "react";
-import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
-import { useSelectedQuiz, useSelectedQuizDispatch } from "../hooks";
-import { builtInHint } from "@/globalTypes";
+import { BottomModal } from '@/components/BottomModal';
+import { useHints, useHintsDispatch } from '@/modules/question/hooks';
+import { HINTS } from '@/types';
+import { Box, Button, HStack, Tag, Text, VStack } from '@chakra-ui/react';
+import React, { Dispatch, SetStateAction, useId, useMemo } from 'react';
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from 'solar-icon-set';
+import { useSelectedQuiz } from '../hooks';
+import { builtInHint } from '@/globalTypes';
 
 interface HintProps {
   headline: string;
@@ -33,7 +33,6 @@ const HintBox = ({
   hint,
 }: HintBoxProps) => {
   const setHints = useHintsDispatch();
-  const setSelectedQuiz = useSelectedQuizDispatch();
 
   const id = useId();
   return (
@@ -54,17 +53,6 @@ const HintBox = ({
           };
         });
 
-        setSelectedQuiz((prevState) => ({
-          ...prevState,
-          builtInHints: prevState.builtInHints.map((hints) =>
-            hints.hint.hintType === type
-              ? {
-                  ...hints,
-                  count: count - 1,
-                }
-              : hints
-          ),
-        }));
         setIsOpen(false);
       }}
     >
@@ -115,6 +103,42 @@ export const SelectHint = ({
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const selectedQuiz = useSelectedQuiz();
+  const hints = useHints();
+
+  const count = useMemo(
+    () => ({
+      [HINTS.fifty]: () => {
+        return (
+          +selectedQuiz?.builtInHints?.find(
+            (item) => item?.hint?.hintType === HINTS?.fifty,
+          )?.count -
+          +hints?.selectedHints?.filter((item) => item?.type === HINTS?.fifty)
+            ?.length
+        );
+      },
+
+      [HINTS.stats]: () => {
+        return (
+          +selectedQuiz?.builtInHints?.find(
+            (item) => item?.hint?.hintType === HINTS?.stats,
+          )?.count -
+          +hints?.selectedHints?.filter((item) => item?.type === HINTS?.stats)
+            ?.length
+        );
+      },
+
+      [HINTS.time]: () => {
+        return (
+          +selectedQuiz?.builtInHints?.find(
+            (item) => item?.hint?.hintType === HINTS?.time,
+          )?.count -
+          +hints?.selectedHints?.filter((item) => item?.type === HINTS?.time)
+            ?.length
+        );
+      },
+    }),
+    [hints?.selectedHints],
+  );
 
   const allHints = useMemo(
     () => ({
@@ -123,11 +147,7 @@ export const SelectHint = ({
           hint={hint}
           headline="50/50"
           subHeadline="Remove 2 Answers"
-          count={
-            selectedQuiz.builtInHints.filter(
-              (hints) => hints.hint.hintType === "fifty"
-            )[0]?.count || 0
-          }
+          count={count[HINTS.fifty]()}
           icon={
             <Widget
               iconStyle="BoldDuotone"
@@ -145,11 +165,7 @@ export const SelectHint = ({
           hint={hint}
           headline="Extra Time"
           subHeadline="3 More Seconds"
-          count={
-            selectedQuiz.builtInHints.filter(
-              (hints) => hints.hint.hintType === "time"
-            )[0]?.count || 0
-          }
+          count={count[HINTS.time]()}
           icon={
             <AlarmAdd
               iconStyle="Bold"
@@ -167,11 +183,7 @@ export const SelectHint = ({
           hint={hint}
           headline="Audience Poll"
           subHeadline="See Others Answers"
-          count={
-            selectedQuiz.builtInHints.filter(
-              (hints) => hints.hint.hintType === "stats"
-            )[0]?.count || 0
-          }
+          count={count[HINTS.stats]()}
           icon={
             <UsersGroupTwoRounded
               iconStyle="Bold"
@@ -185,7 +197,7 @@ export const SelectHint = ({
         />
       ),
     }),
-    [selectedQuiz]
+    [selectedQuiz, count],
   );
 
   return (
@@ -196,7 +208,7 @@ export const SelectHint = ({
     >
       <VStack w="full" gap="12px">
         {selectedQuiz.builtInHints.map((h) =>
-          allHints[h.hint.hintType as HINTS](h)
+          allHints[h.hint.hintType as HINTS](h),
         )}
       </VStack>
     </BottomModal>

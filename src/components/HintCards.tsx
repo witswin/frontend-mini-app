@@ -1,11 +1,10 @@
-import { Box, Card, Text, useMediaQuery, VStack } from "@chakra-ui/react";
-import React, { Dispatch, SetStateAction, useMemo } from "react";
-import { HINTS } from "@/types";
-import { AddIcon, CloseIcon } from "@chakra-ui/icons";
-import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set";
-import { useHintsDispatch } from "@/modules/question/hooks";
-import { selectedHint } from "@/modules/question/types";
-import { useSelectedQuizDispatch } from "@/modules/quiz/hooks";
+import { Box, Card, Text, useMediaQuery, VStack } from '@chakra-ui/react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
+import { HINTS } from '@/types';
+import { AddIcon, CloseIcon } from '@chakra-ui/icons';
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from 'solar-icon-set';
+import { useHintsDispatch } from '@/modules/question/hooks';
+import { selectedHint } from '@/modules/question/types';
 
 export const HintCard = ({
   hint,
@@ -15,16 +14,15 @@ export const HintCard = ({
   setHintModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const setHints = useHintsDispatch();
-  const setSelectedQuiz = useSelectedQuizDispatch();
-  const [isSmall] = useMediaQuery("(min-width: 415px)");
+  const [isSmall] = useMediaQuery('(min-width: 415px)');
 
   const isHintCardEmpty = hint === undefined;
 
   const selectedHint = useMemo(
     () => ({
       [HINTS.fifty]: {
-        headline: "50/50",
-        subHeadline: "Remove 2 Answers",
+        headline: '50/50',
+        subHeadline: 'Remove 2 Answers',
         icon: (
           <Widget
             iconStyle="BoldDuotone"
@@ -34,8 +32,8 @@ export const HintCard = ({
         ),
       },
       [HINTS.time]: {
-        headline: "Extra Time",
-        subHeadline: "3 More Seconds",
+        headline: 'Extra Time',
+        subHeadline: '3 More Seconds',
         icon: (
           <AlarmAdd
             iconStyle="Bold"
@@ -45,8 +43,8 @@ export const HintCard = ({
         ),
       },
       [HINTS.stats]: {
-        headline: "Audience Poll",
-        subHeadline: "See Others Answers",
+        headline: 'Audience Poll',
+        subHeadline: 'See Others Answers',
         icon: (
           <UsersGroupTwoRounded
             iconStyle="Bold"
@@ -56,7 +54,7 @@ export const HintCard = ({
         ),
       },
     }),
-    []
+    [],
   );
 
   return (
@@ -75,7 +73,7 @@ export const HintCard = ({
           setHintModal(true);
         },
       })}
-      cursor={isHintCardEmpty ? "pointer" : "default"}
+      cursor={isHintCardEmpty ? 'pointer' : 'default'}
     >
       {isHintCardEmpty ? (
         <AddIcon color="blue" boxSize="32px" fontSize="32px" />
@@ -91,18 +89,7 @@ export const HintCard = ({
               setHints((prevState) => ({
                 ...prevState,
                 selectedHints: prevState.selectedHints.filter(
-                  (h) => h.localId !== hint.localId
-                ),
-              }));
-              setSelectedQuiz((prevState) => ({
-                ...prevState,
-                builtInHints: prevState.builtInHints.map((hints) =>
-                  hints.hint.hintType === hint.type
-                    ? {
-                        ...hints,
-                        count: hints.count + 1,
-                      }
-                    : hints
+                  (h) => h.localId !== hint.localId,
                 ),
               }));
             }}
@@ -114,11 +101,11 @@ export const HintCard = ({
           {selectedHint[hint.type].icon}
 
           <VStack gap="2px" w="full">
-            <Text fontSize={isSmall ? "lg" : "sm"} color="gray.0">
+            <Text fontSize={isSmall ? 'lg' : 'sm'} color="gray.0">
               {selectedHint[hint.type]?.headline}
             </Text>
             <Text
-              fontSize={isSmall ? "sm" : "xs"}
+              fontSize={isSmall ? 'sm' : 'xs'}
               color="gray.60"
               textAlign="center"
             >
