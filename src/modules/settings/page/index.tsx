@@ -125,7 +125,7 @@ export const SettingsPage = () => {
           textAlign="center"
           mx="auto"
         >
-          Your profile information and social links are visible to other users.
+          Your profile information is visible to other users.
         </Text>
       </VStack>
 
