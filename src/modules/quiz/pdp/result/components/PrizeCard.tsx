@@ -138,7 +138,7 @@ export const PrizeCard = ({
         </Text>
       </span>
       <Flex gap={3}>
-        {authInfo?.wallets?.length <=0 ? (
+        {authInfo?.wallets?.length > 0 ? (
           <Link href={`/profile/${authInfo?.pk}#claim`}>
             <Button>Claim Now on profile page</Button>
           </Link>
