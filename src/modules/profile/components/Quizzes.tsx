@@ -27,7 +27,7 @@ export const Quizzes = ({ quizzes }: Props) => {
 
   return (
     <Card gap="16px">
-      <Text fontSize="2xl" fontWeight={700} color="gray.0">
+      <Text id="claim" fontSize="2xl" fontWeight={700} color="gray.0">
         Quizzes
       </Text>
 
