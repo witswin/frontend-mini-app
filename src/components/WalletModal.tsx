@@ -98,7 +98,7 @@ export const WalletModal = ({
           onClose();
 
           if (router.query.popAddWalletModal) {
-            router.push(`/profile/${authInfo.pk}`);
+            router.push(`/profile/${authInfo.pk}#claim`);
             toast({
               description: 'Now navigate to your quizzes and claim your prize.',
               title: 'Wallet Address Saved',
