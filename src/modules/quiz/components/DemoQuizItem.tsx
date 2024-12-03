@@ -1,5 +1,4 @@
 import { memo, useEffect } from 'react';
-import { QuizCard } from '@/components/QuizCard';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { VStack } from '@chakra-ui/react';
 import {
@@ -9,6 +8,7 @@ import {
 } from '../hooks';
 import { useRouter } from 'next/router';
 import { quizType } from '@/globalTypes';
+import { MemoizedDemoQuizCard } from '@/components/DemoQuizCard';
 
 interface SwiperItemProps {
   quiz: quizType;
@@ -34,7 +34,7 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
 
   return (
     <VStack onClick={() => router.push(`/quiz/${quiz?.id}`)} width="full">
-      <QuizCard
+      <MemoizedDemoQuizCard
         isLarge
         onOpen={onOpen}
         ref={ref}
@@ -45,5 +45,5 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
     </VStack>
   );
 };
-const MemoizedSwiperItem = memo(SwiperItem);
-export { MemoizedSwiperItem };
+const MemoizedSwiperDemoItem = memo(SwiperItem);
+export { MemoizedSwiperDemoItem };
