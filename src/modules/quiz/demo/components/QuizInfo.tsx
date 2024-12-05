@@ -1,177 +1,17 @@
 import { QuizPrize } from '@/components/QuizCard';
-import {
-  Badge,
-  Box,
-  Button,
-  HStack,
-  Img,
-  Text,
-  useToast,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Button, HStack, Img, Text, VStack } from '@chakra-ui/react';
 import { ArticleCard } from '../../components/ArticleCard';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { demoQuizData } from '@/constants';
 import { useRouter } from 'next/router';
-import { axiosClient } from '@/configs/axios';
-import { enrolledCompetition, quizType } from '@/globalTypes';
-import { DoubleAltArrowRight, Logout3 } from 'solar-icon-set';
-import { useCheckEnrolled } from '@/modules/home/hooks';
-import {
-  useEnrolledModalProps,
-  useGetCardState,
-  useSelectedQuizDispatch,
-} from '../../hooks';
-import { CARD_STATE } from '@/types';
-import { useAuth } from '@/hooks/useAuthorization';
-import { EnrolledCard } from '../../components/EnrolledCard';
-import { AxiosError, AxiosResponse } from 'axios';
 
 const CountDown = dynamic(
   () => import('@/components/CountDown').then((modules) => modules.CountDown),
   { ssr: false },
 );
 export const QuizInfo = () => {
-  const { query } = useRouter();
-  const { data } = useQuery<quizType>({
-    queryKey: ['quiz', query?.id],
-    queryFn: async () =>
-      await axiosClient
-        .get(`/quiz/competitions/${query?.id}/`)
-        .then((res) => res.data),
-  });
   const router = useRouter();
-
-  const checkIsEnrolledQuiz = useCheckEnrolled();
-  const isEnrolled = checkIsEnrolledQuiz(data?.id);
-  const cardState = useGetCardState(data);
-
-  const queryClient = useQueryClient();
-
-  const authInfo = useAuth();
-
-  const { data: enrolledCompetitions } = useQuery({
-    queryKey: ['enrolledCompetition', authInfo?.token, query?.id],
-    queryFn: async () =>
-      await axiosClient
-        .get<string, AxiosResponse<enrolledCompetition[]>>(
-          `/quiz/competitions/enroll?competition_pk=${query?.id}`,
-          {
-            headers: {
-              Authorization: `TOKEN ${authInfo?.token}`,
-            },
-          },
-        )
-        .then((res) => res.data),
-    enabled: !!authInfo?.token,
-  });
-
-  const toast = useToast({
-    position: 'bottom',
-  });
-
-  const selectedQuizDispatch = useSelectedQuizDispatch();
-  const { mutate } = useMutation({
-    mutationFn: async () => {
-      return await axiosClient
-        .delete(`/quiz/competitions/enroll/${enrolledCompetitions[0].id}/`, {
-          headers: {
-            Authorization: `TOKEN ${authInfo?.token}`,
-          },
-        })
-    },
-    onError: (data: AxiosError<{ detail: string }>) => {
-      toast({
-        description: data.response.data.detail,
-        status: 'error',
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['enrolledCompetition'] });
-      toast({
-        description: `You have enrolled ${data?.title}`,
-        status: 'success',
-      });
-    },
-  });
-
-  const { onOpen } = useEnrolledModalProps();
-
-  useEffect(() => {
-    selectedQuizDispatch(data);
-  }, []);
-
-  const CTAButton = useMemo(
-    () => ({
-      [CARD_STATE.join]: isEnrolled ? null : (
-        <Button
-          onClick={() => {
-            router.push(`/quiz/${data.id}/match`);
-          }}
-          width="full"
-          size="lg"
-          variant="solid"
-        >
-          Join Now
-        </Button>
-      ),
-      [CARD_STATE.lobby]: (
-        <Button
-          onClick={() => {
-            router.push(`/quiz/${data.id}/match`);
-          }}
-          rightIcon={
-            <DoubleAltArrowRight
-              color="var(--chakra-colors-gray-0)"
-              iconStyle="LineDuotone"
-            />
-          }
-          width="full"
-          size="lg"
-          variant="solid"
-        >
-          Join Now
-        </Button>
-      ),
-      [CARD_STATE.resource]: <></>,
-      [CARD_STATE.watch]: (
-        <Button
-          onClick={() => {
-            if (data?.isFinished) {
-              router.push(`/quiz/${data.id}/result`);
-            } else {
-              router.push(`/quiz/${data.id}/match`);
-            }
-          }}
-          width="full"
-          size="lg"
-          variant="outline"
-        >
-          {data?.isFinished ? 'Check Winners' : 'Watch as spectator'}
-        </Button>
-      ),
-      [CARD_STATE.enroll]: (
-        <Button
-          onClick={() => {
-            // if (!authInfo?.token) {
-            //   connect();
-            // } else {
-            //   onOpen();
-            // }
-            onOpen();
-          }}
-          width="full"
-          size="lg"
-          variant="solid"
-        >
-          Enroll Quiz
-        </Button>
-      ),
-    }),
-    [authInfo],
-  );
-
+  const data = demoQuizData;
   return (
     <>
       <VStack position="relative" rowGap="16px" width="full">
@@ -191,19 +31,6 @@ export const QuizInfo = () => {
                 width="80px"
                 height="80px"
               />
-              {isEnrolled && (
-                <Badge
-                  left="50%"
-                  transform="translateX(-50%)"
-                  variant="green"
-                  position="absolute"
-                  bottom="0"
-                  size="sm"
-                  textTransform="capitalize"
-                >
-                  Enrolled
-                </Badge>
-              )}
             </Box>
             <VStack alignItems="flex-end" rowGap="0">
               <QuizPrize
@@ -233,47 +60,17 @@ export const QuizInfo = () => {
             <Text fontSize="md" lineHeight="22px" color="gray.60">
               {data?.details}
             </Text>
-            <Text
-              fontSize="xs"
-              fontWeight="600"
-              lineHeight="16px"
-              color="gray.100"
-            >
-              {data?.participantsCount}
-              {data?.maxParticipants !== 0 && '/ ' + data?.maxParticipants}
-            </Text>
           </VStack>
-          {data?.startAt && (
-            <CountDown
-              shows={{
-                day: true,
-                hour: true,
-                info: true,
-                min: true,
-                sec: true,
-              }}
-              date={new Date(data?.startAt).getTime()}
-            />
-          )}
-
-          {isEnrolled && (
-            <Box width="full" position="relative" zIndex={0}>
-              <Button
-                onClick={() => mutate()}
-                variant="gray"
-                width="full"
-                leftIcon={
-                  <Logout3
-                    size={20}
-                    iconStyle="LineDuotone"
-                    color="var(--chakra-colors-gray-0)"
-                  />
-                }
-              >
-                Cancel Enrollment
-              </Button>
-            </Box>
-          )}
+          <CountDown
+            shows={{
+              day: true,
+              hour: true,
+              info: true,
+              min: true,
+              sec: true,
+            }}
+            date={new Date().getTime() + 1e15}
+          />
         </VStack>
         {data?.resources
           ?.filter((article) => article.isActive)
@@ -301,10 +98,19 @@ export const QuizInfo = () => {
         maxW="538px"
         px="16px"
       >
-        {CTAButton[cardState]}
+        <Button
+          onClick={() => {
+            router.push('/quiz/demo/match');
+          }}
+          width="full"
+          size="lg"
+          variant="solid"
+        >
+          Go to Quiz
+        </Button>{' '}
       </Box>
 
-      <EnrolledCard />
+      {/* <EnrolledCard /> */}
     </>
   );
 };

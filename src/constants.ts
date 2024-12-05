@@ -33,7 +33,8 @@ import {
   mantleTestnet,
   rootstock,
 } from 'viem/chains';
-import { quizType } from './globalTypes';
+import { demoQuizType } from './globalTypes';
+import { QUESTION_STATE } from './types';
 
 const IDChain = {
   id: 74,
@@ -224,7 +225,80 @@ export const topBarHeight = '120px';
 
 export const mainBottomNavBar = '122px';
 
-export const demoQuizData: quizType = {
+export const demoQuizData: demoQuizType = {
+  question: [
+    {
+      id: 0,
+      number: 1,
+      state: QUESTION_STATE['default'],
+      text: '1',
+      selectedChoice: -1,
+      choices: [
+        {
+          id: 0,
+          isCorrect: false,
+          text: '11',
+          question: 1,
+        },
+        {
+          id: 1,
+          isCorrect: false,
+          text: '12',
+          question: 1,
+        },
+        {
+          id: 2,
+          isCorrect: false,
+          text: '13',
+          question: 1,
+        },
+        {
+          id: 3,
+          isCorrect: false,
+          text: '14',
+          question: 1,
+        },
+      ],
+      correct: 1,
+      creator: 'Wits team',
+    },
+    {
+      id: 1,
+      number: 2,
+      state: QUESTION_STATE['default'],
+      text: '2',
+      selectedChoice: -1,
+      choices: [
+        {
+          id: 0,
+          isCorrect: false,
+          text: '21',
+          question: 1,
+        },
+        {
+          id: 1,
+          isCorrect: false,
+          text: '22',
+          question: 1,
+        },
+        {
+          id: 2,
+          isCorrect: false,
+          text: '23',
+          question: 1,
+        },
+        {
+          id: 3,
+          isCorrect: false,
+          text: '24',
+          question: 1,
+        },
+      ],
+      correct: 1,
+      creator: 'Wits team',
+    },
+  ],
+  activeQuestionId: 0,
   builtInHints: [
     {
       count: 1,
@@ -237,6 +311,9 @@ export const demoQuizData: quizType = {
         title: '50/50',
       },
       id: -1,
+      localId: '-1',
+      isUsed: false,
+      questionId: -1,
     },
   ],
   chainId: 97, // Testnet
@@ -246,7 +323,7 @@ export const demoQuizData: quizType = {
   emailUrl: '',
   formattedPrize: 0.0,
   hintCount: 1,
-  id: -1,
+  id: 'demo',
   image: '/assets/images/quiz/demo-quiz.png',
   isActive: true,
   isFinished: false,

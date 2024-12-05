@@ -1,58 +1,12 @@
-import { EnrolledModalProvider } from '@/modules/quiz/context';
-import { Index } from '@/modules/quiz/pdp/page';
-import { prefetchSSRData } from '@/utils';
+import { Index } from '@/modules/quiz/demo/page';
 import { Box, Container } from '@chakra-ui/react';
-import {
-  dehydrate,
-  DehydratedState,
-  HydrationBoundary,
-  QueryClient,
-} from '@tanstack/react-query';
-import { GetServerSidePropsContext } from 'next';
-import dynamic from 'next/dynamic';
 import { ReactElement } from 'react';
 
-const HintProvider = dynamic(
-  () =>
-    import('@/modules/question/context').then(
-      (modules) => modules.HintProvider,
-    ),
-  { ssr: false },
-);
-interface QuizPDPProps {
-  dehydratedState: DehydratedState;
-}
-const QuizPDP = ({ dehydratedState }: QuizPDPProps) => {
-  return (
-    <HydrationBoundary state={dehydratedState}>
-      <EnrolledModalProvider>
-        <HintProvider>
-          <Index />
-        </HintProvider>
-      </EnrolledModalProvider>
-    </HydrationBoundary>
-  );
+const QuizPDP = () => {
+  return <Index />;
 };
 
 export default QuizPDP;
-
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const { query } = ctx;
-  const quizId = query?.id as string;
-  const queryClient = new QueryClient();
-
-  await prefetchSSRData(
-    ['quiz', quizId],
-    `/quiz/competitions/${quizId}/`,
-    queryClient,
-  );
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};
 
 QuizPDP.getLayout = function getLayout(page: ReactElement) {
   return (
