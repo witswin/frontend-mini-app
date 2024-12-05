@@ -1,5 +1,4 @@
 import { Card } from '@/components/Card';
-import { useCheckEnrolled } from '@/modules/home/hooks';
 import { QuizCardProps } from '@/types';
 import {
   Badge,
@@ -55,7 +54,6 @@ const DemoQuizCard = forwardRef(
     { quiz, colored, isLarge }: QuizCardProps,
     ref: LegacyRef<HTMLDivElement>,
   ) => {
-    const checkIsEnrolled = useCheckEnrolled();
     const isQuizFinished = quiz?.isFinished;
 
     const router = useRouter();
@@ -127,21 +125,6 @@ const DemoQuizCard = forwardRef(
                 size="md"
               >
                 Expired
-              </Badge>
-            )}
-
-            {checkIsEnrolled(quiz.id) && !isQuizFinished && (
-              <Badge
-                position="absolute"
-                bottom="12px"
-                left="50%"
-                transform="translate(-50%,12px)"
-                textTransform="capitalize"
-                px="6px"
-                variant="green"
-                size="sm"
-              >
-                Enrolled
               </Badge>
             )}
           </Box>
