@@ -1,11 +1,17 @@
-import { ColorFullText } from "@/components/ColorFullText";
-import { INFO_CARD_STATE } from "@/types";
-import { Button, Text, VStack } from "@chakra-ui/react";
-import Link from "next/link";
-import { memo, useMemo } from "react";
-import { DoubleAltArrowRight } from "solar-icon-set";
+import { ColorFullText } from '@/components/ColorFullText';
+import { INFO_CARD_STATE } from '@/types';
+import { Button, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
+import { memo, useMemo } from 'react';
+import { DoubleAltArrowRight } from 'solar-icon-set';
 
-const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
+const InfoCard = ({
+  state,
+  hasCompetitions
+}: {
+  state: INFO_CARD_STATE;
+  hasCompetitions?: boolean;
+}) => {
   const selectedCard: {
     [key in INFO_CARD_STATE]: {
       largeTitle: string;
@@ -19,10 +25,10 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
   } = useMemo(
     () => ({
       [INFO_CARD_STATE.welcome]: {
-        largeTitle: "Welcome to Wits!",
-        subHeadline: "Ready to challenge your brain\n and earn rewards?",
+        largeTitle: 'Welcome to Wits!',
+        subHeadline: 'Ready to challenge your brain\n and earn rewards?',
         btnObject: {
-          btnText: "Get Started",
+          btnText: hasCompetitions ? 'Get Started' : 'Take a Demo Quiz',
           btnIcon: (
             <DoubleAltArrowRight
               size={24}
@@ -30,27 +36,27 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
               iconStyle="LineDuotone"
             />
           ),
-          href: "/quiz",
+          href: hasCompetitions ? '/quiz' : '/quiz/demo',
         },
       },
       [INFO_CARD_STATE.join]: {
-        largeTitle: "Quiz time!",
-        subHeadline: "Game begins in 8 sec... Ready yourself!",
+        largeTitle: 'Quiz time!',
+        subHeadline: 'Game begins in 8 sec... Ready yourself!',
       },
       [INFO_CARD_STATE.lobby]: {
-        largeTitle: "Ready to Win?",
-        subHeadline: "Ready to show what you know?",
+        largeTitle: 'Ready to Win?',
+        subHeadline: 'Ready to show what you know?',
       },
       [INFO_CARD_STATE.resource]: {
         largeTitle: "You're in the game",
-        subHeadline: "Study up and get ready to win!",
+        subHeadline: 'Study up and get ready to win!',
       },
       [INFO_CARD_STATE.watch]: {
         largeTitle: "You're Late!",
-        subHeadline: "But don’t worry,\nenjoy watching and learning!",
+        subHeadline: 'But don’t worry,\nenjoy watching and learning!',
       },
     }),
-    []
+    [],
   );
 
   return (
@@ -71,7 +77,7 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
         />
 
         <Text
-          whiteSpace={"pre-line"}
+          whiteSpace={'pre-line'}
           maxW="100%"
           color="gray.10"
           fontSize="lg"
@@ -92,7 +98,7 @@ const InfoCard = ({ state }: { state: INFO_CARD_STATE }) => {
         >
           {selectedCard[state].btnObject?.btnText}
           {selectedCard[state].btnObject?.btnIcon}
-        </Button>
+        </Button> 
       )}
     </VStack>
   );
