@@ -26,7 +26,7 @@ const Index = ({ dehydratedState, hasCompetitions }: IndexProps) => {
       axiosClient
         .get(`/quiz/${auth?.pk}/competitions/`)
         .then((res) => res.data);
-    if (typeof hasCompetitions === 'undefined') {
+    if (typeof hasCompetitions === 'undefined' && auth?.token) {
       checkUserCompetitions().then((data) =>
         setUserCompetitions(data.length !== 0),
       );

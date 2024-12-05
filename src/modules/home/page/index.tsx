@@ -71,7 +71,7 @@ export const Home = ({ hasCompetitions }: HomeProps) => {
         </VStack>
       ),
     };
-  }, []);
+  }, [hasCompetitions]);
 
   return (
     <VStack height="full" w="full" rowGap="16px">
