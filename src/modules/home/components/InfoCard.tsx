@@ -56,7 +56,7 @@ const InfoCard = ({
         subHeadline: 'But don’t worry,\nenjoy watching and learning!',
       },
     }),
-    [],
+    [hasCompetitions],
   );
 
   return (
