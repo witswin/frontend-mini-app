@@ -236,7 +236,7 @@ export const demoQuizData: demoQuizType = {
       choices: [
         {
           id: 0,
-          isCorrect: true,
+          isCorrect: false,
           text: 'every 10 minutes',
           question: 0,
         },
@@ -259,7 +259,7 @@ export const demoQuizData: demoQuizType = {
           question: 0,
         },
       ],
-      correct: 1,
+      correct: 0,
       creator: 'Wits team',
     },
     {
@@ -277,7 +277,7 @@ export const demoQuizData: demoQuizType = {
         },
         {
           id: 1,
-          isCorrect: true,
+          isCorrect: false,
           text: 'Decentralized applications',
           question: 1,
         },
