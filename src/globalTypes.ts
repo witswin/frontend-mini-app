@@ -48,9 +48,15 @@ export declare type hintType = {
   isActive: boolean
 }
 
+export declare type demoQuizType=quizType & {
+  builtInHints: (quizType['builtInHints'][0] & { isUsed: boolean ,localId:string,questionId:number})[];
+  question: { id: number,number:number,state:QUESTION_STATE ,text:string,choices:choice[],correct:number,creator:string,selectedChoice:number|null}[];
+  activeQuestionId:number;
+}
+
 export declare type quizType = {
   formattedPrize: number
-  id: number
+  id: number|string
   questions: Record<"pk" | "number", number>[]
   sponsors: sponsorType[]
   participantsCount: number

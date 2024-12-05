@@ -1,8 +1,8 @@
-import { BoxProps, HStack, Text, VStack } from "@chakra-ui/react";
-import Countdown, { CountdownRenderProps } from "react-countdown";
-import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { CalendarMark, ClockCircle } from "solar-icon-set";
+import { BoxProps, HStack, Text, VStack } from '@chakra-ui/react';
+import Countdown, { CountdownRenderProps } from 'react-countdown';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import { CalendarMark, ClockCircle } from 'solar-icon-set';
 
 interface TimerBoxProps extends BoxProps {
   topText: number | string;
@@ -37,20 +37,20 @@ const TimerBox = ({
           lineHeight="20px"
           textAlign="center"
           fontSize="13px"
-          color={topIcon ? "gray.40" : "gray.20"}
+          color={topIcon ? 'gray.40' : 'gray.20'}
           {...(!topIcon && {
-            width: "full",
-            mx: "auto",
+            width: 'full',
+            mx: 'auto',
           })}
           {...(isComplete && {
-            bg: "redRadial",
+            bg: 'redRadial',
             sx: {
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
             },
           })}
           {...(isDisabled && {
-            color: "gray.400",
+            color: 'gray.400',
           })}
         >
           {topText}
@@ -60,13 +60,13 @@ const TimerBox = ({
         {bottomIcon}
         <Text
           fontWeight="600"
-          fontSize={bottomIcon ? "13px" : "10px"}
-          color={bottomIcon ? "gray.40" : "gray.60"}
+          fontSize={bottomIcon ? '13px' : '10px'}
+          color={bottomIcon ? 'gray.40' : 'gray.60'}
           lineHeight="16px"
           {...(!bottomIcon && {
-            width: "full",
-            mx: "auto",
-            textAlign: "center",
+            width: 'full',
+            mx: 'auto',
+            textAlign: 'center',
           })}
         >
           {bottomText}
@@ -104,14 +104,14 @@ export const CountDown = ({
     completed,
   }: CountdownRenderProps) => {
     const dateString = new Date(date)
-      .toLocaleString("default", {
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hourCycle: "h23",
+      .toLocaleString('default', {
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
       })
-      .split(",");
+      .split(',');
 
     return (
       <HStack justifyContent="flex-start" width="full" columnGap="12px">
@@ -151,7 +151,7 @@ export const CountDown = ({
             <TimerBox
               isDisabled={completed}
               isComplete={days === 0 && !completed}
-              topText={days}
+              topText={days > 99 ? '+99' : days}
               bottomText="Day"
               background="cardBackground"
               px="6px"

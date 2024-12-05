@@ -47,7 +47,7 @@ export const CompletedQuizCard = ({
   isClaimTriggered: boolean;
   txHash: string;
   profileId: string;
-  quizId: number;
+  quizId: number|string;
 }) => {
   const [isLarge] = useMediaQuery('(min-width: 480px)');
   // token and chain are hard coded for this phase, for next phases of the project they are likely to change

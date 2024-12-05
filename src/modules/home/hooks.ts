@@ -30,7 +30,7 @@ export const useCheckEnrolled = () => {
     return () => {};
   }
 
-  return (competitionId: number) =>
+  return (competitionId: number | string) =>
     enrolledCompetitions?.find(
       (competition) => competition.competition === competitionId,
     );

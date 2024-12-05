@@ -8,6 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import { quizType } from '@/globalTypes';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
+import { demoQuizData } from '@/constants';
+import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
 
 const MemoizedSwiperItem = dynamic(
   () =>
@@ -89,6 +91,9 @@ export const QuizPLP = () => {
             <MemoizedSwiperItem quiz={quiz} />
           </SwiperSlide>
         ))}
+        <SwiperSlide style={{ maxWidth: '318px' }}>
+          <MemoizedSwiperDemoItem quiz={demoQuizData} />
+        </SwiperSlide>
       </ChakraSwiper>
 
       <EnrolledCard />
