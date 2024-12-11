@@ -16,16 +16,17 @@ export const useSelectedQuizDispatch = () => useContext(SelectedQuizDispatch);
 
 export const useGetCardState = (competition: quizType) => {
   const enrolledChecker = useCheckEnrolled();
-
+  
+  
   const [competitionState, setCompetitionState] =
-    useState<CARD_STATE>(undefined);
+  useState<CARD_STATE>(undefined);
   const [timeState, setTimeState] = useState(undefined);
-
+  
   const isEnrolled = enrolledChecker(competition?.id);
-
+  
   // const leftTimeCalculator = useCalculateStartUTCTime();
   const convertedStartAt = new Date(competition?.startAt).getTime();
-
+  
   useEffect(() => {
     const interval = setInterval(() => {
       const calculatedTime = convertedStartAt - new Date().getTime();
@@ -41,9 +42,9 @@ export const useGetCardState = (competition: quizType) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
+  
   useEffect(() => {
-    if (!isEnrolled && timeState !== "expired") {
+    if (!isEnrolled && timeState !== "expired"&&typeof timeState!=="undefined") {
       setCompetitionState(CARD_STATE.enroll);
     } else {
       if (timeState === "default" && competition.resources.length !== 0) {
