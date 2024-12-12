@@ -9,15 +9,38 @@ const { toast } = createStandaloneToast();
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 500) {
+    if (error.response) {
+      const { status } = error.response;
+
+      if (status === 500) {
+        toast({
+          title: 'Server Error',
+          description: 'Something went wrong. Please try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else if (status === 502) {
+        toast({
+          title: 'Bad Gateway',
+          description:
+            'The server is temporarily unavailable. Please try again later.',
+          status: 'warning',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } else {
       toast({
-        title: 'Server Error',
-        description: 'An unexpected error occurred. Please try again later.',
+        title: 'Network Error',
+        description:
+          'Unable to connect to the server. Please check your internet connection.',
         status: 'error',
-        duration: 3000,
+        duration: 5000,
         isClosable: true,
       });
     }
+
     return Promise.reject(error);
   },
 );
