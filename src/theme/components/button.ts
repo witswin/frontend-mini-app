@@ -201,7 +201,7 @@ export const Button = {
       borderColor: "red.400",
     },
     default: {
-      background: "var(--chakra-colors-glassBackground)",
+      background: "var(--chakra-colors-glassBackground) !important",
       color: "gray.0",
       borderStyle: "solid",
       borderTopWidth: "1px",
