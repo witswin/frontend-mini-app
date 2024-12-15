@@ -1,8 +1,6 @@
 import {
-  Badge,
   Box,
   HStack,
-  Text,
   useDisclosure,
   useMediaQuery,
   VStack,
@@ -10,31 +8,25 @@ import {
 import HeaderBg from '@/assets/HeaderBgImage.svg';
 import Logo from '@/assets/Logo.svg';
 import Image from 'next/image';
-import { WalletMoney } from 'solar-icon-set';
 // import { useWalletConnection } from '@/hooks/useWalletConnection';
-import { useAuth } from '@/hooks/useAuthorization';
-import { textTruncator } from '@/utils';
-import { useRouter } from 'next/router';
 import { WalletModal } from './WalletModal';
 
-const WalletStatus = () => {
-  const authInfo = useAuth();
-  return (
-    <Badge
-      variant={!!authInfo ? 'green' : 'red'}
-      size="xs"
-      position="absolute"
-      left="0"
-      bottom="0"
-    />
-  );
-};
+// const WalletStatus = () => {
+//   const authInfo = useAuth();
+//   return (
+//     <Badge
+//       variant={!!authInfo ? 'green' : 'red'}
+//       size="xs"
+//       position="absolute"
+//       left="0"
+//       bottom="0"
+//     />
+//   );
+// };
 
 export const TopNavbar = () => {
   const [isLarge] = useMediaQuery('(min-width: 500px)');
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const authInfo = useAuth();
-  const router = useRouter();
+  const { isOpen, onClose } = useDisclosure();
 
   // const { connect, disconnect } = useWalletConnection();
 
@@ -94,7 +86,7 @@ export const TopNavbar = () => {
           </VStack>
 
           <VStack w="82px" pl="12px" my="auto" justifyContent="center" mr="4px">
-            <Box
+            {/* <Box
               cursor="pointer"
               onClick={() => {
                 // if (!authInfo || !authInfo.wallets.length) {
@@ -128,7 +120,7 @@ export const TopNavbar = () => {
               {!!authInfo &&
                 !!authInfo.wallets.length &&
                 textTruncator(authInfo.wallets[0].walletAddress)}
-            </Text>
+            </Text> */}
           </VStack>
         </HStack>
       </HStack>
