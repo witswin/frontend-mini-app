@@ -25,7 +25,6 @@ import { useCheckEnrolled } from '@/modules/home/hooks';
 import { useHints } from '@/modules/question/hooks';
 import { useRouter } from 'next/router';
 import { QuizPrivate } from './state/QuizPrivate';
-import { ModalBase } from '@/components/ModalBase';
 
 export const EnrolledCard = () => {
   const router = useRouter();
