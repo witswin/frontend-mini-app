@@ -23,6 +23,7 @@ export const QuizPrivate = () => {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
     control,
   } = useForm<{ invitationCode: string }>({
     mode: 'onSubmit',
@@ -31,8 +32,11 @@ export const QuizPrivate = () => {
   const { invitationCode } = useWatch({ control });
 
   useEffect(() => {
-    // const embeddedCode = window.Telegram.WebApp.initDataUnsafe.start_param;
-    // setValue("invitationCode",embeddedCode)
+    const embeddedCode = window?.Telegram?.WebApp?.initDataUnsafe?.start_param
+      ?.split('code=')
+      .at(-1);
+
+    setValue('invitationCode', embeddedCode ?? '');
   }, []);
 
   return (
