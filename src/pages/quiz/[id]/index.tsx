@@ -27,7 +27,7 @@ interface QuizPDPProps {
   qrCodeBase64: string;
   fullUrl: string;
 }
-const QuizPDP = ({ dehydratedState, qrCodeBase64, fullUrl }: QuizPDPProps) => {
+const QuizPDP = ({ dehydratedState, fullUrl }: QuizPDPProps) => {
   return (
     <>
       <Head>
@@ -36,7 +36,7 @@ const QuizPDP = ({ dehydratedState, qrCodeBase64, fullUrl }: QuizPDPProps) => {
           property="og:description"
           content="Join this quiz now and test your knowledge!"
         />
-        <meta property="og:image" content={`${qrCodeBase64}`} />
+        <meta property="og:image" content={`./qr-code.png`} />
         <meta property="og:url" content={fullUrl} />
       </Head>
       <HydrationBoundary state={dehydratedState}>
@@ -65,8 +65,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   });
   const filePath = path.resolve('./public', 'qr-code.png');
 
-  console.log({filePath});
-  
+  console.log({ filePath });
+
   await QRCode.toFile(filePath, fullUrl, {
     errorCorrectionLevel: 'H',
     width: 256,
