@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic';
 import { ReactElement } from 'react';
 import QRCode from 'qrcode';
 import Head from 'next/head';
+import path from 'path';
 
 const HintProvider = dynamic(
   () =>
@@ -26,7 +27,7 @@ interface QuizPDPProps {
   qrCodeBase64: string;
   fullUrl: string;
 }
-const QuizPDP = ({ dehydratedState, qrCodeBase64, fullUrl }: QuizPDPProps) => {
+const QuizPDP = ({ dehydratedState, fullUrl }: QuizPDPProps) => {
   return (
     <>
       <Head>
@@ -35,7 +36,7 @@ const QuizPDP = ({ dehydratedState, qrCodeBase64, fullUrl }: QuizPDPProps) => {
           property="og:description"
           content="Join this quiz now and test your knowledge!"
         />
-        <meta property="og:image" content={`${qrCodeBase64}`} />
+        <meta property="og:image" content={`./qr-code.png`} />
         <meta property="og:url" content={fullUrl} />
       </Head>
       <HydrationBoundary state={dehydratedState}>
@@ -62,7 +63,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     errorCorrectionLevel: 'H',
     width: 256,
   });
-  console.log(ctx.req.headers.host, 'salams', ctx.resolvedUrl);
+  const filePath = path.resolve('./public', 'qr-code.png');
+
+  console.log({ filePath });
+
+  await QRCode.toFile(filePath, fullUrl, {
+    errorCorrectionLevel: 'H',
+    width: 256,
+  });
 
   await prefetchSSRData(
     ['quiz', quizId],
