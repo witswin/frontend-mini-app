@@ -14,7 +14,10 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { KeyMinimalistic } from 'solar-icon-set';
-import { useForm, useWatch } from 'react-hook-form';
+import {
+  useForm,
+  //  useWatch
+} from 'react-hook-form';
 import { axiosClient } from '@/configs/axios';
 
 const Form = chakra('form');
@@ -24,12 +27,15 @@ export const QuizPrivate = () => {
     formState: { errors, isSubmitting },
     handleSubmit,
     setValue,
-    control,
+    // control,
   } = useForm<{ invitationCode: string }>({
     mode: 'onSubmit',
   });
-  const [submitMessage, setSubmitMessage] = useState('');
-  const { invitationCode } = useWatch({ control });
+  const [
+    submitMessage,
+    // setSubmitMessage
+  ] = useState('');
+  // const { invitationCode } = useWatch({ control });
 
   useEffect(() => {
     const embeddedCode = window?.Telegram?.WebApp?.initDataUnsafe?.start_param
