@@ -1,19 +1,30 @@
-import { Button, Img, Text, useToast, VStack } from "@chakra-ui/react";
-import { useEnrolledModalProps, useSelectedQuiz } from "../hooks";
-import { useEffect, useMemo, useState } from "react";
-import { ENROLL_STATUS } from "../types";
-import { QuizInfo } from "./state/QuizInfo";
-import { QuizTask } from "./state/QuizTask";
-import { QuizEnrolled } from "./state/QuizEnrolled";
-import { BottomModal } from "@/components/BottomModal";
-import { SelectHint } from "./SelectHint";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosClient } from "@/configs/axios";
-import { useAuth } from "@/hooks/useAuthorization";
-import { AxiosError } from "axios";
-import { useCheckEnrolled } from "@/modules/home/hooks";
-import { useHints } from "@/modules/question/hooks";
-import { useRouter } from "next/router";
+import {
+  Button,
+  Img,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalOverlay,
+  Text,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
+import { useEnrolledModalProps, useSelectedQuiz } from '../hooks';
+import { useEffect, useMemo, useState } from 'react';
+import { ENROLL_STATUS } from '../types';
+import { QuizInfo } from './state/QuizInfo';
+import { QuizTask } from './state/QuizTask';
+import { QuizEnrolled } from './state/QuizEnrolled';
+import { BottomModal } from '@/components/BottomModal';
+import { SelectHint } from './SelectHint';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { axiosClient } from '@/configs/axios';
+import { useAuth } from '@/hooks/useAuthorization';
+import { AxiosError } from 'axios';
+import { useCheckEnrolled } from '@/modules/home/hooks';
+import { useHints } from '@/modules/question/hooks';
+import { useRouter } from 'next/router';
+import { QuizPrivate } from './state/QuizPrivate';
 
 export const EnrolledCard = () => {
   const router = useRouter();
@@ -21,13 +32,14 @@ export const EnrolledCard = () => {
   const selectedQuiz = useSelectedQuiz();
   const [showHintModal, setShowHintModal] = useState(false);
 
+  const isPrivate = true;
   const authInfo = useAuth();
   const toast = useToast({
-    position: "bottom",
+    position: 'bottom',
   });
 
   const [enrollCardState, setEnrollCardState] = useState(
-    ENROLL_STATUS.quizInfo
+    isPrivate ? ENROLL_STATUS.private : ENROLL_STATUS.quizInfo,
   );
 
   const queryClient = useQueryClient();
@@ -38,7 +50,11 @@ export const EnrolledCard = () => {
     if (checkIsEnrolled(selectedQuiz?.id)) {
       setEnrollCardState(ENROLL_STATUS.enrolled);
     } else {
-      setEnrollCardState(ENROLL_STATUS.quizInfo);
+      if (isPrivate) {
+        setEnrollCardState(ENROLL_STATUS.private);
+      } else {
+        setEnrollCardState(ENROLL_STATUS.quizInfo);
+      }
     }
   }, [checkIsEnrolled(selectedQuiz?.id)]);
 
@@ -47,31 +63,30 @@ export const EnrolledCard = () => {
 
   const { mutate } = useMutation({
     mutationFn: async () => {
-      return await axiosClient
-        .post(
-          "/quiz/competitions/enroll/",
-          {
-            user_hints: userHints,
-            competition: selectedQuiz?.id,
+      return await axiosClient.post(
+        '/quiz/competitions/enroll/',
+        {
+          user_hints: userHints,
+          competition: selectedQuiz?.id,
+        },
+        {
+          headers: {
+            Authorization: `TOKEN ${authInfo?.token}`,
           },
-          {
-            headers: {
-              Authorization: `TOKEN ${authInfo?.token}`,
-            },
-          }
-        )
+        },
+      );
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({
         description: data.response.data.detail,
-        status: "error",
+        status: 'error',
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["enrolledCompetition"] });
+      queryClient.invalidateQueries({ queryKey: ['enrolledCompetition'] });
       toast({
         description: `You have enrolled ${selectedQuiz.title}`,
-        status: "success",
+        status: 'success',
       });
     },
   });
@@ -79,14 +94,19 @@ export const EnrolledCard = () => {
   const stateComponents = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: <QuizInfo setHintModal={setShowHintModal} />,
+      [ENROLL_STATUS.private]: <QuizPrivate />,
       [ENROLL_STATUS.task]: <QuizTask />,
       [ENROLL_STATUS.enrolled]: <QuizEnrolled />,
     };
   }, []);
+
+  console.log({ stateComponents });
+
   const stateTitle = useMemo(() => {
     return {
-      [ENROLL_STATUS.quizInfo]: "Enroll Quiz",
-      [ENROLL_STATUS.task]: "Check Requirements",
+      [ENROLL_STATUS.quizInfo]: 'Enroll Quiz',
+      [ENROLL_STATUS.private]: 'Enter VIP Invitation Code',
+      [ENROLL_STATUS.task]: 'Check Requirements',
       [ENROLL_STATUS.enrolled]: "You're Enrolled! Get Ready for the Quiz",
     };
   }, []);
@@ -94,7 +114,7 @@ export const EnrolledCard = () => {
   const button = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: {
-        title: "Enroll",
+        title: 'Enroll',
         onClick: () => {
           // if (!authInfo?.token) {
           //   connect();
@@ -107,31 +127,89 @@ export const EnrolledCard = () => {
         },
       },
       [ENROLL_STATUS.task]: {
-        title: "Submit Enrollment",
+        title: 'Submit Enrollment',
         onClick: () => {
           setEnrollCardState(ENROLL_STATUS.enrolled);
+        },
+      },
+      [ENROLL_STATUS.private]: {
+        title: 'Submit',
+        onClick: () => {
+          setEnrollCardState(ENROLL_STATUS.quizInfo);
         },
       },
       [ENROLL_STATUS.enrolled]: {
         title:
           selectedQuiz?.resources.length === 0
-            ? "Go to quiz lobby"
-            : "Dive into Resources",
+            ? 'Go to quiz lobby'
+            : 'Dive into Resources',
         onClick: () => {
           if (selectedQuiz?.resources.length === 0) {
             router.push(`/quiz/${router.query?.id ?? selectedQuiz?.id}/match`);
           } else {
             router.push(
-              `/quiz/${router.query?.id ?? selectedQuiz?.id}/resources`
+              `/quiz/${router.query?.id ?? selectedQuiz?.id}/resources`,
             );
           }
         },
       },
     };
-  }, [authInfo,selectedQuiz]);
+  }, [authInfo, selectedQuiz]);
 
-
-
+  if (isPrivate) {
+    return (
+      <Modal trapFocus={false} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent
+          p="0"
+          background="var(--chakra-colors-cardBackground)"
+          width="538px"
+          backdropFilter="blur(50px)"
+          borderStartStartRadius="24px"
+          borderStartEndRadius="24px"
+          borderEndStartRadius="12px"
+          borderEndEndRadius="12px"
+        >
+          <ModalBody
+            overflow="hidden"
+            backdropFilter="blur(50px)"
+            width="full"
+            p={'0'}
+            margin="0"
+            borderStartStartRadius="24px"
+            borderStartEndRadius="24px"
+            borderEndStartRadius="12px"
+            borderEndEndRadius="12px"
+            zIndex={1000}
+          >
+            <VStack
+              p="16px"
+              mx="auto"
+              borderStartStartRadius="24px"
+              borderStartEndRadius="24px"
+              borderEndStartRadius="12px"
+              borderEndEndRadius="12px"
+              borderTop="2px solid"
+              borderColor="cyan"
+              boxShadow="0 5px 0px rgb(32,32,51), 1px 0px 0px   rgb(32,32,51), -1px 0px 0px rgb(32,32,51)"
+              gap="16px"
+              width="full"
+            >
+              <Text
+                fontSize="19px"
+                fontWeight="600"
+                fontFamily="Kanit"
+                color="gray.0"
+              >
+                {stateTitle['private']}
+              </Text>
+              {stateComponents[enrollCardState]}
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  }
   return (
     <BottomModal
       onClose={onClose}

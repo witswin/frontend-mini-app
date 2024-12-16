@@ -3,9 +3,11 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   HStack,
   Img,
   Text,
+  useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -16,7 +18,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { axiosClient } from '@/configs/axios';
 import { enrolledCompetition, quizType } from '@/globalTypes';
-import { DoubleAltArrowRight, Logout3 } from 'solar-icon-set';
+import { DoubleAltArrowRight, Logout3, Share } from 'solar-icon-set';
 import { useCheckEnrolled } from '@/modules/home/hooks';
 import {
   useEnrolledModalProps,
@@ -27,7 +29,14 @@ import { CARD_STATE } from '@/types';
 import { useAuth } from '@/hooks/useAuthorization';
 import { EnrolledCard } from '../../components/EnrolledCard';
 import { AxiosError, AxiosResponse } from 'axios';
+import { PrivateBadge } from '@/components/PrivateBadge';
 
+const ShareModal = dynamic(
+  () => import('./ShareModal').then((modules) => modules.ShareModal),
+  {
+    ssr: false,
+  },
+);
 const CountDown = dynamic(
   () => import('@/components/CountDown').then((modules) => modules.CountDown),
   { ssr: false },
@@ -74,12 +83,14 @@ export const QuizInfo = () => {
   const selectedQuizDispatch = useSelectedQuizDispatch();
   const { mutate } = useMutation({
     mutationFn: async () => {
-      return await axiosClient
-        .delete(`/quiz/competitions/enroll/${enrolledCompetitions[0].id}/`, {
+      return await axiosClient.delete(
+        `/quiz/competitions/enroll/${enrolledCompetitions[0].id}/`,
+        {
           headers: {
             Authorization: `TOKEN ${authInfo?.token}`,
           },
-        })
+        },
+      );
     },
     onError: (data: AxiosError<{ detail: string }>) => {
       toast({
@@ -171,10 +182,12 @@ export const QuizInfo = () => {
     }),
     [authInfo],
   );
+  const { isOpen, onOpen: shareModalOnOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <VStack position="relative" rowGap="16px" width="full">
+      <VStack overflow="hidden" position="relative" rowGap="16px" width="full">
+        <PrivateBadge />
         <VStack
           bg="glassBackground"
           borderRadius="16px"
@@ -221,15 +234,28 @@ export const QuizInfo = () => {
             </VStack>
           </HStack>
           <VStack width="full" alignItems="flex-start" rowGap="4px">
-            <Text
-              color="gray.0"
-              fontSize="2xl"
-              fontWeight="600"
-              fontFamily="kanit"
-              lineHeight="28px"
+            <HStack
+              alignItems="center"
+              justifyContent="space-between"
+              width="full"
             >
-              {data?.title}
-            </Text>
+              <Text
+                color="gray.0"
+                fontSize="2xl"
+                fontWeight="600"
+                fontFamily="kanit"
+                lineHeight="28px"
+              >
+                {data?.title}
+              </Text>
+              <Center
+                onClick={() => {
+                  shareModalOnOpen();
+                }}
+              >
+                <Share iconStyle="Outline" size={24} />
+              </Center>
+            </HStack>
             <Text fontSize="md" lineHeight="22px" color="gray.60">
               {data?.details}
             </Text>
@@ -305,6 +331,7 @@ export const QuizInfo = () => {
       </Box>
 
       <EnrolledCard />
+      <ShareModal onClose={onClose} isOpen={isOpen} />
     </>
   );
 };

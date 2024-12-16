@@ -8,6 +8,7 @@ import {
   Divider,
   FormControl,
   FormLabel,
+  chakra,
 } from '@chakra-ui/react';
 import { useProfile, useProfileDispatch } from '../hooks';
 import { CardSection } from './CardSection';
@@ -57,7 +58,6 @@ export const Connections = () => {
 };
 
 export type OnPromptRemove = (arg: { url: string; name: string }) => void;
-
 export const TelegramConnection = () => {
   const { connections } = useProfile();
   const dispatch = useProfileDispatch();
@@ -98,7 +98,20 @@ export const TelegramConnection = () => {
               height={24}
               alt="Telegram"
             />
-            <span>{connections.Telegram.username}</span>
+            <VStack rowGap="0">
+              <chakra.span
+                color="gray.60"
+                fontSize="10"
+                fontWeight="600"
+                lineHeight="16px"
+                height="16px"
+              >
+                Telegram
+              </chakra.span>
+              <chakra.span color="gray.20" fontSize="15px" fontWeight="600">
+                {connections.Telegram.username}
+              </chakra.span>
+            </VStack>
           </HStack>
 
           <HStack>
