@@ -29,7 +29,6 @@ import { CARD_STATE } from '@/types';
 import { useAuth } from '@/hooks/useAuthorization';
 import { EnrolledCard } from '../../components/EnrolledCard';
 import { AxiosError, AxiosResponse } from 'axios';
-import { PrivateBadge } from '@/components/PrivateBadge';
 
 const ShareModal = dynamic(
   () => import('./ShareModal').then((modules) => modules.ShareModal),
@@ -187,7 +186,7 @@ export const QuizInfo = () => {
   return (
     <>
       <VStack overflow="hidden" position="relative" rowGap="16px" width="full">
-        <PrivateBadge />
+        {/* isPrivate &&  <PrivateBadge /> */}
         <VStack
           bg="glassBackground"
           borderRadius="16px"
