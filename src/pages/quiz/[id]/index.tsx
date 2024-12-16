@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic';
 import { ReactElement } from 'react';
 import QRCode from 'qrcode';
 import Head from 'next/head';
+import path from 'path';
 
 const HintProvider = dynamic(
   () =>
@@ -62,7 +63,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     errorCorrectionLevel: 'H',
     width: 256,
   });
-  console.log(ctx.req.headers.host, 'salams', ctx.resolvedUrl);
+  const filePath = path.resolve('./public', 'qr-code.png');
+
+  console.log({filePath});
+  
+  await QRCode.toFile(filePath, fullUrl, {
+    errorCorrectionLevel: 'H',
+    width: 256,
+  });
 
   await prefetchSSRData(
     ['quiz', quizId],
