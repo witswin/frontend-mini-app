@@ -68,7 +68,7 @@ const QuizCard = forwardRef(
     const selectedQuizDispatch = useSelectedQuizDispatch();
     const checkIsEnrolled = useCheckEnrolled();
     const isQuizFinished = quiz?.isFinished;
-    const isPrivate = true;
+    const isPrivate = false;
 
     const router = useRouter();
     const selectedCTA: {

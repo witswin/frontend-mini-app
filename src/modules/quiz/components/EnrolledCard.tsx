@@ -32,7 +32,7 @@ export const EnrolledCard = () => {
   const selectedQuiz = useSelectedQuiz();
   const [showHintModal, setShowHintModal] = useState(false);
 
-  const isPrivate = true;
+  const isPrivate = false;
   const authInfo = useAuth();
   const toast = useToast({
     position: 'bottom',
