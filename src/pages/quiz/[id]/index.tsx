@@ -36,7 +36,7 @@ const QuizPDP = ({ dehydratedState, fullUrl }: QuizPDPProps) => {
           property="og:description"
           content="Join this quiz now and test your knowledge!"
         />
-        <meta property="og:image" content={`./qr-code.png`} />
+        {/* <meta property="og:image" content={`./qr-code.png`} /> */}
         <meta property="og:url" content={fullUrl} />
       </Head>
       <HydrationBoundary state={dehydratedState}>
@@ -67,10 +67,10 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
   console.log({ filePath });
 
-  await QRCode.toFile(filePath, fullUrl, {
-    errorCorrectionLevel: 'H',
-    width: 256,
-  });
+  // await QRCode.toFile(filePath, fullUrl, {
+  //   errorCorrectionLevel: 'H',
+  //   width: 256,
+  // });
 
   await prefetchSSRData(
     ['quiz', quizId],
