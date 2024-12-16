@@ -82,10 +82,24 @@ export default function App({
 }
 
 App.getInitialProps = async ({ ctx }: { ctx: GetServerSidePropsContext }) => {
-  if (ctx.query?.page && ctx.res) {
-    ctx.res.writeHead(302, { Location: '/' + ctx.query.page });
+  const hasPage = ctx.query?.start?.includes('page');
+  const startQuery = ctx.query?.start as string;
+  if (hasPage) {
+    const pageSegment = startQuery
+      ?.split(',')
+      ?.find((item) => item.includes('page'))
+      ?.split('page')
+      ?.at(-1);
+
+    const pathSegments = pageSegment?.split('_')?.join('/');
+    const startQuerySegment = startQuery
+      .split('page' + pageSegment)
+      .find((item) => item !== '');
+
+    ctx.res.writeHead(302, {
+      Location: pathSegments + `?start=${startQuerySegment}`,
+    });
     ctx.res.end();
-    return {};
   }
   const cookies = ctx.req?.cookies;
   if (!!cookies) {
