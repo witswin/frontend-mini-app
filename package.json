@@ -19,6 +19,8 @@
     "framer-motion": "^11.9.0",
     "next": "14.2.13",
     "next-cookies": "^2.0.3",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^4.2.0",
     "react": "^18",
     "react-countdown": "^2.3.6",
     "react-dom": "^18",
