@@ -29,6 +29,7 @@ import { CARD_STATE } from '@/types';
 import { useAuth } from '@/hooks/useAuthorization';
 import { EnrolledCard } from '../../components/EnrolledCard';
 import { AxiosError, AxiosResponse } from 'axios';
+import { ParticipantsCount } from '@/components/ParticipantsCount';
 
 const ShareModal = dynamic(
   () => import('./ShareModal').then((modules) => modules.ShareModal),
@@ -99,8 +100,9 @@ export const QuizInfo = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['enrolledCompetition'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', query?.id] });
       toast({
-        description: `You have enrolled ${data?.title}`,
+        description: `You have cancelled ${data?.title}`,
         status: 'success',
       });
     },
@@ -110,7 +112,8 @@ export const QuizInfo = () => {
 
   useEffect(() => {
     selectedQuizDispatch(data);
-  }, []);
+  }, [data]);
+  const isClosed = data?.participantsCount === data?.maxParticipants;
 
   const CTAButton = useMemo(
     () => ({
@@ -174,12 +177,15 @@ export const QuizInfo = () => {
           width="full"
           size="lg"
           variant="solid"
+          isDisabled={isClosed && !!data?.maxParticipants}
         >
-          Enroll Quiz
+          {isClosed && !!data?.maxParticipants
+            ? 'Enrollment Closed'
+            : 'Enroll Quiz'}
         </Button>
       ),
     }),
-    [authInfo],
+    [authInfo, isClosed],
   );
   const { isOpen, onOpen: shareModalOnOpen, onClose } = useDisclosure();
 
@@ -258,15 +264,19 @@ export const QuizInfo = () => {
             <Text fontSize="md" lineHeight="22px" color="gray.60">
               {data?.details}
             </Text>
-            <Text
-              fontSize="xs"
-              fontWeight="600"
-              lineHeight="16px"
-              color="gray.100"
-            >
-              {data?.participantsCount}
-              {data?.maxParticipants !== 0 && '/ ' + data?.maxParticipants}
-            </Text>
+            {data?.maxParticipants ? (
+              <ParticipantsCount quiz={data} />
+            ) : (
+              <Text
+                fontSize="xs"
+                fontWeight="600"
+                lineHeight="16px"
+                color="gray.100"
+              >
+                {data?.participantsCount}
+                {data?.maxParticipants !== 0 && '/ ' + data?.maxParticipants}
+              </Text>
+            )}
           </VStack>
           {data?.startAt && (
             <CountDown
