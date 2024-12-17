@@ -30,6 +30,12 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (navigator.share) {
+      setShareSupport(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (isOpen) {
       setLoading(true);
       axiosClient
@@ -50,14 +56,13 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const handleShare = () => {
     const file = new File([imageBlob], 'qrcode.png', { type: 'image/png' });
 
-    if (navigator.share) {
-      navigator.share({
-        title: data?.title,
-        url: sharableLink,
-        files: [file],
-      });
-      setShareSupport(true);
-    }
+    const shareData = {
+      title: data?.title,
+      url: sharableLink,
+      files: [file],
+    };
+
+    navigator.share(shareData);
   };
 
   return (
