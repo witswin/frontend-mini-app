@@ -18,8 +18,7 @@ interface ShareModalProps extends UseDisclosureProps {}
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const { query } = useRouter();
 
-  const sharableLink = `https://t.me/Witswinbot/WebApp?start=page_quiz_${query?.id}`;
-
+  const sharableLink = `https://t.me/Witswinbot/WebApp?startcommand=page_quiz_${query?.id}`;
 
   const [isShareSupport, setShareSupport] = useState(false);
   const { hasCopied, onCopy } = useClipboard(sharableLink);
@@ -31,7 +30,6 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
 
   useEffect(() => {
     if (isOpen) {
-
       setLoading(true);
       axiosClient
         .get(`/quiz/competition/${query?.id}/qr-code/`, {
@@ -40,6 +38,8 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         .then((res) => res.data)
         .then((res) => {
           const imageUrl = URL.createObjectURL(res);
+          console.log({ imageUrl, res });
+
           setQrCodeImg(imageUrl);
           const file = new File([res], 'qrcode.png', { type: 'image/png' });
 
