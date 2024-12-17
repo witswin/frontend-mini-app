@@ -316,6 +316,7 @@ export const demoQuizData: demoQuizType = {
       questionId: -1,
     },
   ],
+  isVip: false,
   chainId: 97, // Testnet
   createdAt: '2024-12-03T11:06:02.777Z',
   details: 'Demo Quiz to have a taste of what it feels',
