@@ -21,6 +21,15 @@ import { axiosClient } from '@/configs/axios';
 import { TelegramAuthProvider } from '@/context/TelegramAuthProvider';
 import { AxiosAuthProvider } from '@/components/AxiosAuthProvider';
 import { UserProfile } from '@/types';
+import dynamic from 'next/dynamic';
+
+const MiniAppNavigation = dynamic(
+  () =>
+    import('../components/MiniAppNavigation').then(
+      (modules) => modules.MiniAppNavigation,
+    ),
+  { ssr: false },
+);
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -68,6 +77,7 @@ export default function App({
             <SelectedQuizProvider>
               <AuthProvider auth={auth}>
                 <TelegramAuthProvider>
+                  <MiniAppNavigation />
                   {getLayout(<Component {...pageProps} />)}
 
                   <AxiosAuthProvider />
@@ -82,25 +92,6 @@ export default function App({
 }
 
 App.getInitialProps = async ({ ctx }: { ctx: GetServerSidePropsContext }) => {
-  const hasPage = ctx.query?.start?.includes('page');
-  const startQuery = ctx.query?.start as string;
-  if (hasPage) {
-    const pageSegment = startQuery
-      ?.split(',')
-      ?.find((item) => item.includes('page'))
-      ?.split('page')
-      ?.at(-1);
-
-    const pathSegments = pageSegment?.split('_')?.join('/');
-    const startQuerySegment = startQuery
-      .split('page' + pageSegment)
-      .find((item) => item !== '');
-
-    ctx.res.writeHead(302, {
-      Location: pathSegments + `?start=${startQuerySegment}`,
-    });
-    ctx.res.end();
-  }
   const cookies = ctx.req?.cookies;
   if (!!cookies) {
     const accessToken = cookies[ACCESS_TOKEN_COOKIE_KEY];
