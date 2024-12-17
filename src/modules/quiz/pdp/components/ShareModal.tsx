@@ -23,10 +23,17 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const [isShareSupport, setShareSupport] = useState(false);
   const { hasCopied, onCopy } = useClipboard(sharableLink);
   const [qrCodeImg, setQrCodeImg] = useState('');
+  const [imageBlob, setImageBlob] = useState('');
 
   const data = useSelectedQuiz();
 
   const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (navigator.share) {
+      setShareSupport(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -38,23 +45,25 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         .then((res) => res.data)
         .then((res) => {
           const imageUrl = URL.createObjectURL(res);
-          console.log({ imageUrl, res });
 
           setQrCodeImg(imageUrl);
-          const file = new File([res], 'qrcode.png', { type: 'image/png' });
-
-          if (navigator.share) {
-            navigator.share({
-              title: data?.title,
-              url: sharableLink,
-              files: [file],
-            });
-            setShareSupport(true);
-          }
+          setImageBlob(res);
         })
         .finally(() => setLoading(false));
     }
   }, [isOpen]);
+
+  const handleShare = () => {
+    const file = new File([imageBlob], 'qrcode.png', { type: 'image/png' });
+
+    const shareData = {
+      title: data?.title,
+      url: sharableLink,
+      files: [file],
+    };
+
+    navigator.share(shareData);
+  };
 
   return (
     <BottomModal title="Share quiz" isOpen={isOpen} onClose={onClose}>
@@ -77,13 +86,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         {isShareSupport && (
           <Button
             onClick={() => {
-              navigator
-                .share({
-                  title: 'Share quiz',
-                  text: 'Check out this quiz!',
-                  url: sharableLink,
-                })
-                .catch((err) => console.warn('Error sharing', err));
+              handleShare();
             }}
             width="full"
             leftIcon={<Copy iconStyle="Linear" />}
