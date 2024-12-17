@@ -25,6 +25,7 @@ import { useCheckEnrolled } from '@/modules/home/hooks';
 import { useHints } from '@/modules/question/hooks';
 import { useRouter } from 'next/router';
 import { QuizPrivate } from './state/QuizPrivate';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 export const EnrolledCard = () => {
   const router = useRouter();
@@ -32,7 +33,12 @@ export const EnrolledCard = () => {
   const selectedQuiz = useSelectedQuiz();
   const [showHintModal, setShowHintModal] = useState(false);
 
-  const isPrivate = false;
+  const methods = useForm<{ invitationCode: string }>({ mode: 'onSubmit' });
+
+  const formData = useWatch({ control: methods.control });
+
+  const isPrivate = selectedQuiz?.isVip;
+
   const authInfo = useAuth();
   const toast = useToast({
     position: 'bottom',
@@ -42,7 +48,7 @@ export const EnrolledCard = () => {
     isPrivate ? ENROLL_STATUS.private : ENROLL_STATUS.quizInfo,
   );
 
-  const queryClient = useQueryClient();
+const queryClient = useQueryClient();
 
   const checkIsEnrolled = useCheckEnrolled();
 
@@ -56,13 +62,30 @@ export const EnrolledCard = () => {
         setEnrollCardState(ENROLL_STATUS.quizInfo);
       }
     }
-  }, [checkIsEnrolled(selectedQuiz?.id)]);
+  }, [checkIsEnrolled(selectedQuiz?.id), isPrivate]);
 
   const hints = useHints();
   const userHints = hints?.selectedHints?.map((hint) => hint.id);
 
+  const { query } = useRouter();
+
   const { mutate } = useMutation({
     mutationFn: async () => {
+      if (selectedQuiz?.isVip) {
+        return await axiosClient.post(
+          '/quiz/competitions/enroll/',
+          {
+            user_hints: userHints,
+            competition: selectedQuiz?.id,
+            referral_code: formData?.invitationCode,
+          },
+          {
+            headers: {
+              Authorization: `TOKEN ${authInfo?.token}`,
+            },
+          },
+        );
+      }
       return await axiosClient.post(
         '/quiz/competitions/enroll/',
         {
@@ -84,6 +107,8 @@ export const EnrolledCard = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['enrolledCompetition'] });
+      queryClient.invalidateQueries({ queryKey: ['competitions'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', query?.id] });
       toast({
         description: `You have enrolled ${selectedQuiz.title}`,
         status: 'success',
@@ -94,13 +119,14 @@ export const EnrolledCard = () => {
   const stateComponents = useMemo(() => {
     return {
       [ENROLL_STATUS.quizInfo]: <QuizInfo setHintModal={setShowHintModal} />,
-      [ENROLL_STATUS.private]: <QuizPrivate />,
+      [ENROLL_STATUS.private]: (
+        <QuizPrivate setEnrollCardState={setEnrollCardState} />
+      ),
       [ENROLL_STATUS.task]: <QuizTask />,
       [ENROLL_STATUS.enrolled]: <QuizEnrolled />,
     };
   }, []);
 
-  console.log({ stateComponents });
 
   const stateTitle = useMemo(() => {
     return {
@@ -156,102 +182,108 @@ export const EnrolledCard = () => {
     };
   }, [authInfo, selectedQuiz]);
 
-  if (isPrivate) {
-    return (
-      <Modal trapFocus={false} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent
-          p="0"
-          background="var(--chakra-colors-cardBackground)"
-          width="538px"
-          backdropFilter="blur(50px)"
-          borderStartStartRadius="24px"
-          borderStartEndRadius="24px"
-          borderEndStartRadius="12px"
-          borderEndEndRadius="12px"
-        >
-          <ModalBody
-            overflow="hidden"
+  return (
+    <FormProvider {...methods}>
+      {isPrivate && enrollCardState === ENROLL_STATUS.private ? (
+        <Modal trapFocus={false} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent
+            p="0"
+            background="var(--chakra-colors-cardBackground)"
+            width="538px"
             backdropFilter="blur(50px)"
-            width="full"
-            p={'0'}
-            margin="0"
             borderStartStartRadius="24px"
             borderStartEndRadius="24px"
             borderEndStartRadius="12px"
             borderEndEndRadius="12px"
-            zIndex={1000}
           >
-            <VStack
-              p="16px"
-              mx="auto"
+            <ModalBody
+              overflow="hidden"
+              backdropFilter="blur(50px)"
+              width="full"
+              p={'0'}
+              margin="0"
               borderStartStartRadius="24px"
               borderStartEndRadius="24px"
               borderEndStartRadius="12px"
               borderEndEndRadius="12px"
-              borderTop="2px solid"
-              borderColor="cyan"
-              boxShadow="0 5px 0px rgb(32,32,51), 1px 0px 0px   rgb(32,32,51), -1px 0px 0px rgb(32,32,51)"
-              gap="16px"
-              width="full"
+              zIndex={1000}
             >
-              <Text
-                fontSize="19px"
-                fontWeight="600"
-                fontFamily="Kanit"
-                color="gray.0"
+              <VStack
+                p="16px"
+                mx="auto"
+                borderStartStartRadius="24px"
+                borderStartEndRadius="24px"
+                borderEndStartRadius="12px"
+                borderEndEndRadius="12px"
+                borderTop="2px solid"
+                borderColor="cyan"
+                boxShadow="0 5px 0px rgb(32,32,51), 1px 0px 0px   rgb(32,32,51), -1px 0px 0px rgb(32,32,51)"
+                gap="16px"
+                width="full"
               >
-                {stateTitle['private']}
-              </Text>
-              {stateComponents[enrollCardState]}
-            </VStack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    );
-  }
-  return (
-    <BottomModal
-      onClose={onClose}
-      isOpen={isOpen}
-      title={stateTitle[enrollCardState]}
-    >
-      <VStack gap="24px">
-        <Img
-          mt="8px"
-          rounded="full"
-          src={selectedQuiz?.image}
-          boxSize="106px"
-          alt={selectedQuiz?.title}
-        />
-        <VStack width="full">
-          <Text
-            color="gray.0"
-            fontSize="lg"
-            lineHeight="24px"
-            fontWeight="700"
-            width="full"
-            textAlign="center"
-          >
-            {selectedQuiz?.title}
-          </Text>
-          <Text color="gray.60" fontSize="md" width="full" textAlign="center">
-            {selectedQuiz?.details}
-          </Text>
-        </VStack>
-
-        {stateComponents[enrollCardState]}
-
-        <Button
-          width="full"
-          onClick={button[enrollCardState].onClick}
-          variant="solid"
+                <Text
+                  fontSize="19px"
+                  fontWeight="600"
+                  fontFamily="Kanit"
+                  color="gray.0"
+                >
+                  {stateTitle['private']}
+                </Text>
+                {stateComponents[enrollCardState]}
+              </VStack>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      ) : (
+        <BottomModal
+          onClose={onClose}
+          isOpen={isOpen}
+          title={stateTitle[enrollCardState]}
         >
-          {button[enrollCardState].title}
-        </Button>
-      </VStack>
+          <VStack gap="24px">
+            <Img
+              mt="8px"
+              rounded="full"
+              src={selectedQuiz?.image}
+              boxSize="106px"
+              alt={selectedQuiz?.title}
+            />
+            <VStack width="full">
+              <Text
+                color="gray.0"
+                fontSize="lg"
+                lineHeight="24px"
+                fontWeight="700"
+                width="full"
+                textAlign="center"
+              >
+                {selectedQuiz?.title}
+              </Text>
+              <Text
+                color="gray.60"
+                fontSize="md"
+                width="full"
+                textAlign="center"
+              >
+                {selectedQuiz?.details}
+              </Text>
+            </VStack>
 
-      <SelectHint isOpen={showHintModal} setIsOpen={setShowHintModal} />
-    </BottomModal>
+            {stateComponents[enrollCardState]}
+
+            <Button
+              width="full"
+              onClick={button[enrollCardState].onClick}
+              variant="solid"
+            >
+              {button[enrollCardState].title}
+            </Button>
+          </VStack>
+
+          <SelectHint isOpen={showHintModal} setIsOpen={setShowHintModal} />
+        </BottomModal>
+      )}
+    </FormProvider>
   );
 };
