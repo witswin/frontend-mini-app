@@ -30,7 +30,7 @@ const SwiperItem = ({ quiz }: SwiperItemProps) => {
     if (isIntersecting) {
       selectedQuizDispatch(quiz);
     }
-  }, [isIntersecting]);
+  }, [isIntersecting, quiz]);
 
   return (
     <VStack onClick={() => router.push(`/quiz/${quiz?.id}`)} width="full">

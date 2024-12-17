@@ -19,6 +19,7 @@ import { useRouter } from 'next/router';
 import { forwardRef, LegacyRef, memo, ReactElement, useMemo } from 'react';
 import { DoubleAltArrowRight } from 'solar-icon-set';
 import { PrivateBadge } from './PrivateBadge';
+import { ParticipantsCount } from './ParticipantsCount';
 // import { Swiper, SwiperSlide } from "swiper/react";
 
 const CountDown = dynamic(
@@ -68,7 +69,9 @@ const QuizCard = forwardRef(
     const selectedQuizDispatch = useSelectedQuizDispatch();
     const checkIsEnrolled = useCheckEnrolled();
     const isQuizFinished = quiz?.isFinished;
-    const isPrivate = false;
+    const isPrivate = quiz?.isVip;
+
+    const isClosed = quiz?.participantsCount === quiz.maxParticipants;
 
     const router = useRouter();
     const selectedCTA: {
@@ -128,14 +131,17 @@ const QuizCard = forwardRef(
         },
         [CARD_STATE.enroll]: {
           variant: 'solid',
-          text: 'Enroll',
+          text:
+            isClosed && !!quiz?.maxParticipants
+              ? 'Enrollment Closed'
+              : 'Enroll',
           onClick: () => {
             selectedQuizDispatch(quiz);
             onOpen();
           },
         },
       }),
-      [],
+      [isClosed],
     );
     return (
       <VStack
@@ -265,6 +271,11 @@ const QuizCard = forwardRef(
           )} */}
           {state && (
             <Button
+              isDisabled={
+                isClosed &&
+                state === CARD_STATE.enroll &&
+                !!quiz?.maxParticipants
+              }
               width="100%"
               size="lg"
               variant={selectedCTA[state].variant}
@@ -279,12 +290,18 @@ const QuizCard = forwardRef(
               {selectedCTA[state].text}
             </Button>
           )}
-          {quiz?.participantsCount && quiz?.userProfile && (
-            <Text fontSize="xs" fontWeight="600" color="gray.100">
-              {quiz?.participantsCount}
-              {quiz?.maxParticipants !== 0 && '/ ' + quiz?.maxParticipants}{' '}
-              people enrolled
-            </Text>
+          {quiz?.maxParticipants ? (
+            <ParticipantsCount quiz={quiz} />
+          ) : (
+            quiz?.participantsCount &&
+            quiz?.userProfile && (
+              <Text fontSize="xs" fontWeight="600" color="gray.100">
+                {quiz?.participantsCount}
+                {quiz?.maxParticipants !== 0 &&
+                  '/ ' + quiz?.maxParticipants}{' '}
+                people enrolled
+              </Text>
+            )
           )}
         </Card>
       </VStack>

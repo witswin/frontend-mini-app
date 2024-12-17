@@ -11,10 +11,6 @@ import {
 import { GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 import { ReactElement } from 'react';
-import QRCode from 'qrcode';
-import Head from 'next/head';
-import path from 'path';
-
 const HintProvider = dynamic(
   () =>
     import('@/modules/question/context').then(
@@ -25,20 +21,10 @@ const HintProvider = dynamic(
 interface QuizPDPProps {
   dehydratedState: DehydratedState;
   qrCodeBase64: string;
-  fullUrl: string;
 }
-const QuizPDP = ({ dehydratedState, fullUrl }: QuizPDPProps) => {
+const QuizPDP = ({ dehydratedState }: QuizPDPProps) => {
   return (
     <>
-      <Head>
-        <meta property="og:title" content="Check out this quiz!" />
-        <meta
-          property="og:description"
-          content="Join this quiz now and test your knowledge!"
-        />
-        {/* <meta property="og:image" content={`./qr-code.png`} /> */}
-        <meta property="og:url" content={fullUrl} />
-      </Head>
       <HydrationBoundary state={dehydratedState}>
         <EnrolledModalProvider>
           <HintProvider>
@@ -54,24 +40,9 @@ export default QuizPDP;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
-  const fullUrl = ctx.req.headers.host + ctx.resolvedUrl;
 
   const quizId = query?.id as string;
   const queryClient = new QueryClient();
-
-  const qrCodeBase64 = await QRCode.toDataURL(fullUrl as string, {
-    errorCorrectionLevel: 'H',
-    width: 256,
-  });
-  const filePath = path.resolve('./public', 'qr-code.png');
-
-  console.log({ filePath });
-
-  // await QRCode.toFile(filePath, fullUrl, {
-  //   errorCorrectionLevel: 'H',
-  //   width: 256,
-  // });
-
   await prefetchSSRData(
     ['quiz', quizId],
     `/quiz/competitions/${quizId}/`,
@@ -81,8 +52,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
-      qrCodeBase64,
-      fullUrl,
     },
   };
 };
