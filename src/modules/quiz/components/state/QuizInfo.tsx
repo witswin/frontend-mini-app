@@ -77,15 +77,18 @@ const QuizInfo = ({
   useEffect(() => {
     hintsDispatch((prev) => ({
       ...prev,
-      selectedHints: [
-        {
-          type: HINTS.fifty,
-          localId,
-          id: +selectedQuiz?.builtInHints?.find(
-            (item) => item?.hint?.hintType === HINTS?.fifty,
-          )?.hint?.id,
-        },
-      ],
+      selectedHints:
+        selectedQuiz?.builtInHints?.length === 0
+          ? []
+          : [
+              {
+                type: HINTS.fifty,
+                localId,
+                id: +selectedQuiz?.builtInHints?.find(
+                  (item) => item?.hint?.hintType === HINTS?.fifty,
+                )?.hint?.id,
+              },
+            ],
     }));
   }, []);
 
