@@ -19,7 +19,6 @@ interface IndexProps {
 const Index = ({ dehydratedState, hasCompetitions }: IndexProps) => {
   const auth = useAuth();
   const [userCompetitions, setUserCompetitions] = useState(hasCompetitions);
-  console.log({ userCompetitions });
 
   useEffect(() => {
     const checkUserCompetitions = async () =>
