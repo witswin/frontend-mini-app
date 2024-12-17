@@ -10,40 +10,68 @@ import {
   InputRightElement,
   Spinner,
   Text,
+  UseDisclosureProps,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { KeyMinimalistic } from 'solar-icon-set';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { CheckCircle, DangerCircle, KeyMinimalistic } from 'solar-icon-set';
 import {
-  useForm,
+  useFormContext,
+  useWatch,
   //  useWatch
 } from 'react-hook-form';
 import { axiosClient } from '@/configs/axios';
+import { useEnrolledModalProps, useSelectedQuiz } from '../../hooks';
+import { ENROLL_STATUS } from '../../types';
 
 const Form = chakra('form');
-export const QuizPrivate = () => {
+interface QuizPrivateProps extends UseDisclosureProps {
+  setEnrollCardState: Dispatch<SetStateAction<ENROLL_STATUS>>;
+}
+
+export const QuizPrivate = ({ setEnrollCardState }: QuizPrivateProps) => {
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
     setValue,
-    // control,
-  } = useForm<{ invitationCode: string }>({
-    mode: 'onSubmit',
-  });
-  const [
-    submitMessage,
-    // setSubmitMessage
-  ] = useState('');
-  // const { invitationCode } = useWatch({ control });
+    control,
+  } = useFormContext<{ invitationCode: string }>();
+  const [submitStatus, setSubmitStatus] = useState<{
+    message: string;
+    status: 'error' | 'success';
+  }>(undefined);
+  const { invitationCode } = useWatch({ control });
+  const { onOpen, onClose } = useEnrolledModalProps();
 
+  const data = useSelectedQuiz();
   useEffect(() => {
     const embeddedCode = window?.Telegram?.WebApp?.initDataUnsafe?.start_param
-      ?.split('code=')
-      .at(-1);
+      ?.split('referralCode_')
+      ?.at(-1)
+      ?.split('_')
+      ?.at(0);
 
     setValue('invitationCode', embeddedCode ?? '');
   }, []);
+
+  useEffect(() => {
+    if (submitStatus) {
+      setSubmitStatus(undefined);
+    }
+  }, [invitationCode]);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (submitStatus?.status === 'success') {
+      setTimeout(() => {
+        onClose();
+        setEnrollCardState(ENROLL_STATUS.quizInfo);
+        onOpen();
+      }, 1000);
+    }
+    return () => clearTimeout(timeout);
+  }, [submitStatus]);
 
   return (
     <Form as={VStack} width="full" rowGap="24px">
@@ -54,7 +82,9 @@ export const QuizPrivate = () => {
           as={VStack}
           width="full"
           alignItems="flex-start"
-          isInvalid={!!errors.invitationCode}
+          isInvalid={
+            !!errors.invitationCode || submitStatus?.status === 'error'
+          }
         >
           <FormLabel m="0" fontSize="13px" fontWeight="600" color="gray.20">
             Invitation Code
@@ -67,6 +97,10 @@ export const QuizPrivate = () => {
               readOnly={isSubmitting}
               placeholder="Enter code here"
               width="full"
+              {...(submitStatus?.status === 'success' && {
+                border: '1px solid',
+                borderColor: 'green.400',
+              })}
               {...register('invitationCode', {
                 required: 'This field is required!',
               })}
@@ -76,18 +110,44 @@ export const QuizPrivate = () => {
                 <Spinner size="sm" emptyColor="gray.100" thickness="2px" />
               </InputRightElement>
             )}
+            {submitStatus?.status === 'success' && invitationCode && (
+              <InputRightElement>
+                <CheckCircle
+                  color="var(--chakra-colors-green-400)"
+                  iconStyle="Bold"
+                />
+              </InputRightElement>
+            )}
+            {submitStatus?.status === 'error' && invitationCode && (
+              <InputRightElement>
+                <DangerCircle
+                  color="var(--chakra-colors-red-400)"
+                  iconStyle="Bold"
+                />
+              </InputRightElement>
+            )}
           </InputGroup>
           {!!errors.invitationCode && (
             <Text fontSize="13px" fontWeight="500" color="red.400">
               {errors.invitationCode.message}
             </Text>
           )}
-          {!submitMessage && (
+          {!submitStatus && !errors?.invitationCode?.message && (
             <Text color="gray.60" fontSize="13px" fontWeight="500">
               Please enter your invitation code
             </Text>
           )}
-          {!!submitMessage && <Text>{submitMessage}</Text>}
+          {!!submitStatus && invitationCode && (
+            <Text
+              fontSize="13px"
+              fontWeight="500"
+              color={
+                submitStatus?.status === 'success' ? 'green.400' : 'red.400'
+              }
+            >
+              {submitStatus?.message}
+            </Text>
+          )}
         </FormControl>
       </VStack>
       <Button
@@ -96,10 +156,22 @@ export const QuizPrivate = () => {
         type="submit"
         variant="solid"
         onClick={handleSubmit(async () => {
-          const test = await axiosClient
-            .get('/quiz/resources/')
-            .then((res) => res.data);
-          console.log({ test });
+          await axiosClient
+            .get(
+              `/quiz/competitions/${data?.id}/referral-code/${invitationCode}/`,
+            )
+            .then(() => {
+              setSubmitStatus({
+                status: 'success',
+                message: "Success! You've unlocked access to the VIP quiz.",
+              });
+            })
+            .catch(() => {
+              setSubmitStatus({
+                message: 'Invalid code. Please try again.',
+                status: 'error',
+              });
+            });
         })}
       >
         Submit
