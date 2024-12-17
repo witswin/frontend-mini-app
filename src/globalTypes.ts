@@ -76,6 +76,7 @@ export declare type quizType = {
   tokenImage: string
   image: string
   shuffleAnswers: boolean
+  isVip:boolean
   splitPrize: boolean
   txHash: string
   isActive: boolean
