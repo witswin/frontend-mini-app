@@ -18,7 +18,7 @@ interface ShareModalProps extends UseDisclosureProps {}
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const { query } = useRouter();
 
-  const sharableLink = `https://t.me/Witswinbot/WebApp?startcommand=page_quiz_${query?.id}`;
+  const sharableLink = `https://t.me/Witswinbot/WebApp?startapp=page_quiz_${query?.id}`;
 
   const [isShareSupport, setShareSupport] = useState(false);
   const { hasCopied, onCopy } = useClipboard(sharableLink);
