@@ -11,7 +11,8 @@ export const RemoveConnectionCard: FC<{
   onClose: () => void
   isOpen: boolean
 }> = ({ name, url, onClose, isOpen }) => {
-  const toast = useToast()
+  const toast = useToast({    position: 'top',
+  })
   const dispatchProfile = useProfileDispatch()
 
   const onDelete = async () => {

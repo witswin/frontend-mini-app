@@ -41,7 +41,7 @@ export const EnrolledCard = () => {
 
   const authInfo = useAuth();
   const toast = useToast({
-    position: 'bottom',
+    position: 'top',
   });
 
   const [enrollCardState, setEnrollCardState] = useState(

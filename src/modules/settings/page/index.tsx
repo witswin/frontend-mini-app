@@ -13,7 +13,8 @@ import Wallet from '../components/Wallet';
 // import { BottomModal } from "@/components/BottomModal";
 
 export const SettingsPage = () => {
-  const toast = useToast();
+  const toast = useToast({    position: 'top',
+  });
   const { profile } = useProfile();
   const setState = useProfileDispatch();
   const [formState, setFormState] = useState(

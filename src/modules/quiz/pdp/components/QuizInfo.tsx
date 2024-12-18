@@ -77,7 +77,7 @@ export const QuizInfo = () => {
   });
 
   const toast = useToast({
-    position: 'bottom',
+    position: 'top',
   });
 
   const selectedQuizDispatch = useSelectedQuizDispatch();

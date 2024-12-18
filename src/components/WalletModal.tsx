@@ -41,7 +41,7 @@ export const WalletModal = ({
   const router = useRouter();
 
   const toast = useToast({
-    position: 'bottom',
+    position: 'top',
   });
   const handleClick = () => {
     setLoading(true);
