@@ -56,13 +56,20 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const handleShare = () => {
     const file = new File([imageBlob], 'qrcode.png', { type: 'image/png' });
 
-    const shareData = {
-      title: data?.title,
-      url: sharableLink,
-      files: [file],
-    };
+    if (navigator.canShare({ files: [file] })) {
+      const shareData = {
+        text: `${data?.title} ${data?.details} ${sharableLink}`,
+        files: [file],
+      };
 
-    navigator.share(shareData);
+      navigator.share(shareData);
+    } else {
+      const shareData = {
+        text: `${data?.title} ${data?.details} ${sharableLink}`,
+      };
+
+      navigator.share(shareData);
+    }
   };
 
   return (
