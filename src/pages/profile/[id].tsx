@@ -22,8 +22,16 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const { query } = ctx;
   const profileId = query.id as string;
-  const queryClient = new QueryClient();
-
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        refetchOnMount: true,
+        retry: 0,
+        gcTime: 0,
+      },
+    },
+  });
   if (profileId === "undefined") {
     return {
       redirect: { destination: "/", permanent: false },

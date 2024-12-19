@@ -67,8 +67,16 @@ export default Index;
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
   const quizId = query?.id as string;
-  const queryClient = new QueryClient();
-  // const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        refetchOnMount: true,
+        retry: 0,
+        gcTime: 0,
+      },
+    },
+  });  // const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
   // if (!accessToken) {
   //   return {
   //     redirect: {
