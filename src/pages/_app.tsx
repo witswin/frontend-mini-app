@@ -55,9 +55,10 @@ export default function App({
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 10000,
+            staleTime: 0,
             refetchOnMount: true,
             retry: 0,
+            gcTime: 0,
           },
         },
       }),

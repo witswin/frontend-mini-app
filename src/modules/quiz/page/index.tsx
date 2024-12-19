@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import { demoQuizData } from '@/constants';
 import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
+import { Loading } from '@/components/Loading';
 
 const MemoizedSwiperItem = dynamic(
   () =>
@@ -21,7 +22,7 @@ const MemoizedSwiperItem = dynamic(
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
-  const { data } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['competitions'],
     queryFn: async () =>
       await axiosClient.get('/quiz/competitions/').then((res) => res.data),
@@ -44,7 +45,7 @@ export const QuizPLP = () => {
     <VStack
       overflow="hidden"
       position="relative"
-      justifyContent="center"
+      justifyContent={isFetching || isLoading ? 'flex-start' : 'center'}
       width="full"
       height="full"
     >
@@ -60,43 +61,48 @@ export const QuizPLP = () => {
       >
         Find exciting quizzes to join and earn points!
       </Text>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <ChakraSwiper
+            speed={1000}
+            py="2px"
+            width="full"
+            slidesPerView="auto"
+            effect="coverflow"
+            modules={[EffectCoverflow]}
+            spaceBetween={0}
+            centeredSlides
+            initialSlide={1}
+            grabCursor
+            coverflowEffect={{
+              rotate: 10,
+              stretch: -20,
+              depth: 150,
+              modifier: 1,
+              slideShadows: false,
+            }}
+            sx={{
+              '.swiper-slide': {
+                mr: '0 !important',
+                px: '4px',
+              },
+            }}
+          >
+            {centeredQuizzes?.map((quiz: quizType) => (
+              <SwiperSlide key={quiz?.id} style={{ maxWidth: '318px' }}>
+                <MemoizedSwiperItem quiz={quiz} />
+              </SwiperSlide>
+            ))}
+            <SwiperSlide style={{ maxWidth: '318px' }}>
+              <MemoizedSwiperDemoItem quiz={demoQuizData} />
+            </SwiperSlide>
+          </ChakraSwiper>
 
-      <ChakraSwiper
-        speed={1000}
-        py="2px"
-        width="full"
-        slidesPerView="auto"
-        effect="coverflow"
-        modules={[EffectCoverflow]}
-        spaceBetween={0}
-        centeredSlides
-        initialSlide={1}
-        grabCursor
-        coverflowEffect={{
-          rotate: 10,
-          stretch: -20,
-          depth: 150,
-          modifier: 1,
-          slideShadows: false,
-        }}
-        sx={{
-          '.swiper-slide': {
-            mr: '0 !important',
-            px: '4px',
-          },
-        }}
-      >
-        {centeredQuizzes?.map((quiz: quizType) => (
-          <SwiperSlide key={quiz?.id} style={{ maxWidth: '318px' }}>
-            <MemoizedSwiperItem quiz={quiz} />
-          </SwiperSlide>
-        ))}
-        <SwiperSlide style={{ maxWidth: '318px' }}>
-          <MemoizedSwiperDemoItem quiz={demoQuizData} />
-        </SwiperSlide>
-      </ChakraSwiper>
-
-      <EnrolledCard />
+          <EnrolledCard />
+        </>
+      )}
     </VStack>
   );
 };

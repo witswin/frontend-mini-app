@@ -61,7 +61,7 @@ export type OnPromptRemove = (arg: { url: string; name: string }) => void;
 export const TelegramConnection = () => {
   const { connections } = useProfile();
   const dispatch = useProfileDispatch();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
 
   const onToggle = () => {
     axiosClient
@@ -237,7 +237,7 @@ export const FarcasterConnection: FC<{ onRemove: OnPromptRemove }> = ({
   const { connections, profile } = useProfile();
   const setState = useProfileDispatch();
 
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
 
   const onConnect = async () => {
     if (!profile.wallets.length) {

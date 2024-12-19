@@ -29,6 +29,7 @@ export const ProfilePicture = ({
 
   const toast = useToast({
     containerStyle: { color: "black" },
+        position: 'top',
   });
 
   const [localImage, setLocalImage] = useState(null);

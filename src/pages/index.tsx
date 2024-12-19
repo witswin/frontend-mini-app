@@ -43,7 +43,16 @@ const Index = ({ dehydratedState, hasCompetitions }: IndexProps) => {
 export default Index;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        refetchOnMount: true,
+        retry: 0,
+        gcTime: 0,
+      },
+    },
+  });
   const accessToken = ctx?.req?.cookies?.[ACCESS_TOKEN_COOKIE_KEY] ?? undefined;
   await prefetchSSRData(
     ['closetCompetition'],

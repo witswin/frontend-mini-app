@@ -42,8 +42,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { query } = ctx;
 
   const quizId = query?.id as string;
-  const queryClient = new QueryClient();
-  await prefetchSSRData(
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        refetchOnMount: true,
+        retry: 0,
+        gcTime: 0,
+      },
+    },
+  });  await prefetchSSRData(
     ['quiz', quizId],
     `/quiz/competitions/${quizId}/`,
     queryClient,

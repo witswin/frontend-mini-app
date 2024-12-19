@@ -34,8 +34,16 @@ const Index = ({ dehydratedState }: IndexProps) => {
 export default Index;
 
 export const getServerSideProps = async () => {
-  const queryClient = new QueryClient();
-
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 0,
+        refetchOnMount: true,
+        retry: 0,
+        gcTime: 0,
+      },
+    },
+  });
   await prefetchSSRData(["competitions"], "/quiz/competitions/", queryClient);
 
   return {
