@@ -12,15 +12,22 @@ import {
   Img,
   // Tag,
   Text,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { forwardRef, LegacyRef, memo, ReactElement, useMemo } from 'react';
-import { DoubleAltArrowRight } from 'solar-icon-set';
+import { DoubleAltArrowRight, Share } from 'solar-icon-set';
 import { PrivateBadge } from './PrivateBadge';
 import { ParticipantsCount } from './ParticipantsCount';
 // import { Swiper, SwiperSlide } from "swiper/react";
+
+const ShareModal=dynamic(
+  () => import('@/modules/quiz/pdp/components/ShareModal').then((modules) => modules.ShareModal),
+  { ssr: false },
+);
+
 
 const CountDown = dynamic(
   () => import('@/components/CountDown').then((modules) => modules.CountDown),
@@ -70,6 +77,12 @@ const QuizCard = forwardRef(
     const checkIsEnrolled = useCheckEnrolled();
     const isQuizFinished = quiz?.isFinished;
     const isPrivate = quiz?.isVip;
+
+    const {
+      isOpen: shareModalIsOpen,
+      onClose: shareModalOnclose,
+      onOpen: shareModalOnOpen,
+    } = useDisclosure();
 
     const isClosed = quiz?.participantsCount === quiz.maxParticipants;
 
@@ -144,115 +157,134 @@ const QuizCard = forwardRef(
       [isClosed, onOpen, quiz, router, selectedQuizDispatch],
     );
     return (
-      <VStack
-        position="relative"
-        ref={ref}
-        overflow="hidden"
-        p="2px"
-        width="full"
-      >
-        {isPrivate && <PrivateBadge />}
-        <Card
-          sx={{
-            ...(quiz?.isFinished && {
-              // background: "#3E3E4F99",
-
-              '&>div': {
-                background: '#3E3E4F99',
-              },
-            }),
-          }}
-          colored={colored}
+      <>
+        <VStack
+          position="relative"
+          ref={ref}
+          overflow="hidden"
+          p="2px"
+          width="full"
         >
-          {quiz?.formattedPrize && quiz?.token && quiz?.details && (
-            <VStack mb="8px" rowGap="0">
-              <Center>
-                <QuizPrize
-                  prize={quiz?.formattedPrize}
-                  unitPrize={quiz?.token}
-                />
-              </Center>
-              <Text
-                textAlign="center"
-                color="gray.60"
-                fontWeight="600"
-                fontSize="sm"
-              >
-                {quiz.details}
-              </Text>
-            </VStack>
-          )}
-          <Box
-            _before={{
-              content: "''",
-              position: 'absolute',
-              inset: '-1px',
-              rounded: 'full',
-              bg: 'glassBackground',
-              width: isLarge ? '124px' : '80px',
-              height: isLarge ? '124px' : '80px',
+          <Center
+            position="absolute"
+            top="16px"
+            right="16px"
+            zIndex={3}
+            onClick={(e) => {
+              e.stopPropagation();
+              shareModalOnOpen();
             }}
-            rounded="full"
-            boxSize={isLarge ? '124px' : '80px'}
-            position="relative"
           >
-            <Img
-              minH={isLarge ? '124px' : '80px'}
-              minW={isLarge ? '124px' : '80px'}
+            <Share iconStyle="Outline" size={24} />
+          </Center>
+          {isPrivate && <PrivateBadge />}
+          <Card
+            sx={{
+              ...(quiz?.isFinished && {
+                // background: "#3E3E4F99",
+
+                '&>div': {
+                  background: '#3E3E4F99',
+                },
+              }),
+            }}
+            colored={colored}
+          >
+            {quiz?.formattedPrize && quiz?.token && quiz?.details && (
+              <VStack mb="8px" rowGap="0">
+                <Center>
+                  <QuizPrize
+                    prize={quiz?.formattedPrize}
+                    unitPrize={quiz?.token}
+                  />
+                </Center>
+                <Text
+                  textAlign="center"
+                  color="gray.60"
+                  fontWeight="600"
+                  fontSize="sm"
+                >
+                  {quiz.details}
+                </Text>
+              </VStack>
+            )}
+            <Box
+              _before={{
+                content: "''",
+                position: 'absolute',
+                inset: '-1px',
+                rounded: 'full',
+                bg: 'glassBackground',
+                width: isLarge ? '124px' : '80px',
+                height: isLarge ? '124px' : '80px',
+              }}
               rounded="full"
               boxSize={isLarge ? '124px' : '80px'}
-              src={quiz?.image}
-            />
-            {isQuizFinished && (
-              <Badge
-                position="absolute"
-                bottom="12px"
-                left="50%"
-                transform="translate(-50%,12px)"
-                textTransform="capitalize"
-                px="6px"
-                variant="gray"
-                size="md"
-              >
-                Expired
-              </Badge>
-            )}
-
-            {checkIsEnrolled(quiz.id) && !isQuizFinished && (
-              <Badge
-                position="absolute"
-                bottom="12px"
-                left="50%"
-                transform="translate(-50%,12px)"
-                textTransform="capitalize"
-                px="6px"
-                variant="green"
-                size="sm"
-              >
-                Enrolled
-              </Badge>
-            )}
-          </Box>
-          <VStack rowGap="4px" width="full">
-            <Text
-              color="gray.0"
-              fontSize="2xl"
-              fontWeight="600"
-              fontFamily="Kanit"
-              mx="auto"
-              textAlign="center"
+              position="relative"
             >
-              {quiz?.title}
-            </Text>
-            <Text fontSize="md" color="gray.60" mx="auto" textAlign="center">
-              {quiz?.details}
-            </Text>
-          </VStack>
-          <CountDown
-            shows={{ day: true, hour: true, info: true, min: true, sec: true }}
-            date={new Date(quiz?.startAt).getTime()}
-          />
-          {/* {quiz?.values && (
+              <Img
+                minH={isLarge ? '124px' : '80px'}
+                minW={isLarge ? '124px' : '80px'}
+                rounded="full"
+                boxSize={isLarge ? '124px' : '80px'}
+                src={quiz?.image}
+              />
+              {isQuizFinished && (
+                <Badge
+                  position="absolute"
+                  bottom="12px"
+                  left="50%"
+                  transform="translate(-50%,12px)"
+                  textTransform="capitalize"
+                  px="6px"
+                  variant="gray"
+                  size="md"
+                >
+                  Expired
+                </Badge>
+              )}
+
+              {checkIsEnrolled(quiz.id) && !isQuizFinished && (
+                <Badge
+                  position="absolute"
+                  bottom="12px"
+                  left="50%"
+                  transform="translate(-50%,12px)"
+                  textTransform="capitalize"
+                  px="6px"
+                  variant="green"
+                  size="sm"
+                >
+                  Enrolled
+                </Badge>
+              )}
+            </Box>
+            <VStack rowGap="4px" width="full">
+              <Text
+                color="gray.0"
+                fontSize="2xl"
+                fontWeight="600"
+                fontFamily="Kanit"
+                mx="auto"
+                textAlign="center"
+              >
+                {quiz?.title}
+              </Text>
+              <Text fontSize="md" color="gray.60" mx="auto" textAlign="center">
+                {quiz?.details}
+              </Text>
+            </VStack>
+            <CountDown
+              shows={{
+                day: true,
+                hour: true,
+                info: true,
+                min: true,
+                sec: true,
+              }}
+              date={new Date(quiz?.startAt).getTime()}
+            />
+            {/* {quiz?.values && (
             <ChakraSwiper
               slidesPerView="auto"
               spaceBetween={8}
@@ -269,42 +301,44 @@ const QuizCard = forwardRef(
               ))}
             </ChakraSwiper>
           )} */}
-          {state && (
-            <Button
-              isDisabled={
-                isClosed &&
-                state === CARD_STATE.enroll &&
-                !!quiz?.maxParticipants
-              }
-              width="100%"
-              size="lg"
-              variant={selectedCTA[state].variant}
-              onClick={(e) => {
-                e.stopPropagation();
-                selectedCTA[state].onClick();
-              }}
-              {...('icon' in selectedCTA[state] && {
-                rightIcon: selectedCTA[state].icon,
-              })}
-            >
-              {selectedCTA[state].text}
-            </Button>
-          )}
-          {quiz?.maxParticipants ? (
-            <ParticipantsCount quiz={quiz} />
-          ) : (
-            quiz?.participantsCount &&
-            quiz?.userProfile && (
-              <Text fontSize="xs" fontWeight="600" color="gray.100">
-                {quiz?.participantsCount}
-                {quiz?.maxParticipants !== 0 &&
-                  '/ ' + quiz?.maxParticipants}{' '}
-                people enrolled
-              </Text>
-            )
-          )}
-        </Card>
-      </VStack>
+            {state && (
+              <Button
+                isDisabled={
+                  isClosed &&
+                  state === CARD_STATE.enroll &&
+                  !!quiz?.maxParticipants
+                }
+                width="100%"
+                size="lg"
+                variant={selectedCTA[state].variant}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  selectedCTA[state].onClick();
+                }}
+                {...('icon' in selectedCTA[state] && {
+                  rightIcon: selectedCTA[state].icon,
+                })}
+              >
+                {selectedCTA[state].text}
+              </Button>
+            )}
+            {quiz?.maxParticipants ? (
+              <ParticipantsCount quiz={quiz} />
+            ) : (
+              quiz?.participantsCount &&
+              quiz?.userProfile && (
+                <Text fontSize="xs" fontWeight="600" color="gray.100">
+                  {quiz?.participantsCount}
+                  {quiz?.maxParticipants !== 0 &&
+                    '/ ' + quiz?.maxParticipants}{' '}
+                  people enrolled
+                </Text>
+              )
+            )}
+          </Card>
+        </VStack>
+        <ShareModal isOpen={shareModalIsOpen} onClose={shareModalOnclose} />
+      </>
     );
   },
 );
