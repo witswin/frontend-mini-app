@@ -69,8 +69,12 @@ export const useGetHomeCardState = (competition: quizType) => {
     if (!isEnrolled) {
       setCompetitionState(INFO_CARD_STATE.welcome);
     } else {
-      if (timeState === 'default' && competition.resources.length !== 0) {
-        setCompetitionState(INFO_CARD_STATE.resource);
+      if (timeState === 'default') {
+        if (competition.resources.length !== 0) {
+          setCompetitionState(INFO_CARD_STATE.resource);
+        } else {
+          setCompetitionState(INFO_CARD_STATE.lobby);
+        }
       } else if (timeState === 'lobby') {
         setCompetitionState(INFO_CARD_STATE.lobby);
       } else if (timeState === 'close') {
