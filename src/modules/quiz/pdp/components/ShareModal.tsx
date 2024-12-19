@@ -9,16 +9,15 @@ import {
   useClipboard,
   UseDisclosureProps,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Copy } from 'solar-icon-set';
 import { useSelectedQuiz } from '../../hooks';
 
 interface ShareModalProps extends UseDisclosureProps {}
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
-  const { query } = useRouter();
+  const selectedQuiz = useSelectedQuiz();
 
-  const sharableLink = `https://t.me/Witswinbot/WebApp?startapp=page_quiz_${query?.id}`;
+  const sharableLink = `https://t.me/Witswinbot/WebApp?startapp=page_quiz_${selectedQuiz?.id}`;
 
   const [isShareSupport, setShareSupport] = useState(false);
   const { hasCopied, onCopy } = useClipboard(sharableLink);
@@ -39,7 +38,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
     if (isOpen) {
       setLoading(true);
       axiosClient
-        .get(`/quiz/competition/${query?.id}/qr-code/`, {
+        .get(`/quiz/competition/${selectedQuiz?.id}/qr-code/`, {
           responseType: 'blob',
         })
         .then((res) => res.data)
