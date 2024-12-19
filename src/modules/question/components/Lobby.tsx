@@ -210,7 +210,7 @@ export const Lobby = () => {
         <CountDown
           timerStyle={{ width: "full" }}
           shows={{ min: true, sec: true }}
-          date={new Date(data.startAt).getTime()}
+          date={new Date(data?.startAt).getTime()}
           containerStyle={{
             bg: "transparent",
             backdropFilter: "none",
