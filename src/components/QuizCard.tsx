@@ -141,7 +141,7 @@ const QuizCard = forwardRef(
           },
         },
       }),
-      [isClosed],
+      [isClosed, onOpen, quiz, router, selectedQuizDispatch],
     );
     return (
       <VStack
