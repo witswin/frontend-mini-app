@@ -116,7 +116,6 @@ export const QuizInfo = () => {
   }, [data]);
   const isClosed = data?.participantsCount === data?.maxParticipants;
 
-  console.log({ cardState });
 
   const CTAButton = useMemo(
     () => ({
