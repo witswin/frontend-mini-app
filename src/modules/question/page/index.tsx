@@ -101,7 +101,7 @@ export const Question = () => {
             };
           });
 
-          const correctAnswer = data.question.choices.find(
+          const correctAnswer = data?.question?.choices?.find(
             (item: choice) => item.isCorrect
           );
 
