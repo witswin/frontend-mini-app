@@ -14,7 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { CheckCircle, DangerCircle, KeyMinimalistic } from 'solar-icon-set';
+import { CheckCircle, CloseCircle, KeyMinimalistic } from 'solar-icon-set';
 import {
   useFormContext,
   useWatch,
@@ -120,7 +120,8 @@ export const QuizPrivate = ({ setEnrollCardState }: QuizPrivateProps) => {
             )}
             {submitStatus?.status === 'error' && invitationCode && (
               <InputRightElement>
-                <DangerCircle
+                <CloseCircle
+                  onClick={() => setValue('invitationCode', '')}
                   color="var(--chakra-colors-red-400)"
                   iconStyle="Bold"
                 />
