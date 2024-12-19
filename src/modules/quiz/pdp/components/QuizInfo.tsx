@@ -61,11 +61,7 @@ export const QuizInfo = () => {
 
   const authInfo = useAuth();
 
-  const {
-    data: enrolledCompetitions,
-    isLoading,
-    isFetching,
-  } = useQuery({
+  const { data: enrolledCompetitions, isLoading } = useQuery({
     queryKey: ['enrolledCompetition', authInfo?.token, query?.id],
     queryFn: async () =>
       await axiosClient
@@ -223,7 +219,7 @@ export const QuizInfo = () => {
 
   return (
     <>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <Center alignItems="center" justifyContent="center" height="90vh">
           <Loading />
         </Center>
