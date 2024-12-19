@@ -1,18 +1,23 @@
 import { QuizCard } from '@/components/QuizCard';
 import { CARD_STATE, INFO_CARD_STATE } from '@/types';
-import { VStack } from '@chakra-ui/react';
+import { Center, VStack } from '@chakra-ui/react';
 import { TopNavbar } from '@/components/TopNavbar';
 import { useMemo } from 'react';
 import { InfoCard } from '../components/InfoCard';
 import { useQuery } from '@tanstack/react-query';
 import { axiosClient } from '@/configs/axios';
 import { useGetHomeCardState } from '../hooks';
+import { Loading } from '@/components/Loading';
 
 interface HomeProps {
   hasCompetitions?: boolean;
 }
 export const Home = ({ hasCompetitions }: HomeProps) => {
-  const { data: closeCompetition } = useQuery({
+  const {
+    data: closeCompetition,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ['closetCompetition'],
     queryFn: async () =>
       await axiosClient
@@ -71,14 +76,18 @@ export const Home = ({ hasCompetitions }: HomeProps) => {
         </VStack>
       ),
     };
-  }, [hasCompetitions]);
+  }, [closeCompetition, hasCompetitions]);
 
   return (
     <VStack height="full" w="full" rowGap="16px">
       <TopNavbar />
-      <VStack mt="12px" w="full" height="full">
-        {infoCard[cardState]}
-      </VStack>
+      {isLoading || isFetching ? (
+        <Center height="full">
+          <Loading />
+        </Center>
+      ) : (
+        infoCard[cardState]
+      )}
     </VStack>
   );
 };

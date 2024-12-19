@@ -30,6 +30,7 @@ import { useAuth } from '@/hooks/useAuthorization';
 import { EnrolledCard } from '../../components/EnrolledCard';
 import { AxiosError, AxiosResponse } from 'axios';
 import { ParticipantsCount } from '@/components/ParticipantsCount';
+import { Loading } from '@/components/Loading';
 
 const ShareModal = dynamic(
   () => import('./ShareModal').then((modules) => modules.ShareModal),
@@ -60,7 +61,11 @@ export const QuizInfo = () => {
 
   const authInfo = useAuth();
 
-  const { data: enrolledCompetitions } = useQuery({
+  const {
+    data: enrolledCompetitions,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ['enrolledCompetition', authInfo?.token, query?.id],
     queryFn: async () =>
       await axiosClient
@@ -92,9 +97,9 @@ export const QuizInfo = () => {
         },
       );
     },
-    onError: (data: AxiosError<{ detail: string }>) => {
+    onError: (data: AxiosError<[string]>) => {
       toast({
-        description: data.response.data.detail,
+        description: data.response.data?.[0],
         status: 'error',
       });
     },
@@ -115,9 +120,28 @@ export const QuizInfo = () => {
   }, [data]);
   const isClosed = data?.participantsCount === data?.maxParticipants;
 
+  console.log({ cardState });
+
   const CTAButton = useMemo(
     () => ({
-      [CARD_STATE.join]: isEnrolled ? null : (
+      [CARD_STATE.join]: isEnrolled ? (
+        <Button
+          onClick={() => {
+            router.push(`/quiz/${data.id}/match`);
+          }}
+          rightIcon={
+            <DoubleAltArrowRight
+              color="var(--chakra-colors-gray-0)"
+              iconStyle="LineDuotone"
+            />
+          }
+          width="full"
+          size="lg"
+          variant="solid"
+        >
+          Join Now
+        </Button>
+      ) : (
         <Button
           onClick={() => {
             router.push(`/quiz/${data.id}/match`);
@@ -185,162 +209,184 @@ export const QuizInfo = () => {
         </Button>
       ),
     }),
-    [authInfo, isClosed],
+    [
+      data?.id,
+      data?.isFinished,
+      data?.maxParticipants,
+      isClosed,
+      isEnrolled,
+      onOpen,
+      router,
+    ],
   );
   const { isOpen, onOpen: shareModalOnOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <VStack overflow="hidden" position="relative" rowGap="16px" width="full">
-        {/* isPrivate &&  <PrivateBadge /> */}
-        <VStack
-          bg="glassBackground"
-          borderRadius="16px"
-          p="16px"
-          rowGap="16px"
-          width="full"
-        >
-          <HStack justifyContent="space-between" width="full">
-            <Box position="relative">
-              <Img
-                style={{ borderRadius: '50%' }}
-                src={data?.image}
-                alt={data?.title}
-                width="80px"
-                height="80px"
-              />
-              {isEnrolled && (
-                <Badge
-                  left="50%"
-                  transform="translateX(-50%)"
-                  variant="green"
-                  position="absolute"
-                  bottom="0"
-                  size="sm"
-                  textTransform="capitalize"
-                >
-                  Enrolled
-                </Badge>
-              )}
-            </Box>
-            <VStack alignItems="flex-end" rowGap="0">
-              <QuizPrize
-                prize={data?.formattedPrize ? data?.formattedPrize : 0}
-                unitPrize={data?.token}
-              />
-              <Text
-                fontSize="sm"
-                lineHeight="20px"
-                fontWeight="600"
-                color="gray.60"
-              >
-                Yours to Win!
-              </Text>
-            </VStack>
-          </HStack>
-          <VStack width="full" alignItems="flex-start" rowGap="4px">
-            <HStack
-              alignItems="center"
-              justifyContent="space-between"
+      {isLoading || isFetching ? (
+        <Center alignItems="center" justifyContent="center" height="90vh">
+          <Loading />
+        </Center>
+      ) : (
+        <>
+          <VStack
+            overflow="hidden"
+            position="relative"
+            rowGap="16px"
+            width="full"
+          >
+            {/* isPrivate &&  <PrivateBadge /> */}
+            <VStack
+              bg="glassBackground"
+              borderRadius="16px"
+              p="16px"
+              rowGap="16px"
               width="full"
             >
-              <Text
-                color="gray.0"
-                fontSize="2xl"
-                fontWeight="600"
-                fontFamily="kanit"
-                lineHeight="28px"
-              >
-                {data?.title}
-              </Text>
-              <Center
-                onClick={() => {
-                  shareModalOnOpen();
-                }}
-              >
-                <Share iconStyle="Outline" size={24} />
-              </Center>
-            </HStack>
-            <Text fontSize="md" lineHeight="22px" color="gray.60">
-              {data?.details}
-            </Text>
-            {data?.maxParticipants ? (
-              <ParticipantsCount quiz={data} />
-            ) : (
-              <Text
-                fontSize="xs"
-                fontWeight="600"
-                lineHeight="16px"
-                color="gray.100"
-              >
-                {data?.participantsCount}
-                {data?.maxParticipants !== 0 && '/ ' + data?.maxParticipants}
-              </Text>
-            )}
-          </VStack>
-          {data?.startAt && (
-            <CountDown
-              shows={{
-                day: true,
-                hour: true,
-                info: true,
-                min: true,
-                sec: true,
-              }}
-              date={new Date(data?.startAt).getTime()}
-            />
-          )}
-
-          {isEnrolled && (
-            <Box width="full" position="relative" zIndex={0}>
-              <Button
-                onClick={() => mutate()}
-                variant="gray"
-                width="full"
-                leftIcon={
-                  <Logout3
-                    size={20}
-                    iconStyle="LineDuotone"
-                    color="var(--chakra-colors-gray-0)"
+              <HStack justifyContent="space-between" width="full">
+                <Box position="relative">
+                  <Img
+                    style={{ borderRadius: '50%' }}
+                    src={data?.image}
+                    alt={data?.title}
+                    width="80px"
+                    height="80px"
                   />
-                }
-              >
-                Cancel Enrollment
-              </Button>
-            </Box>
-          )}
-        </VStack>
-        {data?.resources
-          ?.filter((article) => article.isActive)
-          .map((article) => (
-            <ArticleCard
-              key={article.id}
-              articleTitle={article.title}
-              banner={article.image}
-              content={article.content}
-              link={article.link}
-              linkText={article.linkText}
-            />
-          ))}
-      </VStack>
+                  {isEnrolled && (
+                    <Badge
+                      left="50%"
+                      transform="translateX(-50%)"
+                      variant="green"
+                      position="absolute"
+                      bottom="0"
+                      size="sm"
+                      textTransform="capitalize"
+                    >
+                      Enrolled
+                    </Badge>
+                  )}
+                </Box>
+                <VStack alignItems="flex-end" rowGap="0">
+                  <QuizPrize
+                    prize={data?.formattedPrize ? data?.formattedPrize : 0}
+                    unitPrize={data?.token}
+                  />
+                  <Text
+                    fontSize="sm"
+                    lineHeight="20px"
+                    fontWeight="600"
+                    color="gray.60"
+                  >
+                    Yours to Win!
+                  </Text>
+                </VStack>
+              </HStack>
+              <VStack width="full" alignItems="flex-start" rowGap="4px">
+                <HStack
+                  alignItems="center"
+                  justifyContent="space-between"
+                  width="full"
+                >
+                  <Text
+                    color="gray.0"
+                    fontSize="2xl"
+                    fontWeight="600"
+                    fontFamily="kanit"
+                    lineHeight="28px"
+                  >
+                    {data?.title}
+                  </Text>
+                  <Center
+                    onClick={() => {
+                      shareModalOnOpen();
+                    }}
+                  >
+                    <Share iconStyle="Outline" size={24} />
+                  </Center>
+                </HStack>
+                <Text fontSize="md" lineHeight="22px" color="gray.60">
+                  {data?.details}
+                </Text>
+                {data?.maxParticipants ? (
+                  <ParticipantsCount quiz={data} />
+                ) : (
+                  <Text
+                    fontSize="xs"
+                    fontWeight="600"
+                    lineHeight="16px"
+                    color="gray.100"
+                  >
+                    {data?.participantsCount}
+                    {data?.maxParticipants !== 0 &&
+                      '/ ' + data?.maxParticipants}
+                  </Text>
+                )}
+              </VStack>
+              {data?.startAt && (
+                <CountDown
+                  shows={{
+                    day: true,
+                    hour: true,
+                    info: true,
+                    min: true,
+                    sec: true,
+                  }}
+                  date={new Date(data?.startAt).getTime()}
+                />
+              )}
 
-      <Box
-        py="10px"
-        bg="blackGradient"
-        zIndex={2}
-        position="fixed"
-        bottom="0px"
-        left="50%"
-        transform="translateX(-50%)"
-        width="full"
-        maxW="538px"
-        px="16px"
-      >
-        {CTAButton[cardState]}
-      </Box>
+              {isEnrolled && (
+                <Box width="full" position="relative" zIndex={0}>
+                  <Button
+                    onClick={() => mutate()}
+                    variant="gray"
+                    width="full"
+                    leftIcon={
+                      <Logout3
+                        size={20}
+                        iconStyle="LineDuotone"
+                        color="var(--chakra-colors-gray-0)"
+                      />
+                    }
+                  >
+                    Cancel Enrollment
+                  </Button>
+                </Box>
+              )}
+            </VStack>
+            {data?.resources
+              ?.filter((article) => article.isActive)
+              .map((article) => (
+                <ArticleCard
+                  key={article.id}
+                  articleTitle={article.title}
+                  banner={article.image}
+                  content={article.content}
+                  link={article.link}
+                  linkText={article.linkText}
+                />
+              ))}
+          </VStack>
 
-      <EnrolledCard />
-      <ShareModal onClose={onClose} isOpen={isOpen} />
+          <Box
+            py="10px"
+            bg="blackGradient"
+            zIndex={2}
+            position="fixed"
+            bottom="0px"
+            left="50%"
+            transform="translateX(-50%)"
+            width="full"
+            maxW="538px"
+            px="16px"
+          >
+            {CTAButton[cardState]}
+          </Box>
+
+          <EnrolledCard />
+          <ShareModal onClose={onClose} isOpen={isOpen} />
+        </>
+      )}
     </>
   );
 };
