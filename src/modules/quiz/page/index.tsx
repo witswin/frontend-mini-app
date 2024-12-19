@@ -9,8 +9,8 @@ import { quizType } from '@/globalTypes';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
 import { demoQuizData } from '@/constants';
-import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
 import { Loading } from '@/components/Loading';
+import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
 
 const MemoizedSwiperItem = dynamic(
   () =>
@@ -31,8 +31,10 @@ export const QuizPLP = () => {
   const centeredQuizzes = useMemo(() => {
     const activeQuizzes =
       data?.results?.filter((quiz: quizType) => !quiz.isFinished) ?? [];
-    const inactiveQuizzes =
-      data?.results?.filter((quiz: quizType) => quiz.isFinished) ?? [];
+    const inactiveQuizzes = [
+      ...(data?.results?.filter((quiz: quizType) => quiz.isFinished) ?? []),
+      demoQuizData,
+    ];
 
     const midIndex = Math.ceil(inactiveQuizzes.length / 2);
     const leftInactive = inactiveQuizzes.slice(0, midIndex);
@@ -90,14 +92,20 @@ export const QuizPLP = () => {
               },
             }}
           >
-            {centeredQuizzes?.map((quiz: quizType) => (
-              <SwiperSlide key={quiz?.id} style={{ maxWidth: '318px' }}>
-                <MemoizedSwiperItem quiz={quiz} />
-              </SwiperSlide>
-            ))}
-            <SwiperSlide style={{ maxWidth: '318px' }}>
-              <MemoizedSwiperDemoItem quiz={demoQuizData} />
-            </SwiperSlide>
+            {centeredQuizzes?.map((quiz: quizType) => {
+              if (quiz.id === demoQuizData.id) {
+                return (
+                  <SwiperSlide key={quiz?.id} style={{ maxWidth: '318px' }}>
+                    <MemoizedSwiperDemoItem quiz={quiz} />
+                  </SwiperSlide>
+                );
+              }
+              return (
+                <SwiperSlide key={quiz?.id} style={{ maxWidth: '318px' }}>
+                  <MemoizedSwiperItem quiz={quiz} />
+                </SwiperSlide>
+              );
+            })}
           </ChakraSwiper>
 
           <EnrolledCard />
