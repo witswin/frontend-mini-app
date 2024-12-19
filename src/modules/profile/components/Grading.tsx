@@ -86,28 +86,28 @@ export const GradeBadge = ({
       gap="4px"
       h="34px"
       border="1px solid"
-      borderColor={grade.color}
+      borderColor={grade?.color}
       borderRadius="18px"
     >
       <HStack
         p="4px"
         gap="4px"
-        bg={grade.color}
+        bg={grade?.color}
         borderRadius="16px"
         h="30px"
         alignItems="center"
       >
         <Text fontSize="md" fontWeight={600} color="gray.0">
-          {grade.text}
+          {grade?.text}
         </Text>
-        {grade.badgeIcon}
+        {grade?.badgeIcon}
       </HStack>
 
       <HStack mr="10px" ml="6px" alignItems="center" gap="4px">
-        <Text fontSize="lg" fontWeight={800} color={grade.color}>
+        <Text fontSize="lg" fontWeight={800} color={grade?.color}>
           {neuronCount}
         </Text>
-        <Neuron color={grade.color} />
+        <Neuron color={grade?.color} />
       </HStack>
     </HStack>
   );

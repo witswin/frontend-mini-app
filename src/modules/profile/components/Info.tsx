@@ -40,7 +40,7 @@ interface Props {
 export const Info = ({ userInfo }: Props) => {
   const ownUser = useAuth();
 
-  const isOwnProfile = ownUser?.pk ? userInfo.pk === ownUser.pk : false;
+  const isOwnProfile = ownUser?.pk ? userInfo?.pk === ownUser?.pk : false;
   // const isOwnProfile = userInfo.pk === ownUser.pk;
   const grade = getGrade(userInfo?.neuron);
 
@@ -49,7 +49,8 @@ export const Info = ({ userInfo }: Props) => {
   const integrationsFetch = useQuery({
     initialData: undefined,
     refetchOnMount: true,
-    queryKey: ['fetch-integrations', userInfo.pk],
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ['fetch-integrations', userInfo?.pk],
     queryFn: () =>
       axiosClient.get(`/auth/users/${userInfo.pk}/connections/`).then((res) => {
         const data = res.data as UserConnection[];
@@ -116,7 +117,7 @@ export const Info = ({ userInfo }: Props) => {
       </VStack>
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
-          {userInfo.username}
+          {userInfo?.username}
         </Text>
         {/* {isOwnProfile && (
           <Text fontSize="sm" fontWeight={600} color="gray.0">
@@ -126,7 +127,7 @@ export const Info = ({ userInfo }: Props) => {
         )} */}
       </VStack>
 
-      <GradeBadge neuronCount={userInfo.neuron} grade={grade} />
+      <GradeBadge neuronCount={userInfo?.neuron} grade={grade} />
 
       {/* social Links gotta add logic for showing each link*/}
       <HStack w="full" justifyContent="center" wrap="wrap" spacing="16px">
