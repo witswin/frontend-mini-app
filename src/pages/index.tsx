@@ -1,9 +1,10 @@
+import { BottomNavbar } from '@/components/BottomNavbar';
 import { axiosClient } from '@/configs/axios';
 import { ACCESS_TOKEN_COOKIE_KEY } from '@/constants';
 import { useAuth } from '@/hooks/useAuthorization';
 import { Home } from '@/modules/home/page';
 import { prefetchSSRData } from '@/utils';
-import { VStack } from '@chakra-ui/react';
+import { Box, Container, VStack } from '@chakra-ui/react';
 import {
   dehydrate,
   DehydratedState,
@@ -11,7 +12,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query';
 import { GetServerSidePropsContext } from 'next';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 interface IndexProps {
   dehydratedState: DehydratedState;
   hasCompetitions?: boolean;
@@ -41,6 +42,29 @@ const Index = ({ dehydratedState, hasCompetitions }: IndexProps) => {
 };
 
 export default Index;
+
+Index.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Container
+      py="8px"
+      maxWidth="538px"
+      zIndex={1}
+      gap="16px"
+      display="flex"
+      height="full"
+      px="0"
+      minH="calc(100vh - 122px)"
+      justifyContent="stretch"
+      alignItems="stretch"
+      userSelect="none"
+    >
+      <Box px="16px" width="full">
+        {page}
+      </Box>
+      <BottomNavbar />
+    </Container>
+  );
+};
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const queryClient = new QueryClient({

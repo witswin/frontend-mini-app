@@ -36,7 +36,13 @@ export const Home = ({ hasCompetitions }: HomeProps) => {
         />
       ),
       [INFO_CARD_STATE.join]: (
-        <VStack width="full" h="full" gap="16px" justifyContent="flex-start">
+        <VStack
+          pb="150px"
+          width="full"
+          h="full"
+          gap="16px"
+          justifyContent="flex-start"
+        >
           <InfoCard
             hasCompetitions={hasCompetitions}
             state={INFO_CARD_STATE.join}
@@ -45,7 +51,13 @@ export const Home = ({ hasCompetitions }: HomeProps) => {
         </VStack>
       ),
       [INFO_CARD_STATE.lobby]: (
-        <VStack width="full" h="full" gap="16px" justifyContent="flex-start">
+        <VStack
+          pb="150px"
+          width="full"
+          h="full"
+          gap="16px"
+          justifyContent="flex-start"
+        >
           <InfoCard
             hasCompetitions={hasCompetitions}
             state={INFO_CARD_STATE.lobby}
@@ -54,7 +66,13 @@ export const Home = ({ hasCompetitions }: HomeProps) => {
         </VStack>
       ),
       [INFO_CARD_STATE.resource]: (
-        <VStack width="full" h="full" gap="16px" justifyContent="flex-start">
+        <VStack
+          pb="150px"
+          width="full"
+          h="full"
+          gap="16px"
+          justifyContent="flex-start"
+        >
           <InfoCard
             hasCompetitions={hasCompetitions}
             state={INFO_CARD_STATE.resource}
@@ -67,7 +85,13 @@ export const Home = ({ hasCompetitions }: HomeProps) => {
         </VStack>
       ),
       [INFO_CARD_STATE.watch]: (
-        <VStack width="full" h="full" gap="16px" justifyContent="flex-start">
+        <VStack
+          pb="150px"
+          width="full"
+          h="full"
+          gap="16px"
+          justifyContent="flex-start"
+        >
           <InfoCard
             hasCompetitions={hasCompetitions}
             state={INFO_CARD_STATE.watch}
