@@ -116,7 +116,6 @@ export const QuizInfo = () => {
   }, [data]);
   const isClosed = data?.participantsCount === data?.maxParticipants;
 
-
   const CTAButton = useMemo(
     () => ({
       [CARD_STATE.join]: isEnrolled ? (
@@ -292,6 +291,7 @@ export const QuizInfo = () => {
                     {data?.title}
                   </Text>
                   <Center
+                    cursor="pointer"
                     onClick={() => {
                       shareModalOnOpen();
                     }}
@@ -379,7 +379,7 @@ export const QuizInfo = () => {
           </Box>
 
           <EnrolledCard />
-          <ShareModal onClose={onClose} isOpen={isOpen} />
+          <ShareModal quiz={data} onClose={onClose} isOpen={isOpen} />
         </>
       )}
     </>

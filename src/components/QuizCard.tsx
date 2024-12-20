@@ -23,11 +23,13 @@ import { PrivateBadge } from './PrivateBadge';
 import { ParticipantsCount } from './ParticipantsCount';
 // import { Swiper, SwiperSlide } from "swiper/react";
 
-const ShareModal=dynamic(
-  () => import('@/modules/quiz/pdp/components/ShareModal').then((modules) => modules.ShareModal),
+const ShareModal = dynamic(
+  () =>
+    import('@/modules/quiz/pdp/components/ShareModal').then(
+      (modules) => modules.ShareModal,
+    ),
   { ssr: false },
 );
-
 
 const CountDown = dynamic(
   () => import('@/components/CountDown').then((modules) => modules.CountDown),
@@ -157,7 +159,7 @@ const QuizCard = forwardRef(
       [isClosed, onOpen, quiz, router, selectedQuizDispatch],
     );
     return (
-      <>
+      <VStack height="full" width="full" justifyContent="center">
         <VStack
           position="relative"
           ref={ref}
@@ -166,6 +168,7 @@ const QuizCard = forwardRef(
           width="full"
         >
           <Center
+            cursor="pointer"
             position="absolute"
             top="16px"
             right="16px"
@@ -337,8 +340,12 @@ const QuizCard = forwardRef(
             )}
           </Card>
         </VStack>
-        <ShareModal isOpen={shareModalIsOpen} onClose={shareModalOnclose} />
-      </>
+        <ShareModal
+          quiz={quiz}
+          isOpen={shareModalIsOpen}
+          onClose={shareModalOnclose}
+        />
+      </VStack>
     );
   },
 );

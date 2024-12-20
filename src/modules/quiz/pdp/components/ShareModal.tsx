@@ -11,20 +11,18 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Copy } from 'solar-icon-set';
-import { useSelectedQuiz } from '../../hooks';
+import { quizType } from '@/globalTypes';
 
-interface ShareModalProps extends UseDisclosureProps {}
-export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
-  const selectedQuiz = useSelectedQuiz();
-
-  const sharableLink = `https://t.me/Witswinbot/WebApp?startapp=page_quiz_${selectedQuiz?.id}`;
+interface ShareModalProps extends UseDisclosureProps {
+  quiz: quizType;
+}
+export const ShareModal = ({ isOpen, onClose, quiz }: ShareModalProps) => {
+  const sharableLink = `https://t.me/Witswinbot/WebApp?startapp=page_quiz_${quiz?.id}`;
 
   const [isShareSupport, setShareSupport] = useState(false);
   const { hasCopied, onCopy } = useClipboard(sharableLink);
   const [qrCodeImg, setQrCodeImg] = useState('');
   const [imageBlob, setImageBlob] = useState('');
-
-  const data = useSelectedQuiz();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -38,7 +36,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
     if (isOpen) {
       setLoading(true);
       axiosClient
-        .get(`/quiz/competition/${selectedQuiz?.id}/qr-code/`, {
+        .get(`/quiz/competition/${quiz?.id}/qr-code/`, {
           responseType: 'blob',
         })
         .then((res) => res.data)
@@ -57,14 +55,14 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
 
     if (navigator.canShare({ files: [file] })) {
       const shareData = {
-        text: `${data?.title} ${data?.details} ${sharableLink}`,
+        text: `${quiz?.title} ${quiz?.details} ${sharableLink}`,
         files: [file],
       };
 
       navigator.share(shareData);
     } else {
       const shareData = {
-        text: `${data?.title} ${data?.details} ${sharableLink}`,
+        text: `${quiz?.title} ${quiz?.details} ${sharableLink}`,
       };
 
       navigator.share(shareData);
