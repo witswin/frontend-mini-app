@@ -94,6 +94,7 @@ export const QuizPrivate = ({ setEnrollCardState }: QuizPrivateProps) => {
               <KeyMinimalistic iconStyle="Outline" color="gray.300" />
             </InputLeftElement>
             <Input
+              autoComplete="off"
               readOnly={isSubmitting}
               placeholder="Enter code here"
               width="full"
