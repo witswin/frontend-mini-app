@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Card } from './Card';
 import {
   Badge,
-  CircularProgress,
   // Divider,
   Flex,
   HStack,
@@ -25,7 +24,6 @@ import Link from 'next/link';
 import { textTruncator } from '@/utils';
 import { profileInfo } from '@/globalTypes';
 import { useAuth } from '@/hooks/useAuthorization';
-import { getGrade, GradeBadge } from './Grading';
 import { BrandDiscord, BrandFarcaster, BrandTelegram, BrandX } from './icons';
 import { axiosClient } from '@/configs/axios';
 import { useQuery } from '@tanstack/react-query';
@@ -42,7 +40,7 @@ export const Info = ({ userInfo }: Props) => {
 
   const isOwnProfile = ownUser?.pk ? userInfo?.pk === ownUser?.pk : false;
   // const isOwnProfile = userInfo.pk === ownUser.pk;
-  const grade = getGrade(userInfo?.neuron);
+  // const grade = getGrade(userInfo?.neuron);
 
   // const { connect, disconnect } = useWalletConnection();
 
@@ -85,7 +83,7 @@ export const Info = ({ userInfo }: Props) => {
   return (
     <Card>
       <VStack position="relative" boxSize="102px" justifyContent="center">
-        <CircularProgress
+        {/* <CircularProgress
           value={40}
           top={0}
           left={0}
@@ -95,7 +93,7 @@ export const Info = ({ userInfo }: Props) => {
           trackColor="gray.600"
           position="absolute"
           transform="rotate(225deg)"
-        />
+        /> */}
         <Image
           borderRadius="full"
           alt="avatar"
@@ -103,7 +101,7 @@ export const Info = ({ userInfo }: Props) => {
           boxSize={'80px'}
           fit="cover"
         />
-        <VStack
+        {/* <VStack
           boxSize="32px"
           borderRadius="50px"
           bg="gray.600"
@@ -113,7 +111,7 @@ export const Info = ({ userInfo }: Props) => {
           left={0}
         >
           {grade?.icon}
-        </VStack>
+        </VStack> */}
       </VStack>
       <VStack gap="0">
         <Text fontSize="4xl" fontWeight={800} color="gray.0">
@@ -127,7 +125,7 @@ export const Info = ({ userInfo }: Props) => {
         )} */}
       </VStack>
 
-      <GradeBadge neuronCount={userInfo?.neuron} grade={grade} />
+      {/* <GradeBadge neuronCount={userInfo?.neuron} grade={grade} /> */}
 
       {/* social Links gotta add logic for showing each link*/}
       <HStack w="full" justifyContent="center" wrap="wrap" spacing="16px">
