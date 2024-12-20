@@ -1,5 +1,5 @@
 import { ColorFullText } from '@/components/ColorFullText';
-import { chakra, Text, VStack } from '@chakra-ui/react';
+import { Box, chakra, Text, VStack } from '@chakra-ui/react';
 import { EffectCoverflow } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EnrolledCard } from '../components/EnrolledCard';
@@ -11,6 +11,8 @@ import { useMemo } from 'react';
 import { demoQuizData } from '@/constants';
 import { Loading } from '@/components/Loading';
 import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
+import { Refresh } from 'solar-icon-set';
+import { useRouter } from 'next/router';
 
 const MemoizedSwiperItem = dynamic(
   () =>
@@ -43,6 +45,8 @@ export const QuizPLP = () => {
     return [...leftInactive, ...activeQuizzes, ...rightInactive];
   }, [data]);
 
+  const router = useRouter();
+
   return (
     <VStack
       overflow="hidden"
@@ -52,6 +56,17 @@ export const QuizPLP = () => {
       height="full"
     >
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
+      <Box
+        onClick={() => {
+          router.reload();
+        }}
+        cursor="pointer"
+        position="absolute"
+        right="16px"
+        top="16px"
+      >
+        <Refresh size={20} iconStyle="Bold" />
+      </Box>
       <Text
         fontWeight="600"
         color="gray.60"
