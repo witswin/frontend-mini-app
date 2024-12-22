@@ -23,6 +23,7 @@ import {
 import { axiosClient } from '@/configs/axios';
 import { useEnrolledModalProps, useSelectedQuiz } from '../../hooks';
 import { ENROLL_STATUS } from '../../types';
+import { useRouter } from 'next/router';
 
 const Form = chakra('form');
 interface QuizPrivateProps extends UseDisclosureProps {
@@ -45,15 +46,16 @@ export const QuizPrivate = ({ setEnrollCardState }: QuizPrivateProps) => {
   const { onOpen, onClose } = useEnrolledModalProps();
 
   const data = useSelectedQuiz();
-  useEffect(() => {
-    const embeddedCode = window?.Telegram?.WebApp?.initDataUnsafe?.start_param
-      ?.split('referralCode_')
-      ?.at(-1)
-      ?.split('_')
-      ?.at(0);
 
-    setValue('invitationCode', embeddedCode ?? '');
-  }, []);
+  const router = useRouter();
+
+  useEffect(() => {
+    const { invitationCode } = router.query; // Access query parameters
+
+    if (invitationCode) {
+      setValue('invitationCode', invitationCode);
+    }
+  }, [router.query]);
 
   useEffect(() => {
     if (submitStatus) {
