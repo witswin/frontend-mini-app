@@ -53,7 +53,7 @@ export const CompletedQuizCard = ({
   // token and chain are hard coded for this phase, for next phases of the project they are likely to change
   const [isRewardsClaimedOpen, setIsRewardsClaimedOpen] = useState(false);
   const token = 'USDC';
-  const chain = 'Arbitrum';
+  const chain = 'Optimism';
   const showClaim = isSelfUser && isWinner;
   const [claimRewardLoading, setClaimRewardLoading] =
     useState(isClaimTriggered);
