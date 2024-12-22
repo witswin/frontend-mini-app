@@ -24,10 +24,11 @@ export const MiniAppNavigation = () => {
 
       const pathSegments = pageSegment?.split('_')?.join('/');
 
-      // Pass the invitationCode as a query parameter
+      // Construct the desired URL without adding /referralCode/code
+      const basePath = pathSegments.split('/referralCode')[0]; // Remove the referralCode part if present
       const newPath = invitationCode
-        ? `${pathSegments}?invitationCode=${invitationCode}`
-        : pathSegments;
+        ? `${basePath}?invitationCode=${invitationCode}`
+        : basePath;
 
       router?.replace(newPath);
     }
