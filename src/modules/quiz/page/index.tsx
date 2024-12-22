@@ -12,7 +12,6 @@ import { demoQuizData } from '@/constants';
 import { Loading } from '@/components/Loading';
 import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
 import { Refresh } from 'solar-icon-set';
-import { useRouter } from 'next/router';
 
 const MemoizedSwiperItem = dynamic(
   () =>
@@ -24,7 +23,7 @@ const MemoizedSwiperItem = dynamic(
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['competitions'],
     queryFn: async () =>
       await axiosClient.get('/quiz/competitions/').then((res) => res.data),
@@ -45,8 +44,6 @@ export const QuizPLP = () => {
     return [...leftInactive, ...activeQuizzes, ...rightInactive];
   }, [data]);
 
-  const router = useRouter();
-
   return (
     <VStack
       overflow="hidden"
@@ -58,7 +55,7 @@ export const QuizPLP = () => {
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Box
         onClick={() => {
-          router.reload();
+          refetch();
         }}
         cursor="pointer"
         position="absolute"
