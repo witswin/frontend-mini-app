@@ -201,14 +201,14 @@ const QuizCard = forwardRef(
                     unitPrize={quiz?.token}
                   />
                 </Center>
-                <Text
+                {/* <Text
                   textAlign="center"
                   color="gray.60"
                   fontWeight="600"
                   fontSize="sm"
                 >
                   {quiz.details}
-                </Text>
+                </Text> */}
               </VStack>
             )}
             <Box
