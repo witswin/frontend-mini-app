@@ -55,11 +55,15 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     const canGoBack = () => {
-      return history.length > 0 && router.asPath !== '/';
+      return history.length > 0 || router.asPath !== '/';
     };
 
     if (canGoBack()) {
       tg.BackButton.show(); // Show the Telegram Back Button
+
+      if (!history.length) {
+        router.push('/');
+      }
 
       router.back();
     } else {
