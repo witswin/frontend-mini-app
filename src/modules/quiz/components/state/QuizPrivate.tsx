@@ -53,7 +53,7 @@ export const QuizPrivate = ({ setEnrollCardState }: QuizPrivateProps) => {
     const { invitationCode } = router.query; // Access query parameters
 
     if (invitationCode) {
-      setValue('invitationCode', invitationCode);
+      setValue('invitationCode', invitationCode as string);
     }
   }, [router.query]);
 
