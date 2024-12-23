@@ -30,7 +30,7 @@ export const MiniAppNavigation = () => {
         ? `${basePath}?invitationCode=${invitationCode}`
         : basePath;
 
-      router?.replace(newPath);
+      router?.push(newPath);
     }
   }, []);
 
