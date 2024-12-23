@@ -47,6 +47,10 @@ export const QuizPLP = () => {
     return [...leftInactive, ...activeQuizzes, ...rightInactive];
   }, [data]);
 
+  const defaultActiveIndex = centeredQuizzes.findIndex(
+    (item) => item?.isActive && !item?.isFinished,
+  );
+
   return (
     <VStack
       overflow="hidden"
@@ -91,7 +95,7 @@ export const QuizPLP = () => {
             modules={[EffectCoverflow]}
             spaceBetween={0}
             centeredSlides
-            initialSlide={1}
+            initialSlide={defaultActiveIndex === -1 ? 0 : defaultActiveIndex}
             grabCursor
             coverflowEffect={{
               rotate: 10,

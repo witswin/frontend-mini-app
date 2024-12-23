@@ -2,7 +2,7 @@ import { BoxProps, HStack, Text, VStack } from '@chakra-ui/react';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { CalendarMark, ClockCircle } from 'solar-icon-set';
+import { CalendarMark } from 'solar-icon-set';
 
 interface TimerBoxProps extends BoxProps {
   topText: number | string;
@@ -103,15 +103,18 @@ export const CountDown = ({
     seconds,
     completed,
   }: CountdownRenderProps) => {
-    const dateString = new Date(date)
-      .toLocaleString('default', {
-        month: 'short',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hourCycle: 'h23',
-      })
-      .split(',');
+    const dateObject = new Date(date);
+
+    const formattedDate = dateObject.toLocaleDateString('default', {
+      month: 'short',
+      day: '2-digit',
+    });
+
+    const formattedTime = dateObject.toLocaleTimeString('default', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
 
     return (
       <HStack justifyContent="flex-start" width="full" columnGap="12px">
@@ -124,14 +127,23 @@ export const CountDown = ({
                 color="var(--chakra-colors-gray-40)"
               />
             }
-            topText={dateString[0]}
-            bottomText={dateString[1]}
+            topText={formattedDate}
+            bottomText={formattedTime}
             bottomIcon={
-              <ClockCircle
-                size={16}
-                iconStyle="Bold"
-                color="var(--chakra-colors-gray-40)"
-              />
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M7.99967 14.6673C11.6816 14.6673 14.6663 11.6826 14.6663 8.00065C14.6663 4.31875 11.6816 1.33398 7.99967 1.33398C4.31778 1.33398 1.33301 4.31875 1.33301 8.00065C1.33301 11.6826 4.31778 14.6673 7.99967 14.6673ZM8.49967 5.33398C8.49967 5.05784 8.27582 4.83398 7.99967 4.83398C7.72353 4.83398 7.49967 5.05784 7.49967 5.33398V8.00065C7.49967 8.13326 7.55235 8.26044 7.64612 8.35421L9.31279 10.0209C9.50805 10.2161 9.82463 10.2161 10.0199 10.0209C10.2152 9.82561 10.2152 9.50903 10.0199 9.31376L8.49967 7.79354V5.33398Z"
+                  fill="#DEDEE1"
+                />
+              </svg>
             }
             flex="1"
             {...dateTimeStyle}
