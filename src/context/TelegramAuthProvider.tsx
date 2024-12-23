@@ -53,6 +53,8 @@ export const TelegramAuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
       return;
     }
+    console.log(history.length,"ssss");
+    
 
     const canGoBack = () => {
       return history.length > 0 || router.asPath !== '/';
