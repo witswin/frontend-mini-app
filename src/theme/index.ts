@@ -32,6 +32,7 @@ export const baseTheme = extendTheme({
         },
         'button, a, input, textarea': {
           outline: 'none',
+          '-webkit-tap-highlight-color': 'transparent',
         },
         'button:focus, a:focus, input:focus, textarea:focus': {
           outline: 'none',
