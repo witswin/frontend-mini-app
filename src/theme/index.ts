@@ -33,6 +33,9 @@ export const baseTheme = extendTheme({
         'button, a, input, textarea': {
           outline: 'none',
         },
+        'button:focus, a:focus, input:focus, textarea:focus': {
+          outline: 'none',
+        },
       },
       body: {
         minH: '100vh',
