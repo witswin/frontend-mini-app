@@ -313,7 +313,8 @@ export const QuizInfo = () => {
                   >
                     {data?.participantsCount}
                     {data?.maxParticipants !== 0 &&
-                      '/ ' + data?.maxParticipants}
+                      '/ ' + data?.maxParticipants}{' '}
+                    people enrolled
                   </Text>
                 )}
               </VStack>
