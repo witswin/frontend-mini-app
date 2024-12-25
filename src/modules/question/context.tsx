@@ -71,7 +71,7 @@ export const QuestionDataProvider = ({
         return () => {
           clearTimeout(freezeTimeOut)
         }
-      }, 3000)
+      }, 2000)
     }
   }, [state?.question?.state])
 
@@ -81,6 +81,7 @@ export const QuestionDataProvider = ({
     if (state?.question?.state === QUESTION_STATE.answered) {
       if (state.question.number !== state.quiz.questions.length) {
         timeout = setTimeout(() => {
+          console.log("Rest state",new Date().getTime() / 1000);
           setState((prev) => ({
             ...prev,
             question: {
@@ -97,7 +98,7 @@ export const QuestionDataProvider = ({
     }
 
     return () => clearTimeout(timeout)
-  }, [state.quiz.questions.length, state?.question?.state])
+  }, [state?.quiz?.questions?.length, state?.question?.state])
 
   useEffect(() => {
     if (state?.question?.state !== QUESTION_STATE.answered) {
