@@ -78,6 +78,7 @@ export const ChoiceButton = ({
           selectedChoice: choice?.id,
         },
       }));
+      console.log('Add Answer', new Date().getTime() / 1000);
 
       socket.current.client?.send(
         JSON.stringify({
