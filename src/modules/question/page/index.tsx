@@ -81,6 +81,7 @@ export const Question = () => {
             quiz.restTimeSeconds,
             data.question.number
           );
+          console.log('New Question', new Date().getTime() / 1000);
 
           setCounter(secondsRemaining);
 
