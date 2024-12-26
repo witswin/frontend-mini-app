@@ -212,6 +212,7 @@ export const Button = {
       sx: { cursor: "default" },
       _disabled: {
         opacity: "0.50",
+        background: "transparent",
       },
     },
     glassBackgroundDisabled: {
