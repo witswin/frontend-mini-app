@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { VStack } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
-import { CARD_STATE, QUESTION_STATE } from "@/types";
-import { useEffect, useMemo, useState } from "react";
-import { QuizTimerScreen } from "../components/QuizTimerScreen ";
-import { TopNavbar } from "../components/TopNavbar";
-import { QuizPage } from "../components/QuestionContent";
+import { VStack } from '@chakra-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { CARD_STATE, QUESTION_STATE } from '@/types';
+import { useEffect, useMemo, useState } from 'react';
+import { QuizTimerScreen } from '../components/QuizTimerScreen ';
+import { TopNavbar } from '../components/TopNavbar';
+import { QuizPage } from '../components/QuestionContent';
 import {
   useCounterDispatch,
   useQuestionData,
   useQuestionDataDispatch,
-} from "../hooks";
-import { useWebSocket } from "@/hooks/useWebSocket";
-import { choice } from "@/globalTypes";
-import { shuffleArray } from "@/utils";
-import dynamic from "next/dynamic";
-import { calculatePreTimer } from "../context";
+} from '../hooks';
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { choice } from '@/globalTypes';
+import { shuffleArray } from '@/utils';
+import dynamic from 'next/dynamic';
+import { calculatePreTimer } from '../context';
 
 const Lobby = dynamic(
-  () => import("../components/Lobby").then((modules) => modules.Lobby),
-  { ssr: false }
+  () => import('../components/Lobby').then((modules) => modules.Lobby),
+  { ssr: false },
 );
 
 export const Question = () => {
@@ -27,7 +27,7 @@ export const Question = () => {
     CARD_STATE.join | CARD_STATE.lobby
   >(CARD_STATE.lobby);
 
-  const [quizContentMode, setQuizContentMode] = useState("timer");
+  const [quizContentMode, setQuizContentMode] = useState('timer');
 
   const { quiz, question } = useQuestionData();
   const setCounter = useCounterDispatch();
@@ -73,19 +73,25 @@ export const Question = () => {
 
     if (!socket.current.client) return;
     const handleMessage = (e: MessageEvent) => {
-      if (e.data !== "PONG") {
+      if (e.data !== 'PONG') {
         const data = JSON.parse(e.data);
 
-        if (data.type === "new_question") {
+        if (data.type === 'new_question') {
           const secondsRemaining = calculatePreTimer(
             new Date(quiz.startAt),
             quiz.questionTimeSeconds,
             quiz.restTimeSeconds,
-            data.question.number
+            data.question.number,
           );
           console.log('New Question', new Date().getTime() / 1000);
 
-          setCounter(secondsRemaining);
+          if (data.question.expire)
+            setCounter(
+              Math.round(data.question.expire - new Date().getTime() / 1000),
+            );
+          else {
+            setCounter(secondsRemaining);
+          }
 
           dispatch((prev) => {
             if (prev?.question?.id === data?.question) return prev;
@@ -105,7 +111,7 @@ export const Question = () => {
           });
 
           const correctAnswer = data?.question?.choices?.find(
-            (item: choice) => item.isCorrect
+            (item: choice) => item.isCorrect,
           );
 
           if (correctAnswer) {
@@ -114,7 +120,7 @@ export const Question = () => {
               question: { ...prev.question, correct: correctAnswer.id },
             }));
           }
-        } else if (data.type === "correct_answer") {
+        } else if (data.type === 'correct_answer') {
           const answerData = data.data;
 
           dispatch((prev) => ({
@@ -124,7 +130,7 @@ export const Question = () => {
               correct: answerData,
             },
           }));
-        } else if (data.type === "quiz_stats") {
+        } else if (data.type === 'quiz_stats') {
           const stats = data.data;
 
           dispatch((prev) => ({
@@ -134,10 +140,10 @@ export const Question = () => {
         }
       }
     };
-    socket.current.client.addEventListener("message", handleMessage);
+    socket.current.client.addEventListener('message', handleMessage);
 
     return () => {
-      socket.current.client?.removeEventListener("message", handleMessage);
+      socket.current.client?.removeEventListener('message', handleMessage);
     };
   }, [socket?.current?.client]);
 
@@ -151,10 +157,10 @@ export const Question = () => {
       }
       if (new Date(quiz.startAt).getTime() - new Date().getTime() < 6000) {
         setPageState(CARD_STATE.join);
-        setQuizContentMode("timer");
+        setQuizContentMode('timer');
       }
       if (new Date(quiz.startAt).getTime() - new Date().getTime() <= -2) {
-        setQuizContentMode("quiz");
+        setQuizContentMode('quiz');
       }
     }, 300);
     return () => clearInterval(interval);
@@ -165,7 +171,7 @@ export const Question = () => {
       lobby: <Lobby />,
       join: (
         <AnimatePresence mode="wait">
-          {quizContentMode === "timer" ? (
+          {quizContentMode === 'timer' ? (
             <motion.div
               key="timer"
               initial={{ opacity: 0 }}
@@ -173,10 +179,10 @@ export const Question = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0 }}
               style={{
-                width: "100%",
-                position: "relative",
-                display: "inline-block",
-                height: "100%",
+                width: '100%',
+                position: 'relative',
+                display: 'inline-block',
+                height: '100%',
               }}
             >
               <QuizTimerScreen count={5} />
@@ -189,10 +195,10 @@ export const Question = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0 }}
               style={{
-                width: "100%",
-                position: "relative",
-                display: "inline-block",
-                height: "100%",
+                width: '100%',
+                position: 'relative',
+                display: 'inline-block',
+                height: '100%',
               }}
             >
               {question && <QuizPage />}
@@ -201,7 +207,7 @@ export const Question = () => {
         </AnimatePresence>
       ),
     }),
-    [quiz.startAt, quizContentMode]
+    [quiz.startAt, quizContentMode],
   );
 
   return (
@@ -214,12 +220,12 @@ export const Question = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0  }}
+            transition={{ duration: 0 }}
             style={{
-              width: "100%",
-              position: "relative",
-              display: "inline-block",
-              height: "100%",
+              width: '100%',
+              position: 'relative',
+              display: 'inline-block',
+              height: '100%',
             }}
           >
             {content[pageState]}
