@@ -1,8 +1,8 @@
-import { ColorFullText } from "@/components/ColorFullText"
-import { CountDown } from "@/components/CountDown"
-import { axiosClient } from "@/configs/axios"
-import { quizType } from "@/globalTypes"
-import { useAuth } from "@/hooks/useAuthorization"
+import { ColorFullText } from '@/components/ColorFullText';
+import { CountDown } from '@/components/CountDown';
+import { axiosClient } from '@/configs/axios';
+import { quizType } from '@/globalTypes';
+import { useAuth } from '@/hooks/useAuthorization';
 import {
   Box,
   Divider,
@@ -12,18 +12,18 @@ import {
   UnorderedList,
   VStack,
   chakra,
-} from "@chakra-ui/react"
-import { useQuery } from "@tanstack/react-query"
-import { useRouter } from "next/router"
-import { useMemo } from "react"
-import { AlarmAdd, UsersGroupTwoRounded, Widget } from "solar-icon-set"
+} from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
+import { AlarmAdd, UsersGroupTwoRounded, Widget } from 'solar-icon-set';
 
 interface HintContentProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: (args: any) => JSX.Element
-  title: string
-  description: string
-  iconType: string
+  icon: (args: any) => JSX.Element;
+  title: string;
+  description: string;
+  iconType: string;
 }
 const HintContent = ({
   description,
@@ -39,7 +39,7 @@ const HintContent = ({
         iconStyle={iconType}
         sx={{
           svg: {
-            color: "var(--chakra-colors-blue)",
+            color: 'var(--chakra-colors-blue)',
           },
         }}
       />
@@ -48,7 +48,7 @@ const HintContent = ({
         background="primaryLinear"
         backgroundClip="text"
         fontWeight="700"
-        sx={{ WebkitTextFillColor: "transparent" }}
+        sx={{ WebkitTextFillColor: 'transparent' }}
       >
         {title}
       </Text>
@@ -63,17 +63,17 @@ const HintContent = ({
       {description}
     </Text>
   </VStack>
-)
+);
 
 const Rules = () => {
-  const { query } = useRouter()
+  const { query } = useRouter();
   const { data } = useQuery<quizType>({
-    queryKey: ["quiz", query?.id],
+    queryKey: ['quiz', query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  })
+  });
 
   return (
     <VStack width="full">
@@ -87,7 +87,7 @@ const Rules = () => {
           fontWeight="500"
           listStylePosition="inside"
         >
-          Total Questions:{" "}
+          Total Questions:{' '}
           <chakra.span color="gray.0" fontWeight="700">
             {data?.questions?.length}
           </chakra.span>
@@ -98,9 +98,9 @@ const Rules = () => {
           fontWeight="500"
           listStylePosition="inside"
         >
-          Time per Question:{" "}
+          Time per Question:{' '}
           <chakra.span color="gray.0" fontWeight="700">
-            {data?.questionTimeSeconds}{" "}
+            {data?.questionTimeSeconds}{' '}
           </chakra.span>
           seconds
         </ListItem>
@@ -110,9 +110,9 @@ const Rules = () => {
           fontWeight="500"
           listStylePosition="inside"
         >
-          Lives:{" "}
+          Lives:{' '}
           <chakra.span color="gray.0" fontWeight="700">
-            1{" "}
+            1{' '}
           </chakra.span>
           life
         </ListItem>
@@ -121,18 +121,18 @@ const Rules = () => {
         </Text>
       </UnorderedList>
     </VStack>
-  )
-}
+  );
+};
 
 const HintInfo = () => {
-  const { query } = useRouter()
+  const { query } = useRouter();
   const { data } = useQuery<quizType>({
-    queryKey: ["quiz", query?.id],
+    queryKey: ['quiz', query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  })
+  });
 
   const content = useMemo(
     () => ({
@@ -161,8 +161,8 @@ const HintInfo = () => {
         />
       ),
     }),
-    []
-  )
+    [],
+  );
   return (
     <VStack width="full">
       <Text fontSize="md" fontWeight="bold" width="full">
@@ -170,20 +170,20 @@ const HintInfo = () => {
       </Text>
       {data?.builtInHints?.map((hint) => content[hint.hint.hintType])}
     </VStack>
-  )
-}
+  );
+};
 export const Lobby = () => {
-  const { query } = useRouter()
+  const { query } = useRouter();
 
-  const auth = useAuth()
+  const auth = useAuth();
 
   const { data } = useQuery<quizType>({
-    queryKey: ["quiz", query?.id],
+    queryKey: ['quiz', query?.id],
     queryFn: async () =>
       await axiosClient
         .get(`/quiz/competitions/${query?.id}/`)
         .then((res) => res.data),
-  })
+  });
   return (
     <VStack
       width="full"
@@ -196,24 +196,34 @@ export const Lobby = () => {
       <VStack flex={0} height="auto" width="full" rowGap="24px">
         <ColorFullText
           fontSize="5xl"
-          textContent={`Welcome, ${auth.username ?? "Guest User"}!`}
+          textContent={`Welcome, ${auth?.username ?? 'Guest User'}!`}
         />
-        <Text
-          fontSize="5xl"
-          textAlign="center"
-          color="gray.0"
-          lineHeight="36px"
-        >
-          Get ready to test your knowledge!
-        </Text>
+        <VStack>
+          <Text
+            fontSize="5xl"
+            textAlign="center"
+            color="gray.0"
+            lineHeight="36px"
+          >
+            Get ready to test your knowledge!
+          </Text>
+          <Text
+            fontSize="md"
+            textAlign="center"
+            color="gray.0"
+            lineHeight="36px"
+          >
+            {data?.participantsCount} players are waiting to join.
+          </Text>
+        </VStack>
         <Text>The quiz starts in:</Text>
         <CountDown
-          timerStyle={{ width: "full" }}
+          timerStyle={{ width: 'full' }}
           shows={{ min: true, sec: true }}
           date={new Date(data?.startAt).getTime()}
           containerStyle={{
-            bg: "transparent",
-            backdropFilter: "none",
+            bg: 'transparent',
+            backdropFilter: 'none',
           }}
         />
       </VStack>
@@ -238,5 +248,5 @@ export const Lobby = () => {
         <HintInfo />
       </VStack>
     </VStack>
-  )
-}
+  );
+};
