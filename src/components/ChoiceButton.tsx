@@ -156,7 +156,8 @@ export const ChoiceButton = ({
             (question?.state === QUESTION_STATE.answered &&
               +choice?.id !== question?.correct?.answerId &&
               +question?.selectedChoice !== +choice?.id) ||
-            disabledFiftyFiftyHint
+            disabledFiftyFiftyHint ||
+            !question?.isEligible
           }
           as={motion.button}
           key={question?.state}
