@@ -4,7 +4,7 @@ import { EffectCoverflow } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EnrolledCard } from '../components/EnrolledCard';
 import { axiosClient } from '@/configs/axios';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { quizType } from '@/globalTypes';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
@@ -12,7 +12,6 @@ import { demoQuizData } from '@/constants';
 import { Loading } from '@/components/Loading';
 import { MemoizedSwiperDemoItem } from '../components/DemoQuizItem';
 import { Refresh } from 'solar-icon-set';
-import { useRouter } from 'next/router';
 
 const MemoizedSwiperItem = dynamic(
   () =>
@@ -24,8 +23,6 @@ const MemoizedSwiperItem = dynamic(
 const ChakraSwiper = chakra(Swiper);
 
 export const QuizPLP = () => {
-  const router = useRouter();
-
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ['competitions'],
     queryFn: async () =>
@@ -51,6 +48,8 @@ export const QuizPLP = () => {
     (item) => item?.isActive && !item?.isFinished,
   );
 
+  const queryClient = useQueryClient();
+
   return (
     <VStack
       overflow="hidden"
@@ -62,7 +61,7 @@ export const QuizPLP = () => {
       <ColorFullText textContent="Quiz Space" fontSize="5xl" />
       <Box
         onClick={() => {
-          router.reload();
+          queryClient.invalidateQueries();
         }}
         cursor="pointer"
         position="absolute"
