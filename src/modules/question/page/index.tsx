@@ -69,6 +69,8 @@ export const Question = () => {
   // }, [question]);
 
   useEffect(() => {
+    console.log('Quiz Start', new Date(quiz?.startAt).getTime() / 1000);
+
     if (!socket.current.client) return;
     const handleMessage = (e: MessageEvent) => {
       if (e.data !== "PONG") {

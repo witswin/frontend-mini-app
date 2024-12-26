@@ -21,7 +21,7 @@ const HintContent = ({ hint }: HintContentProps) => {
 };
 
 export const QuizPage = () => {
-  const { question } = useQuestionData();
+  const { question, quiz } = useQuestionData();
 
   const selectedHints = useHints().selectedHints;
   const checkIsEnrolled = useCheckEnrolled();
@@ -35,7 +35,8 @@ export const QuizPage = () => {
         question?.selectedChoice !== +question?.correct?.answerId &&
         !isShowedBefore &&
         isEnrolled &&
-        question?.isEligible
+        question?.isEligible &&
+        question?.number !== quiz?.questions?.length
       ) {
         onOpen();
         setIsShowedBefore(true);
