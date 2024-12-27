@@ -37,11 +37,11 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
       socket.current.client.onopen = () => {
         previousPing = new Date();
-        // socket.current.client?.send(JSON.stringify({ command: "PING" }));
+        socket.current.client?.send(JSON.stringify({ command: "PING" }));
         interval = setInterval(() => {
           try {
             previousPing = new Date();
-            // socket.current.client?.send(JSON.stringify({ command: "PING" }));
+            socket.current.client?.send(JSON.stringify({ command: "PING" }));
           } catch (error) {
             reconnect();
             console.log(error);
